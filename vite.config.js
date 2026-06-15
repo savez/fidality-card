@@ -3,9 +3,19 @@ import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
 import { VitePWA } from 'vite-plugin-pwa'
 import { fileURLToPath, URL } from 'node:url'
+import { readFileSync } from 'node:fs'
+
+// Leggi la versione corrente da package.json al build time.
+// Verrà esposta sia al codice client (come __APP_VERSION__) sia al service worker (come cacheId).
+const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'))
 
 export default defineConfig({
   base: '/',
+  define: {
+    // Esposta in tutto il codice client come variabile globale.
+    // Es. nei .vue: `const v = __APP_VERSION__` → "1.0.0"
+    __APP_VERSION__: JSON.stringify(pkg.version),
+  },
   plugins: [
     vue(),
     vuetify({ autoImport: true }),
@@ -25,26 +35,31 @@ export default defineConfig({
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
-          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
-        ]
+          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
       },
       workbox: {
+        // Cache name versionato: ogni release ha la sua famiglia di cache.
+        // In DevTools (Application → Cache Storage) vedrai `fidality-card-v1.0.0-*`.
+        cacheId: `fidality-card-v${pkg.version}`,
+        // Pulisce automaticamente le cache delle versioni precedenti quando il nuovo SW si attiva.
+        cleanupOutdatedCaches: true,
         navigateFallback: '/index.html',
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/.*\.(googleapis|firebaseapp|firebaseio)\.com\/.*/,
-            handler: 'NetworkOnly'
-          }
-        ]
-      }
-    })
+            handler: 'NetworkOnly',
+          },
+        ],
+      },
+    }),
   ],
   resolve: {
-    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) }
+    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
   test: {
     environment: 'happy-dom',
     globals: true,
-    setupFiles: ['./tests/setup.js']
-  }
+    setupFiles: ['./tests/setup.js'],
+  },
 })
