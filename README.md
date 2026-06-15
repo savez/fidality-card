@@ -51,15 +51,47 @@ PWA Vue 3 per salvare e condividere le proprie fidelity card (barcode / QR code)
 
 ## Deploy su Render
 
+Render gestisce build + deploy in autonomia. **Non serve un workflow GitHub Actions per il deploy**: Render osserva il branch `main` via webhook nativo e lancia una nuova build ad ogni push.
+
+### Prima volta (setup)
+
 1. Crea un account su https://render.com (free, sufficiente per static sites)
 2. Dashboard → "New +" → **"Blueprint"** (Render leggerà il `render.yaml` committato nel repo)
 3. Connetti il tuo account GitHub e seleziona il repo `savez/fidality-card`
 4. Conferma il nome del servizio (default: `fidality-card`)
 5. Nella sezione **Environment Variables** del servizio, popola i 6 valori `VITE_FIREBASE_*` (li hai già in `.env.local`)
 6. Click **"Apply"** / **"Save & Deploy"** — il primo build parte automaticamente (~1-2 min)
-7. Quando è online: copia l'URL (es. `https://fidality-card.onrender.com/`) e aggiungilo agli "Authorized domains" su Firebase Auth (vedi step 3 del Setup Firebase)
+7. Quando è online: copia l'URL (es. `https://fidality-card.onrender.com/`) e aggiungilo agli "Authorized domains" su Firebase Auth
 
-Da quel momento ogni push su `main` triggera una nuova build. Le PR generano preview deploy automatici (configurabile in `render.yaml`).
+### Flusso continuativo
+
+```
+push su main → Render webhook → build → deploy
+                     ↑
+       (in parallelo, indipendente)
+              ↓
+        GitHub Action CI gira `npm test` + `npm run build`
+        → mostra ✓/✗ sul commit (visibilità qualità)
+```
+
+I due flussi sono indipendenti: Render builda anche se il check CI fallisce. Se vuoi che il deploy parta solo a test passati, dovrai disabilitare auto-deploy in `render.yaml` (`autoDeploy: false`) e triggerare manualmente via Deploy Hook — non implementato in MVP.
+
+### PR previews
+
+Sono abilitate in `render.yaml` (`pullRequestPreviewsEnabled: true`). Ogni PR genera un URL temporaneo tipo `https://fidality-card-pr-5.onrender.com/`. La login Google **non funziona** su quei preview (ogni URL andrebbe aggiunto agli Authorized domains di Firebase a mano). Se ti danno fastidio, rimuovi quella riga dal `render.yaml`.
+
+## CI / GitHub Actions
+
+Il workflow `.github/workflows/ci.yml` parte automaticamente:
+- Ad ogni push su `main`
+- Ad ogni PR verso `main`
+
+Cosa fa:
+- `npm ci` — install riproducibile
+- `npm test` — esegue i 22 test Vitest
+- `npm run build` — verifica che la build produca artefatti validi (usa env vars placeholder per Firebase: la validazione vera della config Firebase è a runtime, non a build time)
+
+Output visibile nella tab **Actions** del repo GitHub e come check sui commit / PR.
 
 ## Script
 
@@ -144,6 +176,9 @@ La fotocamera richiede HTTPS. `http://192.168.x.x:5173` non basta. O fai il depl
 
 **"Database locale non disponibile" banner**
 IndexedDB non funziona (es. modalità in incognito su Firefox, browser molto vecchio, storage pieno). Esci dall'incognito o libera spazio.
+
+**Render non aggiorna l'app dopo un push**
+Verifica nel dashboard Render → tab "Events" che il deploy sia partito. Se è in "Failed", clicca per vedere il log del build (di solito mancano env vars o un test fallito). Se non è proprio partito, controlla in Settings del servizio che "Auto-Deploy" sia "Yes" e che il branch monitorato sia `main`.
 
 **Build Render fallisce con "Missing environment variable"**
 Tutte e 6 le `VITE_FIREBASE_*` devono essere settate nel dashboard Render → Service → Environment.
