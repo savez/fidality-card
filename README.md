@@ -107,26 +107,36 @@ Cosa fa:
 
 Output visibile nella tab **Actions** del repo GitHub e come check sui commit / PR.
 
-## 🏷️ Release
+## 🏷️ Release automation
 
-Le release sono semi-automatizzate via `.github/workflows/release.yml`. Per pubblicarne una nuova:
+Le release sono **completamente automatizzate** via [release-please](https://github.com/googleapis/release-please) (Google). Non devi mai fare `npm version`, taggare a mano o scrivere release notes.
 
-```bash
-# 1. Assicurati di essere su main aggiornato
-git checkout main && git pull
+### Come funziona
 
-# 2. Bump della versione + commit + tag automatici (sceglie patch/minor/major)
-npm version patch    # 1.0.0 → 1.0.1
-# oppure: npm version minor    # 1.0.0 → 1.1.0
-# oppure: npm version major    # 1.0.0 → 2.0.0
+1. **Tu mergi PR** su `main` con commit in formato [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `chore:`, `feat!:` ecc.). I commit non-convenzionali sono **bloccati** automaticamente:
+   - Localmente: hook Husky `commit-msg` valida via commitlint
+   - In CI: workflow `commitlint.yml` ri-valida sui PR remoti
+2. **Al push su `main`**, l'action release-please:
+   - Calcola la prossima versione dai commit (feat → minor, fix → patch, breaking → major)
+   - Apre o aggiorna automaticamente una **"Release PR"** con bump di `package.json`, aggiornamento di `CHANGELOG.md` e versione nel `.release-please-manifest.json`
+3. **Quando vuoi rilasciare**, mergi quella Release PR. Subito dopo, release-please:
+   - Crea il tag `vX.Y.Z`
+   - Crea la GitHub Release con le note generate dai commit
+   - Niente PAT necessario, usa solo `GITHUB_TOKEN`
 
-# 3. Push commit + tag
-git push --follow-tags
-```
+### Categorie di commit nel CHANGELOG
 
-Il push del tag (formato `v*.*.*` o legacy `*.*.*`) triggera il workflow Release: GitHub crea una Release con titolo = nome tag e note auto-generate dai PR/commit dal tag precedente.
+| Prefisso                                     | Sezione CHANGELOG        | Bump      |
+| -------------------------------------------- | ------------------------ | --------- |
+| `feat:`                                      | ✨ Features              | minor     |
+| `fix:`                                       | 🐛 Bug Fixes             | patch     |
+| `perf:`                                      | ⚡ Performance           | patch     |
+| `refactor:`                                  | ♻️ Refactoring           | patch     |
+| `docs:`                                      | 📝 Documentation         | none      |
+| `feat!:` o `BREAKING CHANGE:` nel body       | (sopra)                  | **major** |
+| `chore:`, `test:`, `ci:`, `build:`, `style:` | (nascosti dal CHANGELOG) | none      |
 
-> Niente PAT richiesti: il workflow usa `GITHUB_TOKEN` integrato. Niente CHANGELOG.md committato: tutte le note vivono sulla tab Releases di GitHub.
+> Tutto questo è configurato in `release-please-config.json`.
 
 ## Script
 
