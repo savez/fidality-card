@@ -37,3 +37,6 @@ lerna-debug.log*
 firebase-debug.log
 .firebase/
 *-service-account*.json
+
+# Personal notes / setup memo (kept out of git as good practice)
+firebase.md

@@ -1,5 +1,10 @@
 # Fidelity Card
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![CI](https://github.com/savez/fidality-card/actions/workflows/ci.yml/badge.svg)](https://github.com/savez/fidality-card/actions/workflows/ci.yml)
+[![Vue 3](https://img.shields.io/badge/Vue-3-42b883)](https://vuejs.org/)
+[![PWA](https://img.shields.io/badge/PWA-installable-5A0FC8)](https://web.dev/progressive-web-apps/)
+
 PWA Vue 3 per salvare e condividere le proprie fidelity card (barcode / QR code) con la famiglia, senza backend custom.
 
 🌐 **Production**: configura su Render (vedi sotto) — sarà disponibile su `https://<nome-servizio>.onrender.com/`.
@@ -195,3 +200,13 @@ Tutte e 6 le `VITE_FIREBASE_*` devono essere settate nel dashboard Render → Se
 - 🔒 Cifratura DB locale (passphrase)
 - 🔄 Sync multi-device opzionale
 - 👥 Condivisione persistente con gruppi famiglia
+
+## License & Contributing
+
+Questo progetto è rilasciato sotto licenza **MIT** — vedi [LICENSE](LICENSE).
+
+In pratica: chiunque può forkare, modificare, ridistribuire (anche commercialmente), purché mantenga la nota di copyright.
+
+**Vuoi contribuire?** Leggi [CONTRIBUTING.md](CONTRIBUTING.md): troverai come settare l'ambiente di sviluppo, le convenzioni di branch / commit, e come aprire una PR.
+
+**Vuoi solo usare l'app per te?** Forka il repo, crea il tuo progetto Firebase, deploya su Render (o dove preferisci). Tutta la configurazione è in `.env.local` (locale) o Environment Variables del servizio Render — niente segreti nel codice. Vedi le sezioni **Setup Firebase** e **Deploy su Render** sopra.
