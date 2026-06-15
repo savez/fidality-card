@@ -29,11 +29,11 @@ async function onDelete() {
 <template>
   <v-container v-if="card" class="pa-3" style="max-width: 600px">
     <div class="d-flex align-center mb-3">
-      <v-btn icon="mdi-arrow-left" @click="router.back()" variant="text" />
+      <v-btn icon="mdi-arrow-left" variant="text" @click="router.back()" />
       <h2 class="text-h5 ml-2 flex-grow-1 text-truncate">{{ card.name }}</h2>
     </div>
 
-    <v-card class="pa-4 d-flex flex-column align-center" elevation="2">
+    <v-card theme="light" class="pa-4 d-flex flex-column align-center" elevation="2">
       <BarcodeDisplay :value="card.barcode" :format="card.barcodeFormat" />
       <div class="text-caption mt-2">{{ card.barcodeFormat }}</div>
     </v-card>
@@ -50,12 +50,22 @@ async function onDelete() {
     </v-list>
 
     <div class="d-flex gap-2 mt-4">
-      <v-btn block color="primary" prepend-icon="mdi-share-variant" @click="showShare = true">Condividi</v-btn>
+      <v-btn block color="primary" prepend-icon="mdi-share-variant" @click="showShare = true">
+        Condividi
+      </v-btn>
     </div>
     <div class="d-flex gap-2 mt-2">
-      <v-btn variant="outlined" prepend-icon="mdi-pencil" :to="{ name: 'card-edit', params: { id: card.id } }">Modifica</v-btn>
+      <v-btn
+        variant="outlined"
+        prepend-icon="mdi-pencil"
+        :to="{ name: 'card-edit', params: { id: card.id } }"
+      >
+        Modifica
+      </v-btn>
       <v-spacer />
-      <v-btn variant="text" color="error" prepend-icon="mdi-delete" @click="showDelete = true">Elimina</v-btn>
+      <v-btn variant="text" color="error" prepend-icon="mdi-delete" @click="showDelete = true">
+        Elimina
+      </v-btn>
     </div>
 
     <ShareDialog v-if="showShare" :card="card" @close="showShare = false" />
