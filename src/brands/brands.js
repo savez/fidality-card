@@ -9,6 +9,13 @@ export const BRANDS = [
   { id: 'carrefour', name: 'Carrefour', color: '#004E9F', iconDefault: 'mdi-cart' },
   { id: 'ikea', name: 'IKEA', color: '#0058A3', iconDefault: 'mdi-sofa' },
   { id: 'decathlon', name: 'Decathlon', color: '#0082C3', iconDefault: 'mdi-soccer' },
+  {
+    id: 'sportspecialist',
+    name: 'SportSpecialist',
+    color: '#C8102E',
+    iconDefault: 'mdi-shoe-sneaker',
+  },
+  { id: 'manga', name: 'Manga', color: '#F47216', iconDefault: 'mdi-hiking' },
   { id: 'mediaworld', name: 'MediaWorld', color: '#E30613', iconDefault: 'mdi-television' },
   { id: 'unieuro', name: 'Unieuro', color: '#E20613', iconDefault: 'mdi-television' },
   { id: 'trony', name: 'Trony', color: '#005CA9', iconDefault: 'mdi-television' },
