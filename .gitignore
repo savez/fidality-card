@@ -32,3 +32,4 @@ lerna-debug.log*
 firebase-debug.log
 .firebase/
 *-service-account*.json
+src/firebase.config.js
