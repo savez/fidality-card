@@ -33,18 +33,13 @@ export async function checkForUpdate() {
     return
   }
   updateCheckStatus.value = 'checking'
-  const hadRefreshBefore = needRefresh.value
   try {
     // updateSW() senza argomenti forza un re-check del SW lato browser.
-    // Se trova una nuova versione, l'handler onNeedRefresh impostato in initPwa()
-    // metterà needRefresh.value = true. Aspettiamo un tick per dare tempo al callback.
+    // Se un aggiornamento è disponibile (ora o anche già rilevato in precedenza),
+    // onNeedRefresh ha messo needRefresh.value = true. Aspettiamo un tick per il callback.
     await updateSW()
     await new Promise((resolve) => setTimeout(resolve, 600))
-    if (needRefresh.value && !hadRefreshBefore) {
-      updateCheckStatus.value = 'new-available'
-    } else {
-      updateCheckStatus.value = 'up-to-date'
-    }
+    updateCheckStatus.value = needRefresh.value ? 'new-available' : 'up-to-date'
   } catch (e) {
     console.error('checkForUpdate failed', e)
     updateCheckStatus.value = 'error'

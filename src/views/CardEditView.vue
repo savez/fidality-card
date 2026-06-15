@@ -23,7 +23,7 @@ const form = reactive({
   brandId: null,
   barcode: '',
   barcodeFormat: 'CODE_128',
-  icona: '',
+  icona: undefined,
   note: '',
 })
 
@@ -36,7 +36,7 @@ onMounted(async () => {
         brandId: c.brandId,
         barcode: c.barcode,
         barcodeFormat: c.barcodeFormat,
-        icona: c.icona ?? '',
+        icona: c.icona ?? undefined,
         note: c.note ?? '',
       })
   }
