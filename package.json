@@ -10,5 +10,29 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui"
+  },
+  "dependencies": {
+    "@mdi/font": "^7.4.47",
+    "@zxing/browser": "^0.1.5",
+    "@zxing/library": "^0.21.3",
+    "dexie": "^4.4.3",
+    "firebase": "^10.14.1",
+    "pinia": "^2.3.1",
+    "qrcode": "^1.5.4",
+    "uuid": "^10.0.0",
+    "vue": "^3.5.38",
+    "vue-router": "^4.6.4",
+    "vuetify": "^3.12.8"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.4",
+    "@vue/test-utils": "^2.4.11",
+    "fake-indexeddb": "^6.2.5",
+    "happy-dom": "^15.11.7",
+    "sass-embedded": "^1.100.0",
+    "vite": "^5.4.21",
+    "vite-plugin-pwa": "^0.20.5",
+    "vite-plugin-vuetify": "^2.1.3",
+    "vitest": "^2.1.9"
   }
 }
