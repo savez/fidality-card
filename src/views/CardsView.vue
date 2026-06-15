@@ -10,7 +10,7 @@ onMounted(cards.refresh)
 const brandOptions = computed(() => [
   { id: null, name: 'Tutti i brand' },
   ...BRANDS,
-  { id: '__custom__', name: 'Personalizzati' }
+  { id: '__custom__', name: 'Personalizzati' },
 ])
 
 function setBrand(b) {
@@ -26,7 +26,7 @@ function setBrand(b) {
         <v-text-field
           v-model="cards.search"
           prepend-inner-icon="mdi-magnify"
-          label="Cerca per nome"
+          label="Cerca per nome o brand"
           clearable
           hide-details
         />
