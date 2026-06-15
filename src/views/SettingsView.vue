@@ -7,10 +7,6 @@ const fileInput = ref(null)
 const message = ref(null)
 const error = ref(null)
 
-// Versione iniettata al build da vite.config.js (define: __APP_VERSION__).
-// Corrisponde al `version` di package.json e al cacheId del service worker.
-const appVersion = __APP_VERSION__
-
 function todayString() {
   const d = new Date()
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
@@ -72,11 +68,5 @@ async function onImportFile(event) {
 
     <v-alert v-if="message" type="success" class="mt-3">{{ message }}</v-alert>
     <v-alert v-if="error" type="error" class="mt-3">{{ error }}</v-alert>
-
-    <v-divider class="my-6" />
-
-    <div class="text-caption text-medium-emphasis text-center">
-      Fidelity Card · v{{ appVersion }}
-    </div>
   </v-container>
 </template>
