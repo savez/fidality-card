@@ -41,7 +41,7 @@ PWA Vue 3 per salvare e condividere le proprie fidelity card (barcode / QR code)
 - **Linguaggio**: JavaScript puro (no TypeScript)
 - **Lingua UI**: italiano
 - **Deploy**: Render.com (static site, free tier)
-- **Dev tooling**: ESLint + Prettier + Husky + lint-staged · DevContainer per Codespaces · `.vscode/` config condivise
+- **Dev tooling**: ESLint + Prettier + Husky + lint-staged · `.vscode/` config condivise
 
 ## Setup locale
 

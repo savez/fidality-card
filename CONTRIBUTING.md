@@ -83,25 +83,17 @@ Grazie per l'interesse a contribuire a **Fidelity Card**! Questa è una piccola 
 
 Il repo è configurato con:
 
-| Tool                       | Cosa fa                                                                                                  |
-| -------------------------- | -------------------------------------------------------------------------------------------------------- |
-| **ESLint**                 | Lint del codice JS/Vue (`npm run lint`)                                                                  |
-| **Prettier**               | Formatter (`npm run format` per applicare, `npm run format:check` per verificare)                        |
-| **Husky**                  | Git hooks pre-commit (lint-staged) + pre-push (test)                                                     |
-| **lint-staged**            | Esegue lint+format solo sui file in stage                                                                |
-| **VSCode shared settings** | `.vscode/settings.json` per format-on-save coerente tra tutti                                            |
-| **DevContainer**           | `.devcontainer/devcontainer.json` per ambiente uniforme via VSCode Remote Containers o GitHub Codespaces |
+| Tool                       | Cosa fa                                                                           |
+| -------------------------- | --------------------------------------------------------------------------------- |
+| **ESLint**                 | Lint del codice JS/Vue (`npm run lint`)                                           |
+| **Prettier**               | Formatter (`npm run format` per applicare, `npm run format:check` per verificare) |
+| **Husky**                  | Git hooks pre-commit (lint-staged) + pre-push (test)                              |
+| **lint-staged**            | Esegue lint+format solo sui file in stage                                         |
+| **VSCode shared settings** | `.vscode/settings.json` per format-on-save coerente tra tutti                     |
 
 ### Setup automatico
 
 Dopo `npm install` Husky si auto-installa via lo script `prepare`. Niente da fare manualmente.
-
-### Se vuoi usare DevContainer / Codespaces
-
-1. Installa VSCode + estensione "Dev Containers" (`ms-vscode-remote.remote-containers`)
-2. Cmd+Shift+P → "Dev Containers: Reopen in Container"
-3. Aspetta che il container si builda e installi le dipendenze
-4. `npm run dev` → l'editor inoltra automaticamente la porta 5173
 
 ## Aree dove un contributor può aiutare
 
