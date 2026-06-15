@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/savez/fidality-card/compare/v1.1.0...v1.2.0) (2026-06-15)
+
+
+### ✨ Features
+
+* **ui:** app bar version pill with dialog + tabbed icon picker ([#7](https://github.com/savez/fidality-card/issues/7)) ([13c275e](https://github.com/savez/fidality-card/commit/13c275e363015923c1176135bbb55714692f7520))
+
 ## [1.1.0](https://github.com/savez/fidality-card/compare/v1.0.0...v1.1.0) (2026-06-15)
 
 
