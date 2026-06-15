@@ -28,8 +28,12 @@ lerna-debug.log*
 # Plan files (local)
 .claude/
 
-# Firebase artifacts (config Firebase pubblica resta in src/, ma niente service-account)
+# Vite env vars
+.env
+.env.local
+.env.*.local
+
+# Firebase artifacts (niente service-account)
 firebase-debug.log
 .firebase/
 *-service-account*.json
-src/firebase.config.js

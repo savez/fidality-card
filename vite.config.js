@@ -5,7 +5,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
-  base: '/fidality-card/',
+  base: '/',
   plugins: [
     vue(),
     vuetify({ autoImport: true }),
@@ -20,8 +20,8 @@ export default defineConfig({
         theme_color: '#1976D2',
         background_color: '#FFFFFF',
         display: 'standalone',
-        scope: '/fidality-card/',
-        start_url: '/fidality-card/',
+        scope: '/',
+        start_url: '/',
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
@@ -29,7 +29,7 @@ export default defineConfig({
         ]
       },
       workbox: {
-        navigateFallback: '/fidality-card/index.html',
+        navigateFallback: '/index.html',
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/.*\.(googleapis|firebaseapp|firebaseio)\.com\/.*/,
