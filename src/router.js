@@ -1,10 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { watch } from 'vue'
-import { useAuthStore } from '@/stores/auth.js'
 
 const routes = [
   { path: '/', redirect: '/cards' },
-  { path: '/login', name: 'login', component: () => import('@/views/LoginView.vue'), meta: { public: true } },
   { path: '/cards', name: 'cards', component: () => import('@/views/CardsView.vue') },
   { path: '/cards/new', name: 'card-new', component: () => import('@/views/CardEditView.vue') },
   { path: '/cards/:id', name: 'card-detail', component: () => import('@/views/CardDetailView.vue') },
@@ -16,18 +13,4 @@ const routes = [
 export const router = createRouter({
   history: createWebHashHistory(),
   routes
-})
-
-router.beforeEach(async (to) => {
-  const authStore = useAuthStore()
-  if (!authStore.ready) {
-    await new Promise((resolve) => {
-      const unwatch = watch(() => authStore.ready, (ready) => {
-        if (ready) { unwatch(); resolve() }
-      }, { immediate: true })
-    })
-  }
-  if (to.meta.public) return true
-  if (!authStore.isLoggedIn) return { name: 'login', query: { redirect: to.fullPath } }
-  return true
 })

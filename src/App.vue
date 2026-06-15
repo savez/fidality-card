@@ -1,15 +1,11 @@
 <script setup>
-import { useAuthStore } from '@/stores/auth.js'
-import { useRouter } from 'vue-router'
 import { computed } from 'vue'
 import { usePwaUpdate } from '@/composables/usePwaUpdate.js'
 import { useTheme } from '@/composables/useTheme.js'
-
-const auth = useAuthStore()
-const router = useRouter()
-const showShell = computed(() => auth.isLoggedIn)
+import { useDbStatus } from '@/composables/useDbStatus.js'
 
 const { mode: themeMode, effective: effectiveTheme, setMode: setThemeMode } = useTheme()
+const { dbError } = useDbStatus()
 
 const themeIcon = computed(() => {
   if (themeMode.value === 'light') return 'mdi-weather-sunny'
@@ -19,34 +15,25 @@ const themeIcon = computed(() => {
 
 const { needRefresh, applyUpdate, dismissUpdate } = usePwaUpdate()
 
-function onApplyUpdate() {
-  applyUpdate()
-}
-function onDismissUpdate() {
-  dismissUpdate()
-}
-
-async function onLogout() {
-  await auth.logout()
-  router.push({ name: 'login' })
-}
+function onApplyUpdate() { applyUpdate() }
+function onDismissUpdate() { dismissUpdate() }
 </script>
 
 <template>
   <v-app>
     <v-alert
-      v-if="auth.dbError"
+      v-if="dbError"
       type="error"
       prominent
       closable
       density="comfortable"
       class="ma-0"
     >
-      Database locale non disponibile: {{ auth.dbError }}.
+      Database locale non disponibile: {{ dbError }}.
       Esci dalla modalità incognito o usa un browser che supporta IndexedDB.
     </v-alert>
 
-    <v-app-bar v-if="showShell" color="primary" density="comfortable">
+    <v-app-bar color="primary" density="comfortable">
       <v-app-bar-title>Fidelity Card</v-app-bar-title>
       <v-spacer />
       <v-menu>
@@ -70,28 +57,13 @@ async function onLogout() {
         </v-list>
       </v-menu>
       <v-btn icon="mdi-cog" :to="{ name: 'settings' }" />
-      <v-menu>
-        <template #activator="{ props }">
-          <v-btn icon="mdi-account-circle" v-bind="props" />
-        </template>
-        <v-list>
-          <v-list-item>
-            <v-list-item-title>{{ auth.email }}</v-list-item-title>
-          </v-list-item>
-          <v-divider />
-          <v-list-item @click="onLogout">
-            <template #prepend><v-icon>mdi-logout</v-icon></template>
-            <v-list-item-title>Esci</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
     </v-app-bar>
 
     <v-main>
       <router-view />
     </v-main>
 
-    <v-bottom-navigation v-if="showShell" grow>
+    <v-bottom-navigation grow>
       <v-btn :to="{ name: 'cards' }" value="cards">
         <v-icon>mdi-credit-card-multiple</v-icon>
         <span>Card</span>

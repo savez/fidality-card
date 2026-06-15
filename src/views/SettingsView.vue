@@ -1,10 +1,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useCardsStore } from '@/stores/cards.js'
-import { useAuthStore } from '@/stores/auth.js'
 
 const cards = useCardsStore()
-const auth = useAuthStore()
 const fileInput = ref(null)
 const message = ref(null)
 const error = ref(null)
@@ -46,15 +44,6 @@ async function onImportFile(event) {
 <template>
   <v-container class="pa-3" style="max-width: 600px">
     <h2 class="text-h5 mb-3">Impostazioni</h2>
-
-    <v-list lines="two">
-      <v-list-subheader>Account</v-list-subheader>
-      <v-list-item :subtitle="auth.email" title="Email loggata">
-        <template #prepend><v-icon>mdi-account</v-icon></template>
-      </v-list-item>
-    </v-list>
-
-    <v-divider class="my-3" />
 
     <h3 class="text-subtitle-1 mb-2">Backup</h3>
     <v-btn block prepend-icon="mdi-download" @click="onExport">Esporta backup JSON</v-btn>

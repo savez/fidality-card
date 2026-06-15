@@ -5,12 +5,10 @@ const DUMP_VERSION = 1
 
 function nowMs() { return Date.now() }
 
-export async function createCard(ownerEmail, input) {
-  if (!ownerEmail) throw new Error('ownerEmail richiesto')
+export async function createCard(input) {
   const t = nowMs()
   const card = {
     id: uuidv4(),
-    ownerEmail,
     name: input.name,
     brandId: input.brandId ?? null,
     barcode: input.barcode,
@@ -28,8 +26,8 @@ export async function getCard(id) {
   return db.cards.get(id)
 }
 
-export async function listCards(ownerEmail) {
-  return db.cards.where('ownerEmail').equals(ownerEmail).toArray()
+export async function listCards() {
+  return db.cards.toArray()
 }
 
 export async function updateCard(id, patch) {
@@ -39,7 +37,6 @@ export async function updateCard(id, patch) {
     ...existing,
     ...patch,
     id: existing.id,
-    ownerEmail: existing.ownerEmail,
     createdAt: existing.createdAt,
     updatedAt: nowMs()
   }
@@ -51,12 +48,12 @@ export async function deleteCard(id) {
   await db.cards.delete(id)
 }
 
-export async function exportAll(ownerEmail) {
-  const cards = await listCards(ownerEmail)
-  return { version: DUMP_VERSION, exportedAt: nowMs(), ownerEmail, cards }
+export async function exportAll() {
+  const cards = await listCards()
+  return { version: DUMP_VERSION, exportedAt: nowMs(), cards }
 }
 
-export async function importAll(ownerEmail, dump) {
+export async function importAll(dump) {
   if (!dump || dump.version !== DUMP_VERSION) {
     throw new Error(`Versione backup non supportata: ${dump?.version}`)
   }
@@ -64,7 +61,9 @@ export async function importAll(ownerEmail, dump) {
   for (const card of dump.cards ?? []) {
     const existing = await db.cards.get(card.id)
     if (existing) { skipped++; continue }
-    await db.cards.add({ ...card, ownerEmail })
+    // Strip the legacy ownerEmail field if present (artifact from pre-v2 exports)
+    const { ownerEmail: _drop, ...clean } = card
+    await db.cards.add(clean)
     inserted++
   }
   return { inserted, skipped }

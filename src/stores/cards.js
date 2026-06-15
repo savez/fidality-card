@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { useAuthStore } from './auth.js'
 import {
   listCards as dbList,
   createCard as dbCreate,
@@ -31,16 +30,13 @@ export const useCardsStore = defineStore('cards', () => {
   })
 
   async function refresh() {
-    const auth = useAuthStore()
-    if (!auth.email) { items.value = []; return }
     loading.value = true
-    try { items.value = await dbList(auth.email) }
+    try { items.value = await dbList() }
     finally { loading.value = false }
   }
 
   async function create(input) {
-    const auth = useAuthStore()
-    const card = await dbCreate(auth.email, input)
+    const card = await dbCreate(input)
     items.value.push(card)
     return card
   }
@@ -64,13 +60,11 @@ export const useCardsStore = defineStore('cards', () => {
   }
 
   async function exportBackup() {
-    const auth = useAuthStore()
-    return dbExportAll(auth.email)
+    return dbExportAll()
   }
 
   async function importBackup(dump) {
-    const auth = useAuthStore()
-    const result = await dbImportAll(auth.email, dump)
+    const result = await dbImportAll(dump)
     await refresh()
     return result
   }
