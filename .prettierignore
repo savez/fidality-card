@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.husky/
+package-lock.json
+specifiche-iniziali.md
+docs/
+public/icons/
+*.svg
