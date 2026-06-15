@@ -7,13 +7,18 @@ const fileInput = ref(null)
 const message = ref(null)
 const error = ref(null)
 
+// Versione iniettata al build da vite.config.js (define: __APP_VERSION__).
+// Corrisponde al `version` di package.json e al cacheId del service worker.
+const appVersion = __APP_VERSION__
+
 function todayString() {
   const d = new Date()
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
 async function onExport() {
-  error.value = null; message.value = null
+  error.value = null
+  message.value = null
   try {
     const dump = await cards.exportBackup()
     const blob = new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' })
@@ -21,22 +26,29 @@ async function onExport() {
     const a = document.createElement('a')
     a.href = url
     a.download = `fidelity-cards-${todayString()}.json`
-    document.body.appendChild(a); a.click(); a.remove()
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
     URL.revokeObjectURL(url)
     message.value = `Esportate ${dump.cards.length} card.`
-  } catch (e) { error.value = e.message }
+  } catch (e) {
+    error.value = e.message
+  }
 }
 
 async function onImportFile(event) {
   const file = event.target.files?.[0]
   if (!file) return
-  error.value = null; message.value = null
+  error.value = null
+  message.value = null
   try {
     const text = await file.text()
     const dump = JSON.parse(text)
     const result = await cards.importBackup(dump)
     message.value = `Importate ${result.inserted} card (${result.skipped} duplicati saltati).`
-  } catch (e) { error.value = e.message }
+  } catch (e) {
+    error.value = e.message
+  }
   if (fileInput.value) fileInput.value.value = ''
 }
 </script>
@@ -47,12 +59,24 @@ async function onImportFile(event) {
 
     <h3 class="text-subtitle-1 mb-2">Backup</h3>
     <v-btn block prepend-icon="mdi-download" @click="onExport">Esporta backup JSON</v-btn>
-    <v-btn block class="mt-2" variant="outlined" prepend-icon="mdi-upload" @click="fileInput?.click()">
+    <v-btn
+      block
+      class="mt-2"
+      variant="outlined"
+      prepend-icon="mdi-upload"
+      @click="fileInput?.click()"
+    >
       Importa backup JSON
     </v-btn>
     <input ref="fileInput" type="file" accept="application/json" hidden @change="onImportFile" />
 
     <v-alert v-if="message" type="success" class="mt-3">{{ message }}</v-alert>
     <v-alert v-if="error" type="error" class="mt-3">{{ error }}</v-alert>
+
+    <v-divider class="my-6" />
+
+    <div class="text-caption text-medium-emphasis text-center">
+      Fidelity Card · v{{ appVersion }}
+    </div>
   </v-container>
 </template>

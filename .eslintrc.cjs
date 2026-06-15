@@ -14,6 +14,10 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module'
   },
+  globals: {
+    // Iniettato da vite.config.js (define: __APP_VERSION__).
+    __APP_VERSION__: 'readonly'
+  },
   rules: {
     // Component names: we use single-word names like App, CardsView; OK in this project
     'vue/multi-word-component-names': 'off',

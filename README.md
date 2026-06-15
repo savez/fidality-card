@@ -96,6 +96,104 @@ Cosa significa per chi vuole usare l'app:
 
 In sintesi: **il codice è di tutti, l'hosting è uno solo**. Se ti piace il progetto, deploya il tuo fork — sarà sempre più affidabile della demo condivisa.
 
+## 🔄 Service Worker & auto-update
+
+L'app è una PWA: viene servita una volta, poi vive **offline** sul telefono dell'utente. Quando rilasci una nuova versione, come fa l'app già installata ad accorgersene?
+
+### Cosa genera il build
+
+Il plugin [`vite-plugin-pwa`](https://vite-pwa-org.netlify.app/) emette al build (`dist/`):
+
+- **`sw.js`** — il Service Worker (script che gira in background nel browser)
+- **`manifest.webmanifest`** — descrittore PWA (nome, icone, theme color)
+- **`registerSW.js`** — bootstrap che registra il SW al primo load
+- **asset con hash nel nome** (`index-Co0vq0PP.js`, ecc.) — il fingerprint nel nome È la versione del singolo file
+
+Il punto chiave: `sw.js` contiene una **lista precachable** di tutti gli asset dell'app:
+
+```js
+// estratto semplificato di sw.js
+const precache = [
+  { url: 'index.html', revision: 'abc123' },
+  { url: 'assets/index-Co0vq0PP.js', revision: null }, // hash nel nome
+  { url: 'assets/CardEditView-C4lCWry2.js', revision: null },
+  // ... ~30 entries
+]
+```
+
+In più, dalla nostra config:
+
+```js
+cacheId: `fidality-card-v${pkg.version}`,    // cache namespaced per release
+cleanupOutdatedCaches: true,                  // vecchie cache rimosse all'attivazione
+```
+
+→ ogni release ha la sua "famiglia" di cache (`fidality-card-v1.0.0-*`, `fidality-card-v1.1.0-*`). Visibile in DevTools → Application → Cache Storage.
+
+### Il flusso di update step by step
+
+```
+   Tu fai release                Browser dell'utente
+─────────────────────         ────────────────────────
+
+build → nuovo sw.js
+push main → Render
+                          →    L'utente apre la PWA
+                               ↓
+                               Browser fetch /sw.js
+                               ↓
+                               Confronto byte vs SW installato
+                               ↓
+                          Diverso? → Installa il nuovo SW in stato "waiting"
+                               ↓
+                               Callback `onNeedRefresh` parte
+                               ↓
+                               needRefresh.value = true (Vue reactive)
+                               ↓
+                               v-snackbar appare: "Nuova versione disponibile"
+                               ↓
+                               User → click "Ricarica"
+                               ↓
+                               updateSW(true) → skipWaiting + reload
+                               ↓
+                               Vecchio SW disattivato, vecchie cache eliminate
+                               ↓
+                               Nuovi asset attivi, versione bumpata visibile in Settings
+```
+
+### `registerType: 'prompt'` vs `'autoUpdate'`
+
+| Modalità               | Comportamento                                                                                                            |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `'autoUpdate'`         | Il nuovo SW prende il controllo da solo, reload silenzioso. UX trasparente ma può sembrare che "le cose cambino da sole" |
+| `'prompt'` (la nostra) | Espone un callback `onNeedRefresh` → l'utente decide quando ricaricare via snackbar                                      |
+
+Abbiamo scelto `'prompt'` perché:
+
+- L'utente potrebbe essere a metà di una transazione (es. card mezzo compilata)
+- Un reload silenzioso interromperebbe il lavoro
+- È più trasparente: l'utente sa che c'è qualcosa di nuovo
+
+### File coinvolti
+
+| File                              | Ruolo                                                                           |
+| --------------------------------- | ------------------------------------------------------------------------------- |
+| `vite.config.js`                  | Configura `VitePWA` plugin (manifest, workbox, cacheId versionato)              |
+| `src/composables/usePwaUpdate.js` | Cattura i callback `onNeedRefresh` / `onOfflineReady` da `virtual:pwa-register` |
+| `src/main.js`                     | Chiama `initPwa()` al boot                                                      |
+| `src/App.vue`                     | Mostra il `v-snackbar` con bottoni "Ricarica" / "Dopo"                          |
+
+### Vedere la versione corrente
+
+In **Impostazioni** è visualizzato `Fidelity Card · vX.Y.Z` in fondo alla pagina. Il valore proviene da `package.json` via `import.meta.env`-like injection (`define: __APP_VERSION__` in `vite.config.js`). release-please bumpa `package.json`, il prossimo build legge il nuovo valore.
+
+### Gotcha
+
+- **dev mode**: il SW NON è attivo in `npm run dev` di default — per testarlo serve `npm run build && npm run preview`
+- **HTTPS obbligatorio**: i SW funzionano solo su `https://` o `localhost`. Su rete locale (es. `192.168.x.x`) il SW non si registra
+- **iOS Safari**: supporto PWA più limitato — niente install prompt automatico, l'utente deve fare "Aggiungi a Home" manualmente
+- **Cache aggressiva**: in caso di bug post-release, l'utente potrebbe vedere la vecchia versione finché lo snackbar non gli ricarica. Tieni d'occhio le PR di rollback urgenti
+
 ## CI / GitHub Actions
 
 Il workflow `.github/workflows/ci.yml` parte automaticamente:
