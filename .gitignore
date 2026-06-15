@@ -1,0 +1,34 @@
+# Build / deps
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Superpowers brainstorming companion (mockup files)
+.superpowers/
+
+# Plan files (local)
+.claude/
+
+# Firebase artifacts (config Firebase pubblica resta in src/, ma niente service-account)
+firebase-debug.log
+.firebase/
+*-service-account*.json
