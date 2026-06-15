@@ -107,6 +107,27 @@ Cosa fa:
 
 Output visibile nella tab **Actions** del repo GitHub e come check sui commit / PR.
 
+## 🏷️ Release
+
+Le release sono semi-automatizzate via `.github/workflows/release.yml`. Per pubblicarne una nuova:
+
+```bash
+# 1. Assicurati di essere su main aggiornato
+git checkout main && git pull
+
+# 2. Bump della versione + commit + tag automatici (sceglie patch/minor/major)
+npm version patch    # 1.0.0 → 1.0.1
+# oppure: npm version minor    # 1.0.0 → 1.1.0
+# oppure: npm version major    # 1.0.0 → 2.0.0
+
+# 3. Push commit + tag
+git push --follow-tags
+```
+
+Il push del tag (formato `v*.*.*` o legacy `*.*.*`) triggera il workflow Release: GitHub crea una Release con titolo = nome tag e note auto-generate dai PR/commit dal tag precedente.
+
+> Niente PAT richiesti: il workflow usa `GITHUB_TOKEN` integrato. Niente CHANGELOG.md committato: tutte le note vivono sulla tab Releases di GitHub.
+
 ## Script
 
 | Comando                | Cosa fa                                             |
