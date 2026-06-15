@@ -2,10 +2,20 @@
 import { useAuthStore } from '@/stores/auth.js'
 import { useRouter } from 'vue-router'
 import { computed } from 'vue'
+import { usePwaUpdate } from '@/composables/usePwaUpdate.js'
 
 const auth = useAuthStore()
 const router = useRouter()
 const showShell = computed(() => auth.isLoggedIn)
+
+const { needRefresh, applyUpdate, dismissUpdate } = usePwaUpdate()
+
+function onApplyUpdate() {
+  applyUpdate()
+}
+function onDismissUpdate() {
+  dismissUpdate()
+}
 
 async function onLogout() {
   await auth.logout()
@@ -15,6 +25,18 @@ async function onLogout() {
 
 <template>
   <v-app>
+    <v-alert
+      v-if="auth.dbError"
+      type="error"
+      prominent
+      closable
+      density="comfortable"
+      class="ma-0"
+    >
+      Database locale non disponibile: {{ auth.dbError }}.
+      Esci dalla modalità incognito o usa un browser che supporta IndexedDB.
+    </v-alert>
+
     <v-app-bar v-if="showShell" color="primary" density="comfortable">
       <v-app-bar-title>Fidelity Card</v-app-bar-title>
       <v-spacer />
@@ -54,5 +76,18 @@ async function onLogout() {
         <span>Impostazioni</span>
       </v-btn>
     </v-bottom-navigation>
+
+    <v-snackbar
+      v-model="needRefresh"
+      :timeout="-1"
+      location="bottom"
+      color="primary"
+    >
+      Nuova versione disponibile.
+      <template #actions>
+        <v-btn variant="text" @click="onApplyUpdate">Ricarica</v-btn>
+        <v-btn variant="text" @click="onDismissUpdate">Dopo</v-btn>
+      </template>
+    </v-snackbar>
   </v-app>
 </template>

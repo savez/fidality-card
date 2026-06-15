@@ -1,9 +1,10 @@
 <script setup>
-import { ref, reactive, onMounted, computed } from 'vue'
+import { ref, reactive, onMounted, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useCardsStore } from '@/stores/cards.js'
 import BrandPicker from '@/brands/BrandPicker.vue'
 import BarcodeScanner from '@/scan/BarcodeScanner.vue'
+import { getBrand } from '@/brands/brands.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -32,6 +33,16 @@ onMounted(async () => {
       name: c.name, brandId: c.brandId, barcode: c.barcode,
       barcodeFormat: c.barcodeFormat, icona: c.icona ?? '', note: c.note ?? ''
     })
+  }
+})
+
+watch(() => form.brandId, (newId, oldId) => {
+  // Pre-fill name from brand only if name is empty or matches the previous brand's name
+  const previousBrand = getBrand(oldId)
+  const newBrand = getBrand(newId)
+  if (!newBrand) return
+  if (form.name.trim() === '' || form.name.trim() === previousBrand?.name) {
+    form.name = newBrand.name
   }
 })
 

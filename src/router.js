@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import { watch } from 'vue'
 import { useAuthStore } from '@/stores/auth.js'
 
 const routes = [
@@ -21,9 +22,9 @@ router.beforeEach(async (to) => {
   const authStore = useAuthStore()
   if (!authStore.ready) {
     await new Promise((resolve) => {
-      const stop = setInterval(() => {
-        if (authStore.ready) { clearInterval(stop); resolve() }
-      }, 30)
+      const unwatch = watch(() => authStore.ready, (ready) => {
+        if (ready) { unwatch(); resolve() }
+      }, { immediate: true })
     })
   }
   if (to.meta.public) return true
