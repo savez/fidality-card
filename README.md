@@ -1,13 +1,18 @@
 # Fidelity Card
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![CI](https://github.com/savez/fidality-card/actions/workflows/ci.yml/badge.svg)](https://github.com/savez/fidality-card/actions/workflows/ci.yml)
+[![Live demo](https://img.shields.io/website?url=https%3A%2F%2Ffidality-card.onrender.com&label=demo&up_message=online&down_message=offline&up_color=46E3B7)](https://fidality-card.onrender.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Version](https://img.shields.io/github/package-json/v/savez/fidality-card)](package.json)
+[![Last commit](https://img.shields.io/github/last-commit/savez/fidality-card/main)](https://github.com/savez/fidality-card/commits/main)
 [![Vue 3](https://img.shields.io/badge/Vue-3-42b883)](https://vuejs.org/)
 [![PWA](https://img.shields.io/badge/PWA-installable-5A0FC8)](https://web.dev/progressive-web-apps/)
 
 PWA Vue 3 per salvare e condividere le proprie fidelity card (barcode / QR code) con la famiglia, senza backend custom.
 
-🌐 **Production**: configura su Render (vedi sotto) — sarà disponibile su `https://<nome-servizio>.onrender.com/`.
+🚀 **Live demo**: <https://fidality-card.onrender.com>
+
+> Quella è l'istanza di cortesia del maintainer. Per uso regolare, [forkala e fai il tuo deploy](#deploy-su-render) (5 minuti). Vedi la sezione [Free tier — uso responsabile](#️-free-tier--uso-responsabile) prima di usarla intensivamente.
 
 ## Funzionalità
 
@@ -82,10 +87,10 @@ Il servizio Render pubblico associato a questo repo (se attivo) gira sul **piano
 Cosa significa per chi vuole usare l'app:
 
 - ✅ **Forka e auto-hostati la TUA istanza** se prevedi uso regolare per te o la tua famiglia. Setup richiesto: 5 minuti (Render Blueprint + push). Niente env vars, niente account esterni. Render free tier è generoso per uso personale e supporterà la tua istanza senza problemi.
-- 🙏 **Non incorporare l'eventuale istanza pubblica del maintainer** in iframe, sistemi di terze parti, automazioni o test di carico. Esauriresti il free tier di un volontario.
-- 🚫 **Non condividere pubblicamente l'URL dell'istanza pubblica** (es. forum, social, motori di ricerca). Il codice è OSS; l'URL specifico no.
+- 🚀 **La demo del maintainer è a [fidality-card.onrender.com](https://fidality-card.onrender.com)** — puoi provarla, ma è pensata per dare un'idea di cosa fa il progetto, non come servizio per migliaia di utenti.
+- 🙏 **Non incorporare la demo del maintainer** in iframe, sistemi di terze parti, automazioni o test di carico. Esauriresti il free tier di un volontario.
 
-In sintesi: **il codice è di tutti, l'istanza hostata no**. Se ti piace il progetto, deploya il tuo fork.
+In sintesi: **il codice è di tutti, l'hosting è uno solo**. Se ti piace il progetto, deploya il tuo fork — sarà sempre più affidabile della demo condivisa.
 
 ## CI / GitHub Actions
 
