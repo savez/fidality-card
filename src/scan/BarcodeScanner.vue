@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { BrowserMultiFormatReader } from '@zxing/browser'
+import { BarcodeFormat } from '@zxing/library'
 
 const emit = defineEmits(['decoded', 'error'])
 const videoEl = ref(null)
@@ -15,9 +16,11 @@ onMounted(async () => {
     status.value = 'Inquadra il codice'
     controls = await reader.decodeFromVideoDevice(undefined, videoEl.value, (result, err) => {
       if (result) {
+        const fmtNum = result.getBarcodeFormat?.()
+        const fmtName = (fmtNum != null && BarcodeFormat[fmtNum]) || 'UNKNOWN'
         emit('decoded', {
           barcode: result.getText(),
-          barcodeFormat: String(result.getBarcodeFormat?.() ?? 'UNKNOWN')
+          barcodeFormat: fmtName
         })
       }
     })

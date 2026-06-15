@@ -20,7 +20,11 @@ export const useCardsStore = defineStore('cards', () => {
   const filtered = computed(() => {
     const q = search.value.trim().toLowerCase()
     return items.value.filter(c => {
-      if (filterBrand.value && c.brandId !== filterBrand.value) return false
+      if (filterBrand.value === '__custom__') {
+        if (c.brandId !== null) return false
+      } else if (filterBrand.value && c.brandId !== filterBrand.value) {
+        return false
+      }
       if (q && !c.name.toLowerCase().includes(q)) return false
       return true
     })

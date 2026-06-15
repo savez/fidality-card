@@ -83,7 +83,7 @@ async function save() {
 
     <v-window v-model="tab" v-if="!isEdit" class="mb-3">
       <v-window-item value="scan">
-        <BarcodeScanner @decoded="onDecoded" />
+        <BarcodeScanner v-if="tab === 'scan'" @decoded="onDecoded" />
       </v-window-item>
       <v-window-item value="manuale"><div /></v-window-item>
     </v-window>
