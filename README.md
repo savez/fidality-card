@@ -191,8 +191,8 @@ Tutte e 6 le `VITE_FIREBASE_*` devono essere settate nel dashboard Render → Se
 ## Documenti di progetto
 
 - [Specifiche iniziali](specifiche-iniziali.md) — requisiti raccolti prima del brainstorming
-- [Design doc](docs/superpowers/specs/2026-06-15-fidelity-card-design.md) — architettura e decisioni
-- [Implementation plan](docs/superpowers/plans/2026-06-15-fidelity-card.md) — piano task-by-task
+
+Le specifiche tecniche dettagliate e il piano di implementazione sono mantenuti localmente dal maintainer (cartella `docs/`, gitignored). L'architettura completa è desumibile dal codice ben strutturato e dalle sezioni di questo README.
 
 ## Roadmap futura (non in MVP)
 
