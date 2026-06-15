@@ -17,11 +17,11 @@ Grazie per l'interesse a contribuire a **Fidelity Card**! Questa è una piccola 
    ```bash
    npm install
    ```
-4. Crea il tuo progetto Firebase (gratuito, piano Spark) e popola `.env.local` con i 6 valori `VITE_FIREBASE_*`. Dettagli: vedi sezione **Setup Firebase** nel [README](README.md).
-5. Avvia il dev server:
+4. Avvia il dev server:
    ```bash
    npm run dev
    ```
+   → http://localhost:5173/ (nessuna config, nessun env var richiesto)
 
 ## Workflow contribuzione
 
@@ -78,10 +78,6 @@ Vedi la sezione "Roadmap futura" del README, e le issue aperte. In particolare:
 - 🌍 Aggiungere brand di altri paesi alla libreria
 - 🎨 Nuovi temi / personalizzazioni
 - 📝 Traduzioni UI (i18n)
-
-## Codice di condotta
-
-Sii rispettoso. Niente attacchi personali, niente toni aggressivi nelle review. Disaccordi tecnici sì, sempre nel merito.
 
 ## Domande
 

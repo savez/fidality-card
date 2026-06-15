@@ -69,6 +69,23 @@ I due flussi sono indipendenti: Render builda anche se il check CI fallisce. Se 
 
 Sono abilitate in `render.yaml` (`pullRequestPreviewsEnabled: true`). Ogni PR genera un URL temporaneo tipo `https://fidality-card-pr-5.onrender.com/`. Se ti danno fastidio, rimuovi quella riga dal `render.yaml`.
 
+### ⚠️ Free tier — uso responsabile
+
+Il servizio Render pubblico associato a questo repo (se attivo) gira sul **piano gratuito di Render**, che ha questi limiti per account:
+
+- **100 GB bandwidth / mese**
+- **Build minutes**: illimitati per static sites
+- **Storage**: bundle ~2 MB
+- **Concurrent users**: nessun limite hardware (è solo CDN per static)
+
+Cosa significa per chi vuole usare l'app:
+
+- ✅ **Forka e auto-hostati la TUA istanza** se prevedi uso regolare per te o la tua famiglia. Setup richiesto: 5 minuti (Render Blueprint + push). Niente env vars, niente account esterni. Render free tier è generoso per uso personale e supporterà la tua istanza senza problemi.
+- 🙏 **Non incorporare l'eventuale istanza pubblica del maintainer** in iframe, sistemi di terze parti, automazioni o test di carico. Esauriresti il free tier di un volontario.
+- 🚫 **Non condividere pubblicamente l'URL dell'istanza pubblica** (es. forum, social, motori di ricerca). Il codice è OSS; l'URL specifico no.
+
+In sintesi: **il codice è di tutti, l'istanza hostata no**. Se ti piace il progetto, deploya il tuo fork.
+
 ## CI / GitHub Actions
 
 Il workflow `.github/workflows/ci.yml` parte automaticamente:
@@ -171,10 +188,12 @@ Le specifiche tecniche dettagliate e il piano di implementazione sono mantenuti 
 
 ## Roadmap futura (non in MVP)
 
-- 🤖 Riconoscimento brand automatico via foto (AI vision)
-- 🔒 Cifratura DB locale (passphrase)
-- 🔄 Sync multi-device opzionale
-- 👥 Condivisione persistente con gruppi famiglia
+- [ ] 🤖 Riconoscimento brand automatico via foto (AI vision)
+- [ ] 🔒 Cifratura DB locale (passphrase)
+- [ ] 🔄 Sync multi-device opzionale
+- [ ] 👥 Condivisione persistente con gruppi famiglia
+- [ ] 🌍 Aggiungere brand di altri paesi alla libreria
+- [ ] 📝 Traduzioni UI (i18n)
 
 ## License & Contributing
 
@@ -185,3 +204,13 @@ In pratica: chiunque può forkare, modificare, ridistribuire (anche commercialme
 **Vuoi contribuire?** Leggi [CONTRIBUTING.md](CONTRIBUTING.md): troverai come settare l'ambiente di sviluppo, le convenzioni di branch / commit, e come aprire una PR.
 
 **Vuoi solo usare l'app per te?** Forka il repo, deploya su Render (o dove preferisci). Setup è banale: `npm install && npm run build` — nessuna configurazione, nessun env var. Vedi la sezione **Deploy su Render** sopra.
+
+## 💬 Support
+
+- 🐛 **Bug o feature request** → [apri una issue](https://github.com/savez/fidality-card/issues/new)
+- 💡 **Idee, domande, discussioni** → [GitHub Discussions](https://github.com/savez/fidality-card/discussions) (se abilitate) o issue con label `question`
+- 🔧 **Vuoi contribuire?** → [CONTRIBUTING.md](CONTRIBUTING.md)
+
+---
+
+Built with ❤️ per gestire fidelity card senza app spazzatura.
