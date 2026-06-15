@@ -45,15 +45,19 @@ Grazie per l'interesse a contribuire a **Fidelity Card**! Questa è una piccola 
 
    Entrambi devono passare.
 
-   > 🪝 **Hook automatici**: il repo usa Husky. Al `git commit` parte lint-staged (formatta automaticamente i file in stage via Prettier + ESLint). Al `git push` parte `npm test`. Se qualcosa fallisce, il commit/push viene rifiutato — fixa e riprova.
+   > 🪝 **Hook automatici**: il repo usa Husky. Al `git commit` parte lint-staged (formatta automaticamente i file in stage via Prettier + ESLint) e **commitlint valida il messaggio**. Al `git push` parte `npm test`. Se qualcosa fallisce, il commit/push viene rifiutato — fixa e riprova.
 
-4. Commit messages in formato **conventional commits** (esempi nel git log):
-   - `feat(scope): descrizione`
-   - `fix(scope): descrizione`
-   - `chore: ...`
-   - `docs: ...`
-   - `test: ...`
-   - `refactor(scope): ...`
+4. Commit messages in formato **[Conventional Commits](https://www.conventionalcommits.org/) — obbligatorio** (validato sia localmente da Husky `commit-msg` sia in CI dal workflow `commitlint.yml`):
+   - `feat(scope): descrizione` — nuova feature (bump minor)
+   - `fix(scope): descrizione` — bug fix (bump patch)
+   - `perf(scope): ...` — performance (bump patch)
+   - `refactor(scope): ...` — refactor (bump patch)
+   - `docs: ...` — docs (no bump, escluso dal CHANGELOG)
+   - `chore: ...`, `test: ...`, `ci: ...`, `build: ...`, `style: ...` — manutenzione (no bump, esclusi dal CHANGELOG)
+   - `feat!: ...` o footer `BREAKING CHANGE: ...` — breaking (bump major)
+
+   > 🤖 Il CHANGELOG e le release sono **generate automaticamente** da [release-please](https://github.com/googleapis/release-please) a partire dai tuoi commit. Niente CHANGELOG da modificare a mano — basta scrivere bene i commit message.
+
 5. Push del branch sul tuo fork:
    ```bash
    git push -u origin feat/<descrizione-breve>
