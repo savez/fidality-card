@@ -1,0 +1,71 @@
+import { v4 as uuidv4 } from 'uuid'
+import { db } from './index.js'
+
+const DUMP_VERSION = 1
+
+function nowMs() { return Date.now() }
+
+export async function createCard(ownerEmail, input) {
+  if (!ownerEmail) throw new Error('ownerEmail richiesto')
+  const t = nowMs()
+  const card = {
+    id: uuidv4(),
+    ownerEmail,
+    name: input.name,
+    brandId: input.brandId ?? null,
+    barcode: input.barcode,
+    barcodeFormat: input.barcodeFormat,
+    icona: input.icona,
+    note: input.note,
+    createdAt: t,
+    updatedAt: t
+  }
+  await db.cards.add(card)
+  return card
+}
+
+export async function getCard(id) {
+  return db.cards.get(id)
+}
+
+export async function listCards(ownerEmail) {
+  return db.cards.where('ownerEmail').equals(ownerEmail).toArray()
+}
+
+export async function updateCard(id, patch) {
+  const existing = await db.cards.get(id)
+  if (!existing) throw new Error(`Card ${id} non trovata`)
+  const next = {
+    ...existing,
+    ...patch,
+    id: existing.id,
+    ownerEmail: existing.ownerEmail,
+    createdAt: existing.createdAt,
+    updatedAt: nowMs()
+  }
+  await db.cards.put(next)
+  return next
+}
+
+export async function deleteCard(id) {
+  await db.cards.delete(id)
+}
+
+export async function exportAll(ownerEmail) {
+  const cards = await listCards(ownerEmail)
+  return { version: DUMP_VERSION, exportedAt: nowMs(), ownerEmail, cards }
+}
+
+export async function importAll(ownerEmail, dump) {
+  if (!dump || dump.version !== DUMP_VERSION) {
+    throw new Error(`Versione backup non supportata: ${dump?.version}`)
+  }
+  let inserted = 0, skipped = 0
+  for (const card of dump.cards ?? []) {
+    const existing = await db.cards.get(card.id)
+    if (existing) { skipped++; continue }
+    await db.cards.add({ ...card, ownerEmail })
+    inserted++
+  }
+  return { inserted, skipped }
+}
