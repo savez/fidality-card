@@ -1,47 +1,162 @@
 # Fidelity Card
 
-PWA Vue 3 per salvare e condividere le proprie fidelity card.
+PWA Vue 3 per salvare e condividere le proprie fidelity card (barcode / QR code) con la famiglia, senza backend custom.
 
-🌐 Production: configura su Render (vedi sotto) — sarà disponibile su `https://<nome-servizio>.onrender.com/`.
+🌐 **Production**: configura su Render (vedi sotto) — sarà disponibile su `https://<nome-servizio>.onrender.com/`.
+
+## Funzionalità
+
+- 🔐 Login Google (via Firebase Auth — solo identity, nessun dato sui server)
+- 📷 Scansione barcode / QR direttamente dalla fotocamera del telefono
+- ✍️ Inserimento manuale del codice
+- 🏪 Libreria di 20 brand italiani precostituita (Esselunga, Conad, Coop, IKEA, Q8, …) con icone e colori
+- 🎨 Icona personalizzabile per card (emoji o nome icona Material Design)
+- 🔗 Condivisione card via QR code o link (payload nel fragment URL, mai inviato a un server)
+- 📥 Import card da QR / link condiviso
+- 💾 Backup completo del DB in JSON (esportabile / re-importabile)
+- 📱 Installabile come PWA (offline su app shell, online richiesto solo per login)
+- 🌐 100% client-side: i dati restano sul tuo telefono in IndexedDB
+
+## Tech stack
+
+- **Frontend**: Vue 3 (Composition API, `<script setup>`) · Vite · Vuetify 3 · Pinia · vue-router (hash mode)
+- **Auth**: Firebase Authentication (Google provider, piano free Spark)
+- **Storage**: IndexedDB via Dexie.js (partizione per email loggata)
+- **Scan**: `@zxing/browser` + `@zxing/library`
+- **QR / Barcode generation**: `qrcode` + `jsbarcode`
+- **PWA**: `vite-plugin-pwa` (Workbox)
+- **Test**: Vitest + `fake-indexeddb`
+- **Linguaggio**: JavaScript puro (no TypeScript)
+- **Lingua UI**: italiano
+- **Deploy**: Render.com (static site, free tier)
 
 ## Setup locale
 
 1. `nvm use` (Node 20)
 2. `npm install`
-3. Copia `.env.example` → `.env.local` e inserisci i 6 valori del tuo Firebase project.
+3. Copia `.env.example` → `.env.local` e inserisci i 6 valori del tuo Firebase project (vedi sezione Firebase sotto)
 4. `npm run dev` → http://localhost:5173/
 
 ## Setup Firebase
 
-1. Console Firebase → nuovo progetto (piano gratuito Spark).
-2. Authentication → Sign-in method → abilitare provider Google.
-3. Authorized domains → aggiungere `localhost` (per dev) e il dominio Render (es. `fidality-card.onrender.com`).
-4. Project Settings → "Le tue app" → Web → copiare i 6 valori `apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId`, `appId`.
-5. Incollarli in `.env.local` come `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`, ecc.
+1. Console Firebase → https://console.firebase.google.com/ → "Add project" → piano gratuito Spark (disabilita Google Analytics, non serve)
+2. **Authentication** → "Get started" → tab "Sign-in method" → abilita provider **Google** (seleziona la tua email come support email)
+3. **Authentication** → tab "Settings" → "Authorized domains" → aggiungi:
+   - `localhost` (di solito già presente, per il dev)
+   - Il dominio Render una volta noto (es. `fidality-card.onrender.com`)
+4. **Project Settings** (⚙️) → scorri fino a "Your apps" → icona Web `</>` → registra l'app (nickname libero, NO "Firebase Hosting")
+5. Copia i 6 valori della config (`apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId`, `appId`) in `.env.local` come `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`, ecc.
+
+> La config Firebase è **pubblica by design** — Firebase la espone nei client web. Su Render la metteremo come env vars del servizio (vedi sotto). Le mettiamo comunque in `.env.local` gitignored per mantenere il repo pulito.
 
 ## Deploy su Render
 
-1. Crea un account su https://render.com (free).
-2. Dashboard → "New +" → "Blueprint" (oppure "Static Site" se preferisci configurazione manuale).
-3. Collega il repo GitHub `savez/fidality-card`. Render leggerà `render.yaml`.
-4. Conferma il nome del servizio (default: `fidality-card`).
-5. Nella sezione Environment Variables del servizio, popola i 6 valori `VITE_FIREBASE_*` con quelli del tuo progetto Firebase (gli stessi del `.env.local`).
-6. Save & Deploy. Il primo build parte automaticamente.
-7. Quando è online, copia l'URL (es. `https://fidality-card.onrender.com/`) e aggiungilo agli "Authorized domains" su Firebase Auth.
+1. Crea un account su https://render.com (free, sufficiente per static sites)
+2. Dashboard → "New +" → **"Blueprint"** (Render leggerà il `render.yaml` committato nel repo)
+3. Connetti il tuo account GitHub e seleziona il repo `savez/fidality-card`
+4. Conferma il nome del servizio (default: `fidality-card`)
+5. Nella sezione **Environment Variables** del servizio, popola i 6 valori `VITE_FIREBASE_*` (li hai già in `.env.local`)
+6. Click **"Apply"** / **"Save & Deploy"** — il primo build parte automaticamente (~1-2 min)
+7. Quando è online: copia l'URL (es. `https://fidality-card.onrender.com/`) e aggiungilo agli "Authorized domains" su Firebase Auth (vedi step 3 del Setup Firebase)
 
-I push su `main` (e PR, se PR previews abilitate) faranno trigger di nuove build automaticamente.
+Da quel momento ogni push su `main` triggera una nuova build. Le PR generano preview deploy automatici (configurabile in `render.yaml`).
 
 ## Script
 
-- `npm run dev` — dev server (http://localhost:5173/)
-- `npm run build` — build produzione (output in `dist/`)
-- `npm test` — Vitest
-- `npm run preview` — preview build
+| Comando | Cosa fa |
+|---|---|
+| `npm run dev` | Dev server su http://localhost:5173/ con HMR |
+| `npm run build` | Build produzione → output in `dist/` |
+| `npm run preview` | Serve il `dist/` localmente per verificare la build |
+| `npm test` | Esegue la suite Vitest (22 test) |
+| `npm run test:watch` | Vitest in modalità watch |
 
-## Architettura
+## Struttura progetto
 
-Vedi `docs/superpowers/specs/2026-06-15-fidelity-card-design.md`.
+```
+src/
+├── main.js                  # entry point Vue
+├── App.vue                  # shell app (nav bar, bottom nav, banner errori)
+├── router.js                # hash routing + auth guard
+├── firebase.js              # init Firebase + helper signIn/signOut
+├── stores/
+│   ├── auth.js              # Pinia: utente loggato + dbError
+│   └── cards.js             # Pinia: lista card reattiva + CRUD
+├── db/
+│   ├── index.js             # Dexie schema + probeDb
+│   └── cards.js             # CRUD card con partizione per ownerEmail
+├── brands/
+│   ├── brands.js            # libreria 20 brand italiani
+│   └── BrandPicker.vue      # select brand + "Altro"
+├── scan/
+│   └── BarcodeScanner.vue   # camera + ZXing, timeout 20s
+├── share/
+│   ├── payload.js           # encode/decode payload base64url
+│   └── ShareDialog.vue      # dialog QR + link
+├── components/
+│   ├── CardTile.vue         # tile della griglia
+│   ├── BarcodeDisplay.vue   # render barcode 1D / QR / DataMatrix
+│   └── IconaDisplay.vue     # render emoji o icona mdi-*
+├── views/
+│   ├── LoginView.vue
+│   ├── CardsView.vue        # lista + ricerca + filtro brand
+│   ├── CardEditView.vue     # nuova / modifica
+│   ├── CardDetailView.vue   # dettaglio + barcode grande + azioni
+│   ├── ImportView.vue       # import da link condiviso
+│   └── SettingsView.vue     # account + backup
+├── composables/
+│   └── usePwaUpdate.js      # prompt "nuova versione disponibile"
+└── plugins/
+    └── vuetify.js           # tema + defaults Vuetify
+
+tests/
+├── setup.js                 # fake-indexeddb + crypto polyfill
+├── brands.spec.js           # 6 test
+├── payload.spec.js          # 9 test
+└── db.spec.js               # 7 test
+```
 
 ## Installazione come app (PWA)
 
-Su Android Chrome: menu → "Installa app". Su iOS Safari: condividi → "Aggiungi a Home".
+- **Android (Chrome)**: menu (⋮) → "Installa app" — l'icona compare in home, l'app gira a schermo intero
+- **iOS (Safari)**: condividi (□↑) → "Aggiungi a Home"
+- **Desktop (Chrome / Edge)**: icona di installazione nella barra degli indirizzi
+
+Una volta installata, l'app funziona offline per la lettura/scrittura delle card. La login Google richiede sempre la rete.
+
+## Privacy & dati
+
+- I dati delle card stanno **solo** nel tuo browser (IndexedDB), partizionati per email Google loggata
+- Firebase è usato **solo** per l'autenticazione — Firestore e Storage non sono configurati né utilizzati
+- La condivisione card è un trasferimento one-shot: il destinatario salva una copia indipendente nel suo DB
+- Il backup JSON è esportato in locale (download del file) — nessun upload su server
+
+## Troubleshooting
+
+**`auth/unauthorized-domain` al login**
+Devi aggiungere il dominio corrente (es. `localhost` o `fidality-card.onrender.com`) ai "Authorized domains" del progetto Firebase. Ci vogliono ~30s per propagare.
+
+**Scanner non parte sul telefono in dev**
+La fotocamera richiede HTTPS. `http://192.168.x.x:5173` non basta. O fai il deploy su Render e provi lì, o usa una tunnel HTTPS come `ngrok http 5173`.
+
+**Login Google si chiude subito senza tornare nell'app (mobile)**
+È un problema di popup. L'app dovrebbe rilevare il mobile e usare `signInWithRedirect`, ma se non funziona prova a chiudere l'app installata, riaprila e ritentare.
+
+**"Database locale non disponibile" banner**
+IndexedDB non funziona (es. modalità in incognito su Firefox, browser molto vecchio, storage pieno). Esci dall'incognito o libera spazio.
+
+**Build Render fallisce con "Missing environment variable"**
+Tutte e 6 le `VITE_FIREBASE_*` devono essere settate nel dashboard Render → Service → Environment.
+
+## Documenti di progetto
+
+- [Specifiche iniziali](specifiche-iniziali.md) — requisiti raccolti prima del brainstorming
+- [Design doc](docs/superpowers/specs/2026-06-15-fidelity-card-design.md) — architettura e decisioni
+- [Implementation plan](docs/superpowers/plans/2026-06-15-fidelity-card.md) — piano task-by-task
+
+## Roadmap futura (non in MVP)
+
+- 🤖 Riconoscimento brand automatico via foto (AI vision)
+- 🔒 Cifratura DB locale (passphrase)
+- 🔄 Sync multi-device opzionale
+- 👥 Condivisione persistente con gruppi famiglia
