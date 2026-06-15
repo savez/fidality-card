@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="public/banner.svg" alt="Fidelity Card — PWA Vue 3 open-source per le tue tessere fedeltà" width="100%" />
+</p>
+
 # Fidelity Card
 
 [![CI](https://github.com/savez/fidality-card/actions/workflows/ci.yml/badge.svg)](https://github.com/savez/fidality-card/actions/workflows/ci.yml)
