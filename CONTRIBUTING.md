@@ -37,11 +37,16 @@ Grazie per l'interesse a contribuire a **Fidelity Card**! Questa è una piccola 
    - `chore/...` per pulizia / dipendenze / config
    - `docs/...` per sola documentazione
 3. Scrivi codice + test. Prima di committare:
+
    ```bash
    npm test
    npm run build
    ```
+
    Entrambi devono passare.
+
+   > 🪝 **Hook automatici**: il repo usa Husky. Al `git commit` parte lint-staged (formatta automaticamente i file in stage via Prettier + ESLint). Al `git push` parte `npm test`. Se qualcosa fallisce, il commit/push viene rifiutato — fixa e riprova.
+
 4. Commit messages in formato **conventional commits** (esempi nel git log):
    - `feat(scope): descrizione`
    - `fix(scope): descrizione`
@@ -70,9 +75,34 @@ Grazie per l'interesse a contribuire a **Fidelity Card**! Questa è una piccola 
 - File piccoli, focalizzati, una responsabilità per file
 - Test: Vitest per logica pura e DB (con `fake-indexeddb`); componenti Vue verificati a mano nel dev server
 
+## 🛠️ Tooling
+
+Il repo è configurato con:
+
+| Tool                       | Cosa fa                                                                                                  |
+| -------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **ESLint**                 | Lint del codice JS/Vue (`npm run lint`)                                                                  |
+| **Prettier**               | Formatter (`npm run format` per applicare, `npm run format:check` per verificare)                        |
+| **Husky**                  | Git hooks pre-commit (lint-staged) + pre-push (test)                                                     |
+| **lint-staged**            | Esegue lint+format solo sui file in stage                                                                |
+| **VSCode shared settings** | `.vscode/settings.json` per format-on-save coerente tra tutti                                            |
+| **DevContainer**           | `.devcontainer/devcontainer.json` per ambiente uniforme via VSCode Remote Containers o GitHub Codespaces |
+
+### Setup automatico
+
+Dopo `npm install` Husky si auto-installa via lo script `prepare`. Niente da fare manualmente.
+
+### Se vuoi usare DevContainer / Codespaces
+
+1. Installa VSCode + estensione "Dev Containers" (`ms-vscode-remote.remote-containers`)
+2. Cmd+Shift+P → "Dev Containers: Reopen in Container"
+3. Aspetta che il container si builda e installi le dipendenze
+4. `npm run dev` → l'editor inoltra automaticamente la porta 5173
+
 ## Aree dove un contributor può aiutare
 
 Vedi la sezione "Roadmap futura" del README, e le issue aperte. In particolare:
+
 - 🤖 AI brand recognition (foto card → riconoscimento brand + icona)
 - 🔒 Cifratura DB locale via passphrase
 - 🌍 Aggiungere brand di altri paesi alla libreria

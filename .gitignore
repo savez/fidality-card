@@ -7,6 +7,7 @@ dist-ssr/
 # Editor / OS
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
 .idea/
 .DS_Store
 *.suo
@@ -43,3 +44,6 @@ firebase.md
 
 # Planning artifacts (specs, plans) — locali, non nel repo pubblico
 docs/
+
+# Husky internal directory (auto-generated)
+.husky/_/

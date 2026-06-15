@@ -32,6 +32,7 @@ PWA Vue 3 per salvare e condividere le proprie fidelity card (barcode / QR code)
 - **Linguaggio**: JavaScript puro (no TypeScript)
 - **Lingua UI**: italiano
 - **Deploy**: Render.com (static site, free tier)
+- **Dev tooling**: ESLint + Prettier + Husky + lint-staged · DevContainer per Codespaces · `.vscode/` config condivise
 
 ## Setup locale
 
@@ -89,10 +90,12 @@ In sintesi: **il codice è di tutti, l'istanza hostata no**. Se ti piace il prog
 ## CI / GitHub Actions
 
 Il workflow `.github/workflows/ci.yml` parte automaticamente:
+
 - Ad ogni push su `main`
 - Ad ogni PR verso `main`
 
 Cosa fa:
+
 - `npm ci` — install riproducibile
 - `npm test` — esegue i 22 test Vitest
 - `npm run build` — verifica che la build produca artefatti validi
@@ -101,13 +104,17 @@ Output visibile nella tab **Actions** del repo GitHub e come check sui commit / 
 
 ## Script
 
-| Comando | Cosa fa |
-|---|---|
-| `npm run dev` | Dev server su http://localhost:5173/ con HMR |
-| `npm run build` | Build produzione → output in `dist/` |
-| `npm run preview` | Serve il `dist/` localmente per verificare la build |
-| `npm test` | Esegue la suite Vitest (22 test) |
-| `npm run test:watch` | Vitest in modalità watch |
+| Comando                | Cosa fa                                             |
+| ---------------------- | --------------------------------------------------- |
+| `npm run dev`          | Dev server su http://localhost:5173/ con HMR        |
+| `npm run build`        | Build produzione → output in `dist/`                |
+| `npm run preview`      | Serve il `dist/` localmente per verificare la build |
+| `npm test`             | Esegue la suite Vitest (22 test)                    |
+| `npm run test:watch`   | Vitest in modalità watch                            |
+| `npm run lint`         | ESLint sui file JS/Vue                              |
+| `npm run lint:fix`     | ESLint + auto-fix                                   |
+| `npm run format`       | Prettier sull'intero repo                           |
+| `npm run format:check` | Verifica formattazione senza modificare             |
 
 ## Struttura progetto
 
