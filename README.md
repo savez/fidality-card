@@ -109,34 +109,113 @@ Output visibile nella tab **Actions** del repo GitHub e come check sui commit / 
 
 ## 🏷️ Release automation
 
-Le release sono **completamente automatizzate** via [release-please](https://github.com/googleapis/release-please) (Google). Non devi mai fare `npm version`, taggare a mano o scrivere release notes.
+Il progetto usa [**release-please**](https://github.com/googleapis/release-please) (di Google) per automatizzare versionamento, CHANGELOG e GitHub Releases. **Nessun PAT o GitHub App** richiesti: tutto funziona con il `GITHUB_TOKEN` integrato di GitHub Actions.
 
-### Come funziona
+### Per i contributor: cosa serve sapere
 
-1. **Tu mergi PR** su `main` con commit in formato [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `chore:`, `feat!:` ecc.). I commit non-convenzionali sono **bloccati** automaticamente:
-   - Localmente: hook Husky `commit-msg` valida via commitlint
-   - In CI: workflow `commitlint.yml` ri-valida sui PR remoti
-2. **Al push su `main`**, l'action release-please:
-   - Calcola la prossima versione dai commit (feat → minor, fix → patch, breaking → major)
-   - Apre o aggiorna automaticamente una **"Release PR"** con bump di `package.json`, aggiornamento di `CHANGELOG.md` e versione nel `.release-please-manifest.json`
-3. **Quando vuoi rilasciare**, mergi quella Release PR. Subito dopo, release-please:
-   - Crea il tag `vX.Y.Z`
-   - Crea la GitHub Release con le note generate dai commit
-   - Niente PAT necessario, usa solo `GITHUB_TOKEN`
+**Una sola regola**: scrivi i commit message in formato [Conventional Commits](https://www.conventionalcommits.org/). La pipeline fa il resto.
 
-### Categorie di commit nel CHANGELOG
+```bash
+git commit -m "feat(brands): aggiungi Tigotà alla lista"
+git commit -m "fix(scan): risolvi crash su QR con caratteri speciali"
+git commit -m "docs: chiarisci setup Render nel README"
+```
 
-| Prefisso                                     | Sezione CHANGELOG        | Bump      |
-| -------------------------------------------- | ------------------------ | --------- |
-| `feat:`                                      | ✨ Features              | minor     |
-| `fix:`                                       | 🐛 Bug Fixes             | patch     |
-| `perf:`                                      | ⚡ Performance           | patch     |
-| `refactor:`                                  | ♻️ Refactoring           | patch     |
-| `docs:`                                      | 📝 Documentation         | none      |
-| `feat!:` o `BREAKING CHANGE:` nel body       | (sopra)                  | **major** |
-| `chore:`, `test:`, `ci:`, `build:`, `style:` | (nascosti dal CHANGELOG) | none      |
+Se sbagli formato (es. `commit -m "aggiungo Tigotà"`), **il commit viene rifiutato**:
 
-> Tutto questo è configurato in `release-please-config.json`.
+- localmente dall'hook Husky `commit-msg` (commitlint)
+- in CI dal workflow `commitlint.yml` (re-valida sui PR aperti da fork)
+
+I contributor **non devono mai toccare a mano**: `package.json` version, `CHANGELOG.md`, tag git, GitHub Releases. Tutto generato automaticamente.
+
+### Sistema a 2 gate (per il maintainer)
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│ GATE 1 — Feature PR                                              │
+│                                                                  │
+│ Contributor → fork → branch → conventional commits → PR          │
+│                ▼                                                 │
+│  CI gira: ✓ test  ✓ build  ✓ lint  ✓ commit format               │
+│                ▼                                                 │
+│  Maintainer mergia la PR su `main`                               │
+└──────────────────────────────────────────────────────────────────┘
+                     │
+                     ▼
+            release-please action gira automaticamente
+                     │
+                     ▼
+┌──────────────────────────────────────────────────────────────────┐
+│ GATE 2 — Release PR (auto-mantenuta)                             │
+│                                                                  │
+│ release-please apre (o aggiorna se esiste già) una PR titolata   │
+│ "chore(main): release vX.Y.Z" che contiene:                      │
+│                                                                  │
+│   • bump in package.json (es. 1.0.0 → 1.1.0)                     │
+│   • CHANGELOG.md aggiornato con sezioni dai commit               │
+│   • bump in .release-please-manifest.json                        │
+│                                                                  │
+│ Questa PR accumula tutte le feature/fix mergiate da quando       │
+│ l'ultima release è stata pubblicata.                             │
+│                                                                  │
+│ Maintainer mergia la Release PR quando vuole pubblicare          │
+│ (subito dopo ogni feature, o accumulando — a sua scelta)         │
+└──────────────────────────────────────────────────────────────────┘
+                     │
+                     ▼
+      release-please crea il tag vX.Y.Z e la GitHub Release
+      con note generate dai conventional commits
+```
+
+### Domande frequenti
+
+**È completamente automatico per i contributor?**
+
+Sì. Loro fanno solo PR con commit ben scritti. Niente CHANGELOG da modificare, niente tag, niente versioni. Il maintainer ha 2 momenti dove clicca "Merge" (feature PR e Release PR).
+
+**Parte tutto al merge su main?**
+
+Sì, ma la **Release PR è solo preparata, non pubblicata**. La release vera (tag + GitHub Release) parte solo quando il maintainer mergia la Release PR. Questo permette di scegliere il timing: release continua (mergi la Release PR appena appare) oppure cumulativa (accumuli più feature prima).
+
+**Come decide la prossima versione?**
+
+Legge i conventional commits accumulati dall'ultimo tag e applica le regole [SemVer](https://semver.org/):
+
+| Prefisso commit                              | Sezione CHANGELOG              | Bump versione             |
+| -------------------------------------------- | ------------------------------ | ------------------------- |
+| `feat:` o `feat(scope):`                     | ✨ Features                    | **minor** (1.0.0 → 1.1.0) |
+| `fix:` o `fix(scope):`                       | 🐛 Bug Fixes                   | **patch** (1.0.0 → 1.0.1) |
+| `perf:`                                      | ⚡ Performance                 | patch                     |
+| `refactor:`                                  | ♻️ Refactoring                 | patch                     |
+| `docs:`                                      | 📝 Documentation               | nessuno                   |
+| `feat!:` o footer `BREAKING CHANGE:`         | (categoria sopra, evidenziato) | **major** (1.0.0 → 2.0.0) |
+| `chore:`, `test:`, `ci:`, `build:`, `style:` | (nascosti dal CHANGELOG)       | nessuno                   |
+
+**Cosa succede se mergio una PR con solo `chore:` o `docs:`?**
+
+Nessuna Release PR viene aperta (perché niente di rilevante per gli utenti). Quei commit appariranno comunque nella prossima release insieme alla prima `feat:` o `fix:` mergiata.
+
+**Posso forzare una release manualmente?**
+
+Sì: Actions → release-please → "Run workflow" (workflow_dispatch). Oppure aggiungi un commit con footer `Release-As: 1.2.3` per forzare una versione specifica (vedi docs release-please).
+
+**Cosa vede chi visita il repo?**
+
+- `CHANGELOG.md` aggiornato a ogni release (committato su `main`)
+- Tab **Releases** su GitHub con note dettagliate per ogni versione
+- Badge "Version" nel README aggiornato a ogni release
+- Tag `v1.0.0`, `v1.1.0`, ecc. (formato standard SemVer con prefisso `v`)
+
+### File di configurazione
+
+| File                                   | Cosa contiene                                 |
+| -------------------------------------- | --------------------------------------------- |
+| `release-please-config.json`           | Sezioni del CHANGELOG, regole di bump         |
+| `.release-please-manifest.json`        | Versione corrente (auto-aggiornata)           |
+| `commitlint.config.js`                 | Regole di validazione commit message          |
+| `.github/workflows/release-please.yml` | Action che gira al push su `main`             |
+| `.github/workflows/commitlint.yml`     | Validazione commit nei PR (anche da fork)     |
+| `.husky/commit-msg`                    | Validazione commit localmente, prima del push |
 
 ## Script
 
