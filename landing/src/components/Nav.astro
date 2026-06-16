@@ -1,0 +1,60 @@
+---
+import { meta } from '../data/meta.js'
+---
+
+<nav class="nav">
+  <div class="container nav-inner">
+    <a href="#top" class="nav-brand" aria-label={meta.appName}>
+      <span class="nav-dot" aria-hidden="true"></span>
+      <span>{meta.appName}</span>
+    </a>
+    <a class="nav-link" href={meta.githubUrl} rel="noopener" target="_blank">
+      GitHub →
+    </a>
+  </div>
+</nav>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(12px);
+    background: rgba(11, 13, 16, 0.7);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.875rem;
+    padding-bottom: 0.875rem;
+  }
+
+  .nav-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .nav-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+
+  .nav-link {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .nav-link:hover {
+    color: var(--accent);
+    opacity: 1;
+  }
+</style>
