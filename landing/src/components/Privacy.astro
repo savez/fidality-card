@@ -1,0 +1,72 @@
+---
+const points = [
+  {
+    title: 'IndexedDB locale',
+    body:
+      'I dati delle card vivono nel database del tuo browser. Niente cloud, niente account.',
+  },
+  {
+    title: 'Nessun backend',
+    body:
+      'L\'app è 100% client-side. La condivisione viaggia nel fragment dell\'URL, mai su un server.',
+  },
+  {
+    title: 'Licenza MIT',
+    body:
+      'Codice aperto. Puoi forkarlo, leggerlo, modificarlo e auto-ospitare la tua istanza.',
+  },
+]
+---
+
+<section class="privacy section">
+  <div class="container">
+    <h2 class="privacy-title">I tuoi dati restano sul tuo telefono.</h2>
+    <p class="privacy-sub">
+      Pensata come tool personale, non come piattaforma. Tre principi non negoziabili:
+    </p>
+    <div class="privacy-grid">
+      {points.map((p) => (
+        <div class="card privacy-card">
+          <h3>{p.title}</h3>
+          <p>{p.body}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .privacy-title {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    max-width: 22ch;
+  }
+
+  .privacy-sub {
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+    max-width: 56ch;
+  }
+
+  .privacy-grid {
+    margin-top: 2.5rem;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  .privacy-card h3 {
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .privacy-card p {
+    color: var(--text-muted);
+  }
+
+  @media (min-width: 768px) {
+    .privacy-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
