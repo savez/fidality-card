@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/savez/fidality-card/compare/v1.2.0...v1.3.0) (2026-06-16)
+
+
+### ✨ Features
+
+* pin cards + alphabetical sort + simplified home + SECURITY.md ([#9](https://github.com/savez/fidality-card/issues/9)) ([417b4d2](https://github.com/savez/fidality-card/commit/417b4d2e65a911edd5de624fba82488688edb263))
+
 ## [1.2.0](https://github.com/savez/fidality-card/compare/v1.1.0...v1.2.0) (2026-06-15)
 
 
