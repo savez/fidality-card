@@ -1,0 +1,88 @@
+---
+import { meta } from '../data/meta.js'
+---
+
+<section class="hero section" id="top">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="container hero-inner">
+    <div class="hero-pills">
+      <span class="pill">PWA</span>
+      <span class="pill">Open Source</span>
+      <span class="pill">100% locale</span>
+    </div>
+    <h1 class="hero-title">{meta.tagline}</h1>
+    <p class="hero-sub">
+      Una PWA italiana che salva e condivide le tue fidelity card direttamente
+      sul telefono. Niente account, niente server: il tuo barcode resta tuo.
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href={meta.demoUrl} rel="noopener" target="_blank">
+        Prova la demo
+      </a>
+      <a class="btn btn-secondary" href={meta.githubUrl} rel="noopener" target="_blank">
+        Codice su GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding-top: clamp(5rem, 12vw, 9rem);
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: -10rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(900px, 90vw);
+    height: 600px;
+    background: radial-gradient(
+      ellipse at center,
+      var(--accent-soft) 0%,
+      transparent 60%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .hero-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .hero-title {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1.05;
+    max-width: 18ch;
+  }
+
+  .hero-sub {
+    color: var(--text-muted);
+    font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+    max-width: 56ch;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+</style>
