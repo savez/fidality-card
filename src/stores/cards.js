@@ -6,6 +6,7 @@ import {
   updateCard as dbUpdate,
   deleteCard as dbDelete,
   getCard as dbGet,
+  togglePin as dbTogglePin,
   exportAll as dbExportAll,
   importAll as dbImportAll,
 } from '@/db/cards.js'
@@ -14,23 +15,24 @@ import { getBrand } from '@/brands/brands.js'
 export const useCardsStore = defineStore('cards', () => {
   const items = ref([])
   const loading = ref(false)
-  const filterBrand = ref(null)
   const search = ref('')
 
   const filtered = computed(() => {
     const q = search.value.trim().toLowerCase()
-    return items.value.filter((c) => {
-      if (filterBrand.value === '__custom__') {
-        if (c.brandId !== null) return false
-      } else if (filterBrand.value && c.brandId !== filterBrand.value) {
-        return false
-      }
-      if (q) {
-        const cardName = c.name.toLowerCase()
-        const brandName = getBrand(c.brandId)?.name?.toLowerCase() ?? ''
-        if (!cardName.includes(q) && !brandName.includes(q)) return false
-      }
-      return true
+
+    const matched = items.value.filter((c) => {
+      if (!q) return true
+      const cardName = c.name.toLowerCase()
+      const brandName = getBrand(c.brandId)?.name?.toLowerCase() ?? ''
+      return cardName.includes(q) || brandName.includes(q)
+    })
+
+    // Sort: pinned first, then alphabetical locale-aware (italian, case-insensitive).
+    return matched.slice().sort((a, b) => {
+      const ap = a.pinned ? 1 : 0
+      const bp = b.pinned ? 1 : 0
+      if (ap !== bp) return bp - ap
+      return a.name.localeCompare(b.name, 'it', { sensitivity: 'base' })
     })
   })
 
@@ -51,6 +53,13 @@ export const useCardsStore = defineStore('cards', () => {
 
   async function update(id, patch) {
     const updated = await dbUpdate(id, patch)
+    const idx = items.value.findIndex((c) => c.id === id)
+    if (idx >= 0) items.value.splice(idx, 1, updated)
+    return updated
+  }
+
+  async function togglePin(id) {
+    const updated = await dbTogglePin(id)
     const idx = items.value.findIndex((c) => c.id === id)
     if (idx >= 0) items.value.splice(idx, 1, updated)
     return updated
@@ -81,11 +90,11 @@ export const useCardsStore = defineStore('cards', () => {
     items,
     filtered,
     loading,
-    filterBrand,
     search,
     refresh,
     create,
     update,
+    togglePin,
     remove,
     get,
     exportBackup,
