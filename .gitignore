@@ -45,5 +45,10 @@ firebase.md
 # Planning artifacts (specs, plans) — locali, non nel repo pubblico
 docs/
 
+# Landing site (Astro) artefatti locali
+landing/node_modules/
+landing/dist/
+landing/.astro/
+
 # Husky internal directory (auto-generated)
 .husky/_/
