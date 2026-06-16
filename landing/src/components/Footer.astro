@@ -1,0 +1,61 @@
+---
+import { meta } from '../data/meta.js'
+---
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-links">
+      <a href={meta.licenseUrl} rel="noopener" target="_blank">MIT</a>
+      <span aria-hidden="true">·</span>
+      <a href={meta.contributingUrl} rel="noopener" target="_blank">Contributing</a>
+      <span aria-hidden="true">·</span>
+      <a href={meta.securityUrl} rel="noopener" target="_blank">Security</a>
+      <span aria-hidden="true">·</span>
+      <a href={meta.changelogUrl} rel="noopener" target="_blank">Changelog</a>
+    </div>
+    <div class="footer-meta">
+      <a href={meta.authorUrl} rel="noopener" target="_blank">{meta.authorHandle}</a>
+      <span aria-hidden="true">·</span>
+      <span>v{meta.version}</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .footer-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-links,
+  .footer-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .footer-links a,
+  .footer-meta a {
+    color: var(--text);
+  }
+
+  @media (min-width: 768px) {
+    .footer-inner {
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
+    }
+  }
+</style>
