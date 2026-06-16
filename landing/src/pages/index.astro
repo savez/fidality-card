@@ -1,0 +1,50 @@
+---
+import '@fontsource/inter/400.css'
+import '@fontsource/inter/600.css'
+import '@fontsource/inter/700.css'
+import '../styles/global.css'
+
+import Nav from '../components/Nav.astro'
+import Hero from '../components/Hero.astro'
+import Privacy from '../components/Privacy.astro'
+import Install from '../components/Install.astro'
+import TechStack from '../components/TechStack.astro'
+import Footer from '../components/Footer.astro'
+
+import { meta } from '../data/meta.js'
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>{meta.appName} — {meta.tagline}</title>
+    <meta
+      name="description"
+      content="PWA Vue 3 open-source per salvare e condividere fidelity card. 100% locale, nessun backend."
+    />
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={`${meta.appName} — ${meta.tagline}`} />
+    <meta
+      property="og:description"
+      content="PWA Vue 3 open-source per le tue fidelity card. 100% locale."
+    />
+    <meta property="og:url" content="https://savez.github.io/fidality-card/" />
+  </head>
+  <body>
+    <Nav />
+    <main>
+      <Hero />
+      <Privacy />
+      <Install />
+      <TechStack />
+    </main>
+    <Footer />
+  </body>
+</html>
