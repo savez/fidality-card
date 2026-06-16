@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/savez/fidality-card/compare/v1.3.0...v1.3.1) (2026-06-16)
+
+
+### 📝 Documentation
+
+* **landing:** add Website badge and clarify Pages vs Render ([#11](https://github.com/savez/fidality-card/issues/11)) ([323fed6](https://github.com/savez/fidality-card/commit/323fed612f08e15687f738f5409b18b905ebd305))
+
 ## [1.3.0](https://github.com/savez/fidality-card/compare/v1.2.0...v1.3.0) (2026-06-16)
 
 
