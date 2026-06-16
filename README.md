@@ -6,6 +6,7 @@
 
 [![CI](https://github.com/savez/fidality-card/actions/workflows/ci.yml/badge.svg)](https://github.com/savez/fidality-card/actions/workflows/ci.yml)
 [![Live demo](https://img.shields.io/website?url=https%3A%2F%2Ffidality-card.onrender.com&label=demo&up_message=online&down_message=offline&up_color=46E3B7)](https://fidality-card.onrender.com)
+[![Website](https://img.shields.io/badge/website-savez.github.io-46E3B7)](https://savez.github.io/fidality-card/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Version](https://img.shields.io/github/package-json/v/savez/fidality-card)](package.json)
 [![Last commit](https://img.shields.io/github/last-commit/savez/fidality-card/main)](https://github.com/savez/fidality-card/commits/main)
@@ -13,6 +14,8 @@
 [![PWA](https://img.shields.io/badge/PWA-installable-5A0FC8)](https://web.dev/progressive-web-apps/)
 
 PWA Vue 3 per salvare e condividere le proprie fidelity card (barcode / QR code) con la famiglia, senza backend custom.
+
+🌐 **Pagina di progetto**: <https://savez.github.io/fidality-card/> (vetrina del repo — l'app vera è sulla demo Render qui sotto)
 
 🚀 **Live demo**: <https://fidality-card.onrender.com>
 
