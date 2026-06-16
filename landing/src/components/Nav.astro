@@ -8,7 +8,7 @@ import { meta } from '../data/meta.js'
       <span class="nav-dot" aria-hidden="true"></span>
       <span>{meta.appName}</span>
     </a>
-    <a class="nav-link" href={meta.githubUrl} rel="noopener" target="_blank">
+    <a class="nav-link" href={meta.githubUrl} rel="noopener noreferrer" target="_blank">
       GitHub →
     </a>
   </div>
@@ -19,6 +19,7 @@ import { meta } from '../data/meta.js'
     position: sticky;
     top: 0;
     z-index: 10;
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     background: rgba(11, 13, 16, 0.7);
     border-bottom: 1px solid var(--border);
