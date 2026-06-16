@@ -1,0 +1,76 @@
+---
+const steps = [
+  {
+    label: 'Android',
+    icon: '📱',
+    body: 'Chrome → menu (⋮) → "Installa app". L\'icona compare in home.',
+  },
+  {
+    label: 'iOS',
+    icon: '🍎',
+    body: 'Safari → condividi (□↑) → "Aggiungi a Home".',
+  },
+  {
+    label: 'Desktop',
+    icon: '💻',
+    body: 'Chrome o Edge → icona di installazione nella barra degli indirizzi.',
+  },
+]
+---
+
+<section class="install section">
+  <div class="container">
+    <h2 class="install-title">Installala come app.</h2>
+    <p class="install-sub">
+      Una volta installata gira anche offline. Tre tap su qualsiasi dispositivo.
+    </p>
+    <div class="install-grid">
+      {steps.map((s) => (
+        <div class="card install-card">
+          <div class="install-icon" aria-hidden="true">{s.icon}</div>
+          <h3>{s.label}</h3>
+          <p>{s.body}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .install-title {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+  }
+
+  .install-sub {
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+    max-width: 56ch;
+  }
+
+  .install-grid {
+    margin-top: 2.5rem;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  .install-card h3 {
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .install-card p {
+    color: var(--text-muted);
+  }
+
+  .install-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .install-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
