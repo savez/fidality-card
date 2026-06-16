@@ -1,12 +1,21 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { db } from '@/db/index.js'
-import { createCard, updateCard, deleteCard, listCards, getCard, exportAll, importAll } from '@/db/cards.js'
+import {
+  createCard,
+  updateCard,
+  deleteCard,
+  listCards,
+  getCard,
+  togglePin,
+  exportAll,
+  importAll,
+} from '@/db/cards.js'
 
 const baseInput = {
   name: 'Test card',
   brandId: 'esselunga',
   barcode: '123',
-  barcodeFormat: 'EAN_13'
+  barcodeFormat: 'EAN_13',
 }
 
 beforeEach(async () => {
@@ -31,7 +40,7 @@ describe('cards CRUD', () => {
 
   it('updateCard aggiorna campi e bumpa updatedAt', async () => {
     const created = await createCard(baseInput)
-    await new Promise(r => setTimeout(r, 5))
+    await new Promise((r) => setTimeout(r, 5))
     const updated = await updateCard(created.id, { name: 'Nuovo nome' })
     expect(updated.name).toBe('Nuovo nome')
     expect(updated.updatedAt).toBeGreaterThan(created.updatedAt)
@@ -64,32 +73,51 @@ describe('cards CRUD', () => {
       version: 1,
       cards: [
         { ...existing, name: 'IGNORED_BECAUSE_DUPLICATE_ID' },
-        { ...existing, id: 'new-uuid-1', name: 'Nuova' }
-      ]
+        { ...existing, id: 'new-uuid-1', name: 'Nuova' },
+      ],
     }
     const result = await importAll(dump)
     expect(result.inserted).toBe(1)
     expect(result.skipped).toBe(1)
     const all = await listCards()
-    expect(all.find(c => c.name === 'IGNORED_BECAUSE_DUPLICATE_ID')).toBeUndefined()
+    expect(all.find((c) => c.name === 'IGNORED_BECAUSE_DUPLICATE_ID')).toBeUndefined()
   })
 
   it('importAll strippa il campo legacy ownerEmail', async () => {
     const dump = {
       version: 1,
-      cards: [{
-        id: 'legacy-1',
-        ownerEmail: 'foo@bar.com',
-        name: 'Legacy',
-        brandId: null,
-        barcode: '123',
-        barcodeFormat: 'CODE_128',
-        createdAt: 1, updatedAt: 1
-      }]
+      cards: [
+        {
+          id: 'legacy-1',
+          ownerEmail: 'foo@bar.com',
+          name: 'Legacy',
+          brandId: null,
+          barcode: '123',
+          barcodeFormat: 'CODE_128',
+          createdAt: 1,
+          updatedAt: 1,
+        },
+      ],
     }
     await importAll(dump)
     const got = await getCard('legacy-1')
     expect(got.ownerEmail).toBeUndefined()
     expect(got.name).toBe('Legacy')
+  })
+
+  it('createCard initializes pinned to false explicitly', async () => {
+    const card = await createCard(baseInput)
+    expect(card.pinned).toBe(false)
+  })
+
+  it('togglePin flips pinned and bumps updatedAt', async () => {
+    const created = await createCard(baseInput)
+    expect(created.pinned).toBe(false)
+    await new Promise((r) => setTimeout(r, 5))
+    const pinned = await togglePin(created.id)
+    expect(pinned.pinned).toBe(true)
+    expect(pinned.updatedAt).toBeGreaterThan(created.updatedAt)
+    const unpinned = await togglePin(created.id)
+    expect(unpinned.pinned).toBe(false)
   })
 })

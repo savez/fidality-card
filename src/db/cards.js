@@ -3,7 +3,9 @@ import { db } from './index.js'
 
 const DUMP_VERSION = 1
 
-function nowMs() { return Date.now() }
+function nowMs() {
+  return Date.now()
+}
 
 export async function createCard(input) {
   const t = nowMs()
@@ -15,8 +17,9 @@ export async function createCard(input) {
     barcodeFormat: input.barcodeFormat,
     icona: input.icona,
     note: input.note,
+    pinned: false,
     createdAt: t,
-    updatedAt: t
+    updatedAt: t,
   }
   await db.cards.add(card)
   return card
@@ -38,7 +41,19 @@ export async function updateCard(id, patch) {
     ...patch,
     id: existing.id,
     createdAt: existing.createdAt,
-    updatedAt: nowMs()
+    updatedAt: nowMs(),
+  }
+  await db.cards.put(next)
+  return next
+}
+
+export async function togglePin(id) {
+  const existing = await db.cards.get(id)
+  if (!existing) throw new Error(`Card ${id} non trovata`)
+  const next = {
+    ...existing,
+    pinned: !existing.pinned,
+    updatedAt: nowMs(),
   }
   await db.cards.put(next)
   return next
@@ -57,11 +72,15 @@ export async function importAll(dump) {
   if (!dump || dump.version !== DUMP_VERSION) {
     throw new Error(`Versione backup non supportata: ${dump?.version}`)
   }
-  let inserted = 0, skipped = 0
+  let inserted = 0
+  let skipped = 0
   for (const card of dump.cards ?? []) {
     const existing = await db.cards.get(card.id)
-    if (existing) { skipped++; continue }
-    // Strip the legacy ownerEmail field if present (artifact from pre-v2 exports)
+    if (existing) {
+      skipped++
+      continue
+    }
+    // Strip legacy ownerEmail field if present (pre-v2 exports)
     const { ownerEmail: _drop, ...clean } = card
     await db.cards.add(clean)
     inserted++
