@@ -2,11 +2,11 @@ name: Deploy GitHub Pages
 
 on:
   push:
-    branches: [main]
-    paths:
-      - 'landing/**'
-      - '.github/workflows/pages.yml'
-      - 'package.json'
+    branches: [landing]
+  schedule:
+    # Una volta al giorno alle 04:00 UTC: rebuild per riflettere
+    # eventuali version bump avvenuti su `main` (release-please).
+    - cron: '0 4 * * *'
   workflow_dispatch:
 
 concurrency:
@@ -21,12 +21,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Serve per accedere a `origin/main` e leggerne la versione.
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: landing/package-lock.json
+
+      - name: Read app version from main
+        id: appver
+        run: |
+          git fetch origin main --depth=1
+          VERSION=$(git show origin/main:package.json | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>process.stdout.write(JSON.parse(d).version))")
+          if [ -z "$VERSION" ]; then
+            echo "ERROR: could not resolve app version from origin/main:package.json" >&2
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "App version from main: $VERSION"
 
       - name: Install landing deps
         run: npm ci
@@ -35,6 +50,8 @@ jobs:
       - name: Build landing
         run: npm run build
         working-directory: landing
+        env:
+          PUBLIC_APP_VERSION: ${{ steps.appver.outputs.version }}
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4

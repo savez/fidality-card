@@ -5,7 +5,18 @@ import path from 'node:path'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-function readRootVersion() {
+// Risolve la versione dell'app mostrata nel footer.
+// Ordine di priorità:
+//   1) env PUBLIC_APP_VERSION → usata in CI per leggere da `origin/main`
+//      (il branch `landing` non riceve i version bump di release-please)
+//   2) root package.json sul branch corrente → comoda in dev locale
+// In CI il branch `landing` è in genere indietro rispetto a main, quindi
+// senza l'env var il footer mostrerebbe una versione stale.
+function resolveAppVersion() {
+  const fromEnv = process.env.PUBLIC_APP_VERSION
+  if (fromEnv && typeof fromEnv === 'string' && fromEnv.trim() !== '') {
+    return fromEnv.trim()
+  }
   const pkgPath = path.resolve(__dirname, '../package.json')
   let raw
   try {
@@ -25,7 +36,7 @@ function readRootVersion() {
   return pkg.version
 }
 
-const appVersion = readRootVersion()
+const appVersion = resolveAppVersion()
 
 export default defineConfig({
   site: 'https://savez.github.io',
