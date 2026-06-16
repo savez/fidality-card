@@ -1,0 +1,61 @@
+---
+const badges = [
+  {
+    alt: 'Vue 3',
+    src: 'https://img.shields.io/badge/Vue-3-42b883?style=flat&logo=vue.js&logoColor=white',
+  },
+  {
+    alt: 'Vuetify',
+    src: 'https://img.shields.io/badge/Vuetify-3-1867C0?style=flat&logo=vuetify&logoColor=white',
+  },
+  {
+    alt: 'Vite',
+    src: 'https://img.shields.io/badge/Vite-5-646CFF?style=flat&logo=vite&logoColor=white',
+  },
+  {
+    alt: 'IndexedDB via Dexie',
+    src: 'https://img.shields.io/badge/IndexedDB-Dexie-FFB300?style=flat',
+  },
+  {
+    alt: 'PWA / Workbox',
+    src: 'https://img.shields.io/badge/PWA-installable-5A0FC8?style=flat',
+  },
+]
+---
+
+<section class="tech section">
+  <div class="container">
+    <h2 class="tech-title">Sotto il cofano.</h2>
+    <p class="tech-sub">
+      Stack leggero, scelte standard, niente magia. Tutto leggibile in poche ore.
+    </p>
+    <div class="tech-badges">
+      {badges.map((b) => (
+        <img src={b.src} alt={b.alt} loading="lazy" />
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .tech-title {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+  }
+
+  .tech-sub {
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+    max-width: 56ch;
+  }
+
+  .tech-badges {
+    margin-top: 2rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tech-badges img {
+    height: 28px;
+  }
+</style>
