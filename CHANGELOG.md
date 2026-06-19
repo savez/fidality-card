@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/savez/fidality-card/compare/v1.3.1...v1.4.0) (2026-06-19)
+
+
+### ✨ Features
+
+* **ui:** impostazioni solo nel footer e tema nelle impostazioni ([#14](https://github.com/savez/fidality-card/issues/14)) ([1543d96](https://github.com/savez/fidality-card/commit/1543d9642d70db5ce70cce6a7bd778bcaffcb4e4))
+
 ## [1.3.1](https://github.com/savez/fidality-card/compare/v1.3.0...v1.3.1) (2026-06-16)
 
 
