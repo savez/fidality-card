@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from 'vue'
 import { useCardsStore } from '@/stores/cards.js'
+import { useTheme } from '@/composables/useTheme.js'
 
+const { mode: themeMode, setMode: setThemeMode } = useTheme()
 const cards = useCardsStore()
 const fileInput = ref(null)
 const message = ref(null)
@@ -52,6 +54,22 @@ async function onImportFile(event) {
 <template>
   <v-container class="pa-3" style="max-width: 600px">
     <h2 class="text-h5 mb-3">Impostazioni</h2>
+
+    <h3 class="text-subtitle-1 mb-2">Tema</h3>
+    <v-list density="comfortable" class="mb-4">
+      <v-list-item :active="themeMode === 'system'" @click="setThemeMode('system')">
+        <template #prepend><v-icon>mdi-theme-light-dark</v-icon></template>
+        <v-list-item-title>Sistema</v-list-item-title>
+      </v-list-item>
+      <v-list-item :active="themeMode === 'light'" @click="setThemeMode('light')">
+        <template #prepend><v-icon>mdi-weather-sunny</v-icon></template>
+        <v-list-item-title>Chiaro</v-list-item-title>
+      </v-list-item>
+      <v-list-item :active="themeMode === 'dark'" @click="setThemeMode('dark')">
+        <template #prepend><v-icon>mdi-weather-night</v-icon></template>
+        <v-list-item-title>Scuro</v-list-item-title>
+      </v-list-item>
+    </v-list>
 
     <h3 class="text-subtitle-1 mb-2">Backup</h3>
     <v-btn block prepend-icon="mdi-download" @click="onExport">Esporta backup JSON</v-btn>
