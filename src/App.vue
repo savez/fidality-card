@@ -1,19 +1,11 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { usePwaUpdate } from '@/composables/usePwaUpdate.js'
-import { useTheme } from '@/composables/useTheme.js'
 import { useDbStatus } from '@/composables/useDbStatus.js'
 import AppBarVersionPill from '@/components/AppBarVersionPill.vue'
 import AppVersionDialog from '@/components/AppVersionDialog.vue'
 
-const { mode: themeMode, effective: effectiveTheme, setMode: setThemeMode } = useTheme()
 const { dbError } = useDbStatus()
-
-const themeIcon = computed(() => {
-  if (themeMode.value === 'light') return 'mdi-weather-sunny'
-  if (themeMode.value === 'dark') return 'mdi-weather-night'
-  return 'mdi-theme-light-dark'
-})
 
 const { needRefresh, applyUpdate, dismissUpdate } = usePwaUpdate()
 
@@ -38,27 +30,6 @@ function onDismissUpdate() {
       <v-app-bar-title>Fidelity Card</v-app-bar-title>
       <v-spacer />
       <AppBarVersionPill @click="versionDialogOpen = true" />
-      <v-menu>
-        <template #activator="{ props: menuProps }">
-          <v-btn :icon="themeIcon" v-bind="menuProps" />
-        </template>
-        <v-list density="comfortable">
-          <v-list-subheader>Tema</v-list-subheader>
-          <v-list-item :active="themeMode === 'system'" @click="setThemeMode('system')">
-            <template #prepend><v-icon>mdi-theme-light-dark</v-icon></template>
-            <v-list-item-title>Sistema</v-list-item-title>
-          </v-list-item>
-          <v-list-item :active="themeMode === 'light'" @click="setThemeMode('light')">
-            <template #prepend><v-icon>mdi-weather-sunny</v-icon></template>
-            <v-list-item-title>Chiaro</v-list-item-title>
-          </v-list-item>
-          <v-list-item :active="themeMode === 'dark'" @click="setThemeMode('dark')">
-            <template #prepend><v-icon>mdi-weather-night</v-icon></template>
-            <v-list-item-title>Scuro</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-      <v-btn icon="mdi-cog" :to="{ name: 'settings' }" />
     </v-app-bar>
 
     <v-main>
