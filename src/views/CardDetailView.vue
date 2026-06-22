@@ -29,7 +29,7 @@ async function onDelete() {
 <template>
   <v-container v-if="card" class="pa-3" style="max-width: 600px">
     <div class="d-flex align-center mb-3">
-      <v-btn icon="mdi-arrow-left" variant="text" @click="router.back()" />
+      <v-btn icon="mdi-arrow-left" variant="text" @click="router.push({ name: 'cards' })" />
       <h2 class="text-h5 ml-2 flex-grow-1 text-truncate">{{ card.name }}</h2>
     </div>
 

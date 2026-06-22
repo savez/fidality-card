@@ -1,47 +1,55 @@
 import { ref } from 'vue'
 import { registerSW } from 'virtual:pwa-register'
 
-const needRefresh = ref(false)
 const offlineReady = ref(false)
-// Possibili valori: 'idle' | 'checking' | 'up-to-date' | 'new-available' | 'error'
+// 'idle' | 'checking' | 'updating' | 'up-to-date' | 'error'
 const updateCheckStatus = ref('idle')
-let updateSW = null
+
+let registration = null
+let registered = false
+
+// Con registerType:'autoUpdate' il nuovo service worker si attiva da solo e la
+// pagina si ricarica automaticamente. Qui aggiungiamo check periodici e al
+// ritorno in primo piano, così una PWA installata e sempre aperta non resta
+// indietro (era il caso che bloccava gli aggiornamenti col vecchio 'prompt').
+const UPDATE_INTERVAL_MS = 60 * 60 * 1000
 
 export function initPwa() {
-  if (updateSW) return
-  updateSW = registerSW({
-    onNeedRefresh() {
-      needRefresh.value = true
-    },
+  if (registered) return
+  registered = true
+  registerSW({
+    immediate: true,
     onOfflineReady() {
       offlineReady.value = true
+    },
+    onRegisteredSW(_swUrl, r) {
+      registration = r || null
+      if (!registration) return
+      setInterval(() => {
+        registration.update().catch(() => {})
+      }, UPDATE_INTERVAL_MS)
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          registration.update().catch(() => {})
+        }
+      })
     },
   })
 }
 
-export function applyUpdate() {
-  updateSW?.(true)
-}
-
-export function dismissUpdate() {
-  needRefresh.value = false
-}
-
+// Check manuale dal dialog versione. Con autoUpdate, se viene trovato un nuovo
+// SW la pagina si ricaricherà da sola; segnaliamo lo stato all'utente.
 export async function checkForUpdate() {
-  if (!updateSW) {
+  if (!registration) {
     updateCheckStatus.value = 'error'
     return
   }
   updateCheckStatus.value = 'checking'
   try {
-    // updateSW() senza argomenti forza un re-check del SW lato browser.
-    // Se un aggiornamento è disponibile (ora o anche già rilevato in precedenza),
-    // onNeedRefresh ha messo needRefresh.value = true. Aspettiamo un tick per il callback.
-    await updateSW()
-    await new Promise((resolve) => setTimeout(resolve, 600))
-    updateCheckStatus.value = needRefresh.value ? 'new-available' : 'up-to-date'
-  } catch (e) {
-    console.error('checkForUpdate failed', e)
+    await registration.update()
+    const hasUpdate = !!(registration.installing || registration.waiting)
+    updateCheckStatus.value = hasUpdate ? 'updating' : 'up-to-date'
+  } catch {
     updateCheckStatus.value = 'error'
   }
 }
@@ -51,13 +59,5 @@ export function resetCheckStatus() {
 }
 
 export function usePwaUpdate() {
-  return {
-    needRefresh,
-    offlineReady,
-    updateCheckStatus,
-    applyUpdate,
-    dismissUpdate,
-    checkForUpdate,
-    resetCheckStatus,
-  }
+  return { offlineReady, updateCheckStatus, checkForUpdate, resetCheckStatus }
 }

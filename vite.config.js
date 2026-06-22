@@ -20,7 +20,7 @@ export default defineConfig({
     vue(),
     vuetify({ autoImport: true }),
     VitePWA({
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icons/icon-192.png', 'icons/icon-512.png'],
       manifest: {
         name: 'Fidelity Card',

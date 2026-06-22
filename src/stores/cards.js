@@ -19,7 +19,8 @@ export const useCardsStore = defineStore('cards', () => {
   const search = ref('')
 
   const filtered = computed(() => {
-    const q = search.value.trim().toLowerCase()
+    // search può diventare null col clear (X) di Vuetify: coalescing a '' per non rompere il filtro.
+    const q = (search.value ?? '').trim().toLowerCase()
 
     const matched = items.value.filter((c) => {
       if (!q) return true
