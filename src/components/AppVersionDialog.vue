@@ -10,7 +10,7 @@ const emit = defineEmits(['update:modelValue'])
 const version = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '?.?.?'
 const changelogUrl = 'https://github.com/savez/fidality-card/releases'
 
-const { updateCheckStatus, checkForUpdate, applyUpdate, resetCheckStatus } = usePwaUpdate()
+const { updateCheckStatus, checkForUpdate, resetCheckStatus } = usePwaUpdate()
 
 // Quando il dialog si chiude, resettiamo lo stato di check così la prossima apertura è pulita.
 watch(
@@ -25,9 +25,6 @@ function close() {
 }
 async function onCheckUpdate() {
   await checkForUpdate()
-}
-function onApplyUpdate() {
-  applyUpdate()
 }
 </script>
 
@@ -85,15 +82,12 @@ function onApplyUpdate() {
         </v-alert>
 
         <v-alert
-          v-else-if="updateCheckStatus === 'new-available'"
+          v-else-if="updateCheckStatus === 'updating'"
           type="info"
           density="comfortable"
           class="mt-3"
         >
-          Nuova versione disponibile.
-          <template #append>
-            <v-btn size="small" variant="tonal" @click="onApplyUpdate">Ricarica</v-btn>
-          </template>
+          Nuova versione trovata: aggiornamento in corso, l'app si riavvierà tra poco.
         </v-alert>
 
         <v-alert

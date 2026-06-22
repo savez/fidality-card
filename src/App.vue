@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue'
-import { usePwaUpdate } from '@/composables/usePwaUpdate.js'
 import { useDbStatus } from '@/composables/useDbStatus.js'
 import { useTheme } from '@/composables/useTheme.js'
 import AppBarVersionPill from '@/components/AppBarVersionPill.vue'
@@ -12,16 +11,7 @@ useTheme()
 
 const { dbError } = useDbStatus()
 
-const { needRefresh, applyUpdate, dismissUpdate } = usePwaUpdate()
-
 const versionDialogOpen = ref(false)
-
-function onApplyUpdate() {
-  applyUpdate()
-}
-function onDismissUpdate() {
-  dismissUpdate()
-}
 </script>
 
 <template>
@@ -55,14 +45,6 @@ function onDismissUpdate() {
         <span>Impostazioni</span>
       </v-btn>
     </v-bottom-navigation>
-
-    <v-snackbar v-model="needRefresh" :timeout="-1" location="bottom" color="primary">
-      Nuova versione disponibile.
-      <template #actions>
-        <v-btn variant="text" @click="onApplyUpdate">Ricarica</v-btn>
-        <v-btn variant="text" @click="onDismissUpdate">Dopo</v-btn>
-      </template>
-    </v-snackbar>
 
     <AppVersionDialog v-model="versionDialogOpen" />
   </v-app>
