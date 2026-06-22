@@ -6,6 +6,7 @@ import BrandPicker from '@/brands/BrandPicker.vue'
 import BarcodeScanner from '@/scan/BarcodeScanner.vue'
 import IconPickerField from '@/components/IconPickerField.vue'
 import { getBrand } from '@/brands/brands.js'
+import { inferBarcodeFormat, SUPPORTED_FORMATS, FORMAT_LABELS } from '@/scan/barcodeFormat.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -16,8 +17,6 @@ const tab = ref('manuale')
 const saving = ref(false)
 const error = ref(null)
 
-const FORMATS = ['EAN_13', 'EAN_8', 'CODE_128', 'CODE_39', 'UPC_A', 'QR_CODE', 'DATA_MATRIX', 'ITF']
-
 const form = reactive({
   name: '',
   brandId: null,
@@ -27,10 +26,22 @@ const form = reactive({
   note: '',
 })
 
+// Il tipo di barcode viene dedotto automaticamente dal valore; resta nascosto
+// finché l'utente non apre "Avanzate". autoFormat=false quando il tipo è
+// autorevole (scansione, card esistente, override manuale): in quei casi non
+// va sovrascritto dalla deduzione.
+const advancedFormat = ref(false)
+const autoFormat = ref(true)
+const formatItems = SUPPORTED_FORMATS.map((value) => ({
+  value,
+  title: FORMAT_LABELS[value] ?? value,
+}))
+const formatLabel = computed(() => FORMAT_LABELS[form.barcodeFormat] ?? form.barcodeFormat)
+
 onMounted(async () => {
   if (isEdit.value) {
     const c = await cards.get(route.params.id)
-    if (c)
+    if (c) {
       Object.assign(form, {
         name: c.name,
         brandId: c.brandId,
@@ -39,8 +50,19 @@ onMounted(async () => {
         icona: c.icona ?? undefined,
         note: c.note ?? '',
       })
+      // Card esistente: il formato salvato è autorevole, non auto-dedurre.
+      autoFormat.value = false
+    }
   }
 })
+
+// Auto-deduzione del tipo barcode dal valore digitato (solo finché non è bloccato).
+watch(
+  () => form.barcode,
+  (value) => {
+    if (autoFormat.value) form.barcodeFormat = inferBarcodeFormat(value)
+  }
+)
 
 watch(
   () => form.brandId,
@@ -58,6 +80,8 @@ watch(
 function onDecoded(payload) {
   form.barcode = payload.barcode
   form.barcodeFormat = payload.barcodeFormat
+  // Formato auto-rilevato dallo scanner: autorevole, non sovrascrivere.
+  autoFormat.value = false
   tab.value = 'manuale'
 }
 
@@ -116,7 +140,32 @@ async function save() {
       <v-text-field v-model="form.name" label="Nome card *" :counter="80" maxlength="80" required />
       <BrandPicker v-model="form.brandId" />
       <v-text-field v-model="form.barcode" label="Codice *" maxlength="256" required />
-      <v-select v-model="form.barcodeFormat" :items="FORMATS" label="Formato codice" />
+
+      <div class="mb-2">
+        <div class="d-flex align-center text-caption text-medium-emphasis">
+          <span>Tipo codice: {{ formatLabel }}</span>
+          <v-spacer />
+          <v-btn
+            variant="text"
+            size="small"
+            density="comfortable"
+            @click="advancedFormat = !advancedFormat"
+          >
+            {{ advancedFormat ? 'Nascondi' : 'Modifica' }}
+          </v-btn>
+        </div>
+        <v-select
+          v-if="advancedFormat"
+          v-model="form.barcodeFormat"
+          :items="formatItems"
+          item-title="title"
+          item-value="value"
+          label="Formato codice"
+          density="comfortable"
+          class="mt-1"
+          @update:model-value="autoFormat = false"
+        />
+      </div>
       <IconPickerField v-model="form.icona" :brand-id="form.brandId" />
       <v-textarea
         v-model="form.note"
