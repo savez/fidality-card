@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/savez/fidality-card/compare/v1.5.0...v1.6.0) (2026-06-22)
+
+
+### ✨ Features
+
+* **share:** condividi l'intero vault via Web Share API ([#19](https://github.com/savez/fidality-card/issues/19)) ([d57b1a1](https://github.com/savez/fidality-card/commit/d57b1a1ebb864a8a4d5db876d289fdf51ddd3bc0))
+
 ## [1.5.0](https://github.com/savez/fidality-card/compare/v1.4.0...v1.5.0) (2026-06-22)
 
 
