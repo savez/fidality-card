@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.3](https://github.com/savez/fidality-card/compare/v1.6.2...v1.6.3) (2026-06-22)
+
+
+### 🐛 Bug Fixes
+
+* **share:** condivisione come text/plain, fallback download, tasto solo dove supportato ([#26](https://github.com/savez/fidality-card/issues/26)) ([039c2fa](https://github.com/savez/fidality-card/commit/039c2fab1e168af265a0c352c52169954e8bdda1))
+
 ## [1.6.2](https://github.com/savez/fidality-card/compare/v1.6.1...v1.6.2) (2026-06-22)
 
 
