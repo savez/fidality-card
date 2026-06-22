@@ -23,14 +23,16 @@ PWA Vue 3 per salvare e condividere le proprie fidelity card (barcode / QR code)
 
 ## Funzionalità
 
-- 📷 Scansione barcode / QR direttamente dalla fotocamera del telefono
+- 📷 Scansione barcode / QR direttamente dalla fotocamera del telefono, con supporto a codici densi e deduzione automatica del formato
 - ✍️ Inserimento manuale del codice
-- 🏪 Libreria di 20 brand italiani precostituita (Esselunga, Conad, Coop, IKEA, Q8, …) con icone e colori
+- 🏪 Libreria di brand italiani precostituita (Esselunga, Conad, Coop, IKEA, Q8, …) con icone e colori
 - 🎨 Icona personalizzabile per card (emoji o nome icona Material Design)
-- 🔗 Condivisione card via QR code o link (payload nel fragment URL, mai inviato a un server)
+- ⭐ Card pinnabili e ordinate automaticamente prima per pin e poi in ordine alfabetico
+- 🔗 Condivisione card o vault via QR code, link e Web Share API (payload nel fragment URL, mai inviato a un server)
 - 📥 Import card da QR / link condiviso
 - 💾 Backup completo del DB in JSON (esportabile / re-importabile)
-- 📱 Installabile come PWA (offline completo)
+- 🌙 Tema salvato e ripristinato all'avvio
+- 📱 Installabile come PWA con auto-update e offline completo
 - 🌐 100% client-side: i dati restano sul tuo telefono in IndexedDB
 
 ## Tech stack
