@@ -21,8 +21,8 @@ const versionDialogOpen = ref(false)
       che supporta IndexedDB.
     </v-alert>
 
-    <v-app-bar color="primary" density="comfortable">
-      <v-app-bar-title>Fidelity Card</v-app-bar-title>
+    <v-app-bar flat color="background" density="comfortable">
+      <v-app-bar-title class="wordmark font-display">Fidelity Card</v-app-bar-title>
       <v-spacer />
       <AppBarVersionPill @click="versionDialogOpen = true" />
     </v-app-bar>
@@ -31,16 +31,16 @@ const versionDialogOpen = ref(false)
       <router-view />
     </v-main>
 
-    <v-bottom-navigation grow>
-      <v-btn :to="{ name: 'cards' }" value="cards">
+    <v-bottom-navigation grow height="66" bg-color="surface">
+      <v-btn :to="{ name: 'cards' }" value="cards" stacked>
         <v-icon>mdi-credit-card-multiple</v-icon>
         <span>Card</span>
       </v-btn>
-      <v-btn :to="{ name: 'card-new' }" value="new">
-        <v-icon>mdi-plus-circle</v-icon>
+      <v-btn :to="{ name: 'card-new' }" value="new" stacked class="nav-new">
+        <v-icon>mdi-plus</v-icon>
         <span>Nuova</span>
       </v-btn>
-      <v-btn :to="{ name: 'settings' }" value="settings">
+      <v-btn :to="{ name: 'settings' }" value="settings" stacked>
         <v-icon>mdi-cog</v-icon>
         <span>Impostazioni</span>
       </v-btn>
@@ -49,3 +49,19 @@ const versionDialogOpen = ref(false)
     <AppVersionDialog v-model="versionDialogOpen" />
   </v-app>
 </template>
+
+<style scoped>
+.wordmark {
+  font-size: 1.4rem;
+}
+/* "Nuova" come azione primaria in risalto nella bottom-nav */
+:deep(.nav-new) {
+  background: rgb(var(--v-theme-primary));
+  color: #fff;
+  border-radius: 14px;
+  margin: 8px 6px;
+}
+:deep(.nav-new .v-btn__overlay) {
+  opacity: 0;
+}
+</style>
