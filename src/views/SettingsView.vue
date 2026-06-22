@@ -10,6 +10,18 @@ const fileInput = ref(null)
 const message = ref(null)
 const error = ref(null)
 
+// Mostra "Condividi vault" solo dove la condivisione di file è davvero supportata
+// (di fatto: mobile Android/iOS). Su desktop resta solo "Esporta backup JSON".
+// Feature detection con un file di prova text/plain (lo stesso tipo che condividiamo).
+const canShareFiles = (() => {
+  try {
+    const probe = new File(['{}'], 'probe.txt', { type: 'text/plain' })
+    return !!navigator.canShare?.({ files: [probe] })
+  } catch {
+    return false
+  }
+})()
+
 // Garantisce che gli items siano in memoria, così onShare può costruire il dump
 // in modo sincrono senza await prima di navigator.share().
 onMounted(() => {
@@ -39,34 +51,29 @@ async function onExport() {
   }
 }
 
-// Sincrono di proposito: navigator.share() deve essere chiamato durante la
-// transient activation del tap. Qualsiasi await prima (es. lettura IndexedDB)
-// la farebbe scadere → NotAllowedError ("permesso negato"). Quindi costruiamo
-// il dump dagli items in memoria e chiamiamo share senza await intermedi.
-function onShare() {
+// navigator.share() deve partire durante la transient activation del tap: il dump
+// è costruito in modo sincrono (dagli items in memoria) e share() è la prima cosa
+// invocata, senza await prima. Il file è text/plain perché Chrome Android blocca i
+// file application/json nello share (NotAllowedError). Se lo share fallisce per
+// qualunque motivo (tipo bloccato, policy…), si ripiega sul download.
+async function onShare() {
   error.value = null
   message.value = null
   const dump = cards.exportBackupSync()
-  const file = buildBackupFile(dump, backupFilename())
-  if (!navigator.canShare?.({ files: [file] })) {
-    downloadFile(file)
-    message.value = 'Condivisione non supportata qui: file scaricato, condividilo manualmente.'
-    return
-  }
-  navigator
-    .share({
+  const file = buildBackupFile(dump, backupFilename(new Date(), 'txt'), 'text/plain')
+  try {
+    await navigator.share({
       files: [file],
       title: 'Fidelity Card',
       text: 'Backup delle mie fidelity card',
     })
-    .then(() => {
-      message.value = `Vault condiviso (${dump.cards.length} card).`
-    })
-    .catch((e) => {
-      // L'utente ha annullato il foglio di condivisione: nessun errore da mostrare.
-      if (e?.name === 'AbortError') return
-      error.value = e.message ?? 'Condivisione non riuscita'
-    })
+    message.value = `Vault condiviso (${dump.cards.length} card).`
+  } catch (e) {
+    // Annullamento dell'utente: nessun errore.
+    if (e?.name === 'AbortError') return
+    downloadFile(file)
+    message.value = 'Condivisione non riuscita: backup scaricato, invialo manualmente.'
+  }
 }
 
 async function onImportFile(event) {
@@ -107,10 +114,16 @@ async function onImportFile(event) {
     </v-list>
 
     <h3 class="text-subtitle-1 mb-2">Backup</h3>
-    <v-btn block color="primary" prepend-icon="mdi-share-variant" @click="onShare">
+    <v-btn
+      v-if="canShareFiles"
+      block
+      color="primary"
+      prepend-icon="mdi-share-variant"
+      @click="onShare"
+    >
       Condividi vault
     </v-btn>
-    <v-btn block class="mt-2" prepend-icon="mdi-download" @click="onExport">
+    <v-btn block :class="canShareFiles ? 'mt-2' : ''" prepend-icon="mdi-download" @click="onExport">
       Esporta backup JSON
     </v-btn>
     <v-btn
@@ -122,7 +135,13 @@ async function onImportFile(event) {
     >
       Importa backup JSON
     </v-btn>
-    <input ref="fileInput" type="file" accept="application/json" hidden @change="onImportFile" />
+    <input
+      ref="fileInput"
+      type="file"
+      accept="application/json,text/plain,.json,.txt"
+      hidden
+      @change="onImportFile"
+    />
 
     <v-alert v-if="message" type="success" class="mt-3">{{ message }}</v-alert>
     <v-alert v-if="error" type="error" class="mt-3">{{ error }}</v-alert>
