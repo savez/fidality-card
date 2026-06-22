@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.5.0](https://github.com/savez/fidality-card/compare/v1.4.0...v1.5.0) (2026-06-22)
+
+
+### ✨ Features
+
+* **brands:** aggiungi nuovi brand con icone dedicate ([fdb4cce](https://github.com/savez/fidality-card/commit/fdb4ccec316cc73c3d0cd7a3b5a51fc3cc259fd1))
+* **scan:** migliora lettura barcode densi e deduci il tipo automaticamente ([0e4f757](https://github.com/savez/fidality-card/commit/0e4f757c10955246f86a577c2ead648c870f5d6b))
+* scanner barcode densi, tipo auto-dedotto e nuovi brand ([c23e917](https://github.com/savez/fidality-card/commit/c23e9179423222427fde4eefbb1a1df073b8e73d))
+
 ## [1.4.0](https://github.com/savez/fidality-card/compare/v1.3.1...v1.4.0) (2026-06-19)
 
 
