@@ -3,7 +3,10 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useCardsStore } from '@/stores/cards.js'
 import { getBrand } from '@/brands/brands.js'
+import { readableTextColor } from '@/utils/contrast.js'
 import BarcodeDisplay from '@/components/BarcodeDisplay.vue'
+import BarcodeFullscreen from '@/components/BarcodeFullscreen.vue'
+import IconaDisplay from '@/components/IconaDisplay.vue'
 import ShareDialog from '@/share/ShareDialog.vue'
 
 const route = useRoute()
@@ -12,8 +15,11 @@ const cards = useCardsStore()
 const card = ref(null)
 const showShare = ref(false)
 const showDelete = ref(false)
+const showFull = ref(false)
 
 const brand = computed(() => getBrand(card.value?.brandId))
+const bgColor = computed(() => brand.value?.color ?? '#607D8B')
+const fg = computed(() => readableTextColor(bgColor.value))
 
 onMounted(async () => {
   card.value = await cards.get(route.params.id)
@@ -27,21 +33,42 @@ async function onDelete() {
 </script>
 
 <template>
-  <v-container v-if="card" class="pa-3" style="max-width: 600px">
-    <div class="d-flex align-center mb-3">
+  <v-container v-if="card" class="pa-4" style="max-width: 600px">
+    <div class="d-flex align-center mb-4">
       <v-btn icon="mdi-arrow-left" variant="text" @click="router.push({ name: 'cards' })" />
-      <h2 class="text-h5 ml-2 flex-grow-1 text-truncate">{{ card.name }}</h2>
+      <h2 class="font-display text-h5 ml-1 flex-grow-1 text-truncate">{{ card.name }}</h2>
     </div>
 
-    <v-card theme="light" class="pa-4 d-flex flex-column align-center" elevation="2">
-      <BarcodeDisplay :value="card.barcode" :format="card.barcodeFormat" />
-      <div class="text-caption mt-2">{{ card.barcodeFormat }}</div>
-    </v-card>
+    <!-- card presentata -->
+    <div class="present" :style="{ backgroundColor: bgColor, color: fg }">
+      <div class="present__top">
+        <IconaDisplay :icona="card.icona" :brand-id="card.brandId" :size="40" />
+        <span v-if="card.pinned" class="present__chip">
+          <v-icon size="13">mdi-star</v-icon>
+          In primo piano
+        </span>
+      </div>
+      <div class="present__name">{{ card.name }}</div>
+      <div class="present__brand">{{ brand?.name ?? 'Personalizzato' }}</div>
+    </div>
 
-    <v-list class="mt-3" lines="two">
+    <!-- scan panel: tocca per ingrandire -->
+    <button class="scan" type="button" @click="showFull = true">
+      <BarcodeDisplay :value="card.barcode" :format="card.barcodeFormat" />
+      <div class="scan__hint">
+        <v-icon size="16">mdi-arrow-expand</v-icon>
+        Tocca per ingrandire
+      </div>
+    </button>
+
+    <v-list class="meta mt-4" lines="two" bg-color="surface" rounded="lg">
       <v-list-item>
         <v-list-item-title>Brand</v-list-item-title>
         <v-list-item-subtitle>{{ brand?.name ?? 'Personalizzato' }}</v-list-item-subtitle>
+      </v-list-item>
+      <v-list-item>
+        <v-list-item-title>Tipo codice</v-list-item-title>
+        <v-list-item-subtitle>{{ card.barcodeFormat }}</v-list-item-subtitle>
       </v-list-item>
       <v-list-item v-if="card.note">
         <v-list-item-title>Note</v-list-item-title>
@@ -49,12 +76,16 @@ async function onDelete() {
       </v-list-item>
     </v-list>
 
-    <div class="d-flex gap-2 mt-4">
-      <v-btn block color="primary" prepend-icon="mdi-share-variant" @click="showShare = true">
-        Condividi
-      </v-btn>
-    </div>
-    <div class="d-flex gap-2 mt-2">
+    <v-btn
+      class="mt-4"
+      block
+      color="primary"
+      prepend-icon="mdi-share-variant"
+      @click="showShare = true"
+    >
+      Condividi
+    </v-btn>
+    <div class="d-flex align-center mt-2">
       <v-btn
         variant="outlined"
         prepend-icon="mdi-pencil"
@@ -70,6 +101,15 @@ async function onDelete() {
 
     <ShareDialog v-if="showShare" :card="card" @close="showShare = false" />
 
+    <BarcodeFullscreen
+      v-if="showFull"
+      :value="card.barcode"
+      :format="card.barcodeFormat"
+      :name="card.name"
+      :brand-color="bgColor"
+      @close="showFull = false"
+    />
+
     <v-dialog v-model="showDelete" max-width="420">
       <v-card>
         <v-card-title>Eliminare la card?</v-card-title>
@@ -83,3 +123,70 @@ async function onDelete() {
     </v-dialog>
   </v-container>
 </template>
+
+<style scoped>
+.present {
+  border-radius: var(--r-card);
+  padding: 18px;
+  box-shadow: var(--tile-shadow);
+  position: relative;
+  overflow: hidden;
+}
+.present::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(0, 0, 0, 0.12));
+  pointer-events: none;
+}
+.present__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+.present__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.22);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.present__name {
+  position: relative;
+  font-weight: 800;
+  font-size: 1.35rem;
+  letter-spacing: -0.01em;
+  margin-top: 30px;
+}
+.present__brand {
+  position: relative;
+  font-size: 0.8rem;
+  font-weight: 600;
+  opacity: 0.82;
+}
+.scan {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  background: #ffffff;
+  border: 1px solid var(--line, #e2e6ee);
+  border-radius: var(--r-card);
+  padding: 18px 16px 12px;
+  cursor: pointer;
+  box-shadow: var(--tile-shadow);
+}
+.scan__hint {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: #6b7180;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+</style>

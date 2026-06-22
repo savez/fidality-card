@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { getBrand } from '@/brands/brands.js'
+import { readableTextColor } from '@/utils/contrast.js'
 import IconaDisplay from './IconaDisplay.vue'
 
 const props = defineProps({ card: { type: Object, required: true } })
@@ -8,69 +9,100 @@ defineEmits(['toggle-pin'])
 
 const brand = computed(() => getBrand(props.card.brandId))
 const bgColor = computed(() => brand.value?.color ?? '#607D8B')
+const fg = computed(() => readableTextColor(bgColor.value))
 </script>
 
 <template>
-  <v-card :to="{ name: 'card-detail', params: { id: card.id } }" class="card-tile" elevation="2">
-    <div class="card-tile__band" :style="{ backgroundColor: bgColor }">
-      <IconaDisplay :icona="card.icona" :brand-id="card.brandId" :size="42" />
-
+  <v-card
+    :to="{ name: 'card-detail', params: { id: card.id } }"
+    class="tile"
+    :style="{ backgroundColor: bgColor, color: fg }"
+    flat
+  >
+    <div class="tile__top">
+      <IconaDisplay :icona="card.icona" :brand-id="card.brandId" :size="38" />
       <button
-        class="pin-btn"
+        class="pin"
         type="button"
-        :class="{ pinned: card.pinned }"
-        :aria-label="card.pinned ? 'Rimuovi dal pin' : 'Pin in primo piano'"
+        :class="{ on: card.pinned }"
+        :aria-label="card.pinned ? 'Rimuovi dal primo piano' : 'Metti in primo piano'"
         @click.stop.prevent="$emit('toggle-pin', card.id)"
       >
-        <v-icon size="18">{{ card.pinned ? 'mdi-pin' : 'mdi-pin-outline' }}</v-icon>
+        <v-icon size="16">{{ card.pinned ? 'mdi-star' : 'mdi-star-outline' }}</v-icon>
       </button>
     </div>
 
-    <v-card-text>
-      <div class="text-subtitle-1 font-weight-medium text-truncate">{{ card.name }}</div>
-      <div class="text-caption text-medium-emphasis text-truncate">
-        {{ brand?.name ?? 'Personalizzato' }}
-      </div>
-    </v-card-text>
+    <div class="tile__name">
+      <div class="nm text-truncate">{{ card.name }}</div>
+      <div class="sub text-truncate">{{ brand?.name ?? 'Personalizzato' }}</div>
+    </div>
   </v-card>
 </template>
 
 <style scoped>
-.card-tile__band {
+.tile {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--r-tile);
+  padding: 14px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 96px;
-  color: white;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  box-shadow: var(--tile-shadow);
+}
+/* sheen: leggero sweep diagonale, dà la sensazione di card fisica */
+.tile::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.04) 34%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
+  pointer-events: none;
+}
+.tile__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
   position: relative;
 }
-.pin-btn {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.18);
+.tile__name {
+  position: relative;
+}
+.nm {
+  font-weight: 700;
+  font-size: 1.02rem;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+.sub {
+  font-size: 0.72rem;
+  font-weight: 600;
+  opacity: 0.82;
+  margin-top: 1px;
+}
+.pin {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
   border: none;
-  color: white;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    background-color 0.15s ease,
-    transform 0.15s ease;
+  color: inherit;
+  background: rgba(0, 0, 0, 0.16);
+  transition: background-color 0.15s ease;
 }
-.pin-btn:hover {
-  background: rgba(0, 0, 0, 0.35);
+.pin.on {
+  background: #ffffff;
+  color: #14161a;
 }
-.pin-btn.pinned {
-  background: rgba(255, 255, 255, 0.92);
-  color: #1976d2;
-}
-.pin-btn:focus-visible {
-  outline: 2px solid white;
-  outline-offset: 1px;
+.pin:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
 }
 </style>

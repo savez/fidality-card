@@ -26,6 +26,8 @@
     ]
   },
   "dependencies": {
+    "@fontsource-variable/bricolage-grotesque": "^5.2.10",
+    "@fontsource-variable/inter": "^5.2.8",
     "@mdi/font": "^7.4.47",
     "@zxing/browser": "^0.1.5",
     "@zxing/library": "^0.21.3",

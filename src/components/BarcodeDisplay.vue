@@ -5,6 +5,7 @@ import QRCode from 'qrcode'
 const props = defineProps({
   value: { type: String, required: true },
   format: { type: String, required: true },
+  scale: { type: Number, default: 1 },
 })
 
 const canvas = ref(null)
@@ -17,7 +18,7 @@ async function render() {
     if (props.format === 'QR_CODE' || props.format === 'DATA_MATRIX') {
       await QRCode.toCanvas(canvas.value, props.value, {
         errorCorrectionLevel: 'M',
-        width: Math.min(window.innerWidth - 32, 600),
+        width: Math.min(window.innerWidth - 56, Math.round(340 * props.scale)),
         margin: 1,
         color: { dark: '#000000', light: '#FFFFFF' },
       })
@@ -37,10 +38,10 @@ async function render() {
       const jsbFormat = mapping[fmt] ?? 'CODE128'
       JsBarcode(canvas.value, props.value, {
         format: jsbFormat,
-        width: 3,
-        height: 160,
+        width: Math.max(2, Math.round(3 * props.scale)),
+        height: Math.round(150 * props.scale),
         displayValue: true,
-        fontSize: 20,
+        fontSize: Math.round(20 * props.scale),
         margin: 12,
         background: '#FFFFFF',
         lineColor: '#000000',
@@ -52,7 +53,7 @@ async function render() {
 }
 
 onMounted(render)
-watch(() => [props.value, props.format], render)
+watch(() => [props.value, props.format, props.scale], render)
 </script>
 
 <template>

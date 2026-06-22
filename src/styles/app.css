@@ -1,0 +1,25 @@
+/* Design tokens & globali per la direzione "Pocket".
+   I colori dei componenti vengono dal tema Vuetify; qui: font, raggi, dettagli. */
+
+:root {
+  --r-tile: 12px;
+  --r-card: 14px;
+  --r-control: 10px;
+  --tile-shadow: 0 1px 2px rgba(17, 20, 26, 0.05), 0 12px 26px -14px rgba(17, 20, 26, 0.28);
+}
+
+/* Body: Inter (iper-leggibile). Display: Bricolage, usato con parsimonia. */
+.v-application {
+  font-family:
+    'Inter Variable',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+}
+
+.font-display {
+  font-family: 'Bricolage Grotesque Variable', 'Inter Variable', system-ui, sans-serif;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
