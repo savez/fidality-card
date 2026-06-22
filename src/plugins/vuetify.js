@@ -3,6 +3,7 @@ import '@mdi/font/css/materialdesignicons.css'
 import { createVuetify } from 'vuetify'
 import { initialThemeName } from '@/composables/useTheme.js'
 
+// Direzione "Pocket": utility iper-leggibile, accento indaco, angoli sobri.
 export const vuetify = createVuetify({
   theme: {
     defaultTheme: initialThemeName(),
@@ -10,30 +11,39 @@ export const vuetify = createVuetify({
       light: {
         dark: false,
         colors: {
-          primary: '#1976D2',
-          secondary: '#424242',
-          accent: '#82B1FF',
-          error: '#FF5252',
+          background: '#eef1f6',
+          surface: '#ffffff',
+          'surface-variant': '#e2e6ee',
+          primary: '#4b43f2',
+          secondary: '#14161a',
+          error: '#e5484d',
+          info: '#4b43f2',
+          success: '#30a46c',
+          warning: '#f5a623',
         },
       },
       dark: {
         dark: true,
         colors: {
-          primary: '#42A5F5',
-          secondary: '#90CAF9',
-          accent: '#82B1FF',
-          error: '#FF8A80',
-          background: '#121212',
-          surface: '#1E1E1E',
+          background: '#0f1115',
+          surface: '#181b21',
+          'surface-variant': '#262a31',
+          primary: '#6f68ff',
+          secondary: '#eceef2',
+          error: '#ff6369',
+          info: '#6f68ff',
+          success: '#3dd68c',
+          warning: '#ffb224',
         },
       },
     },
   },
   defaults: {
-    VBtn: { variant: 'flat' },
-    VTextField: { variant: 'outlined', density: 'comfortable' },
-    VSelect: { variant: 'outlined', density: 'comfortable' },
-    VCombobox: { variant: 'outlined', density: 'comfortable' },
+    VBtn: { variant: 'flat', rounded: 'lg' },
+    VTextField: { variant: 'outlined', density: 'comfortable', rounded: 'lg' },
+    VSelect: { variant: 'outlined', density: 'comfortable', rounded: 'lg' },
+    VCombobox: { variant: 'outlined', density: 'comfortable', rounded: 'lg' },
+    VCard: { rounded: 'lg' },
   },
   icons: { defaultSet: 'mdi' },
 })

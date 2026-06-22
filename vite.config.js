@@ -42,6 +42,9 @@ export default defineConfig({
         // Cache name versionato: ogni release ha la sua famiglia di cache.
         // In DevTools (Application → Cache Storage) vedrai `fidality-card-v1.0.0-*`.
         cacheId: `fidality-card-v${pkg.version}`,
+        // Include i font (woff2) nel precache così l'app resta tipograficamente
+        // corretta anche offline (di default i woff2 non sono inclusi).
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         // Pulisce automaticamente le cache delle versioni precedenti quando il nuovo SW si attiva.
         cleanupOutdatedCaches: true,
         navigateFallback: '/index.html',
