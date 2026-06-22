@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useCardsStore } from '@/stores/cards.js'
 import { useTheme } from '@/composables/useTheme.js'
+import { backupFilename, buildBackupFile } from '@/share/backupFile.js'
 
 const { mode: themeMode, setMode: setThemeMode } = useTheme()
 const cards = useCardsStore()
@@ -9,9 +10,15 @@ const fileInput = ref(null)
 const message = ref(null)
 const error = ref(null)
 
-function todayString() {
-  const d = new Date()
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+function downloadFile(file) {
+  const url = URL.createObjectURL(file)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = file.name
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  URL.revokeObjectURL(url)
 }
 
 async function onExport() {
@@ -19,17 +26,33 @@ async function onExport() {
   message.value = null
   try {
     const dump = await cards.exportBackup()
-    const blob = new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `fidelity-cards-${todayString()}.json`
-    document.body.appendChild(a)
-    a.click()
-    a.remove()
-    URL.revokeObjectURL(url)
+    downloadFile(buildBackupFile(dump, backupFilename()))
     message.value = `Esportate ${dump.cards.length} card.`
   } catch (e) {
+    error.value = e.message
+  }
+}
+
+async function onShare() {
+  error.value = null
+  message.value = null
+  try {
+    const dump = await cards.exportBackup()
+    const file = buildBackupFile(dump, backupFilename())
+    if (navigator.canShare?.({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: 'Fidelity Card',
+        text: 'Backup delle mie fidelity card',
+      })
+      message.value = `Vault condiviso (${dump.cards.length} card).`
+    } else {
+      downloadFile(file)
+      message.value = 'Condivisione non supportata qui: file scaricato, condividilo manualmente.'
+    }
+  } catch (e) {
+    // L'utente ha annullato il foglio di condivisione: nessun errore da mostrare.
+    if (e?.name === 'AbortError') return
     error.value = e.message
   }
 }
@@ -72,7 +95,12 @@ async function onImportFile(event) {
     </v-list>
 
     <h3 class="text-subtitle-1 mb-2">Backup</h3>
-    <v-btn block prepend-icon="mdi-download" @click="onExport">Esporta backup JSON</v-btn>
+    <v-btn block color="primary" prepend-icon="mdi-share-variant" @click="onShare">
+      Condividi vault
+    </v-btn>
+    <v-btn block class="mt-2" prepend-icon="mdi-download" @click="onExport">
+      Esporta backup JSON
+    </v-btn>
     <v-btn
       block
       class="mt-2"
