@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/savez/fidality-card/compare/v1.6.0...v1.6.1) (2026-06-22)
+
+
+### 🐛 Bug Fixes
+
+* **share:** chiama navigator.share durante la user activation ([#21](https://github.com/savez/fidality-card/issues/21)) ([04bb71f](https://github.com/savez/fidality-card/commit/04bb71f8f585c9856386fe215fc92ef633ab9d1c))
+
 ## [1.6.0](https://github.com/savez/fidality-card/compare/v1.5.0...v1.6.0) (2026-06-22)
 
 
