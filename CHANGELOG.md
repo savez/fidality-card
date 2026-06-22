@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.6.2](https://github.com/savez/fidality-card/compare/v1.6.1...v1.6.2) (2026-06-22)
+
+
+### 🐛 Bug Fixes
+
+* **cards:** il clear della ricerca non svuota più la lista ([b1a2c8a](https://github.com/savez/fidality-card/commit/b1a2c8a69f158050f474c01d0e8725698f3da64f))
+* **cards:** la freccia indietro dal dettaglio torna alla lista in un click ([8fde885](https://github.com/savez/fidality-card/commit/8fde885169543dfa8da6173131fc0e095a6c40f7))
+* **pwa:** aggiornamento automatico del service worker ([5d73eb7](https://github.com/savez/fidality-card/commit/5d73eb7f246a104fa2f6aa83ae9f5c11ad255ff6))
+* tema, ricerca, indietro dettaglio e auto-update PWA ([626239b](https://github.com/savez/fidality-card/commit/626239b00735039689ea705529107f70f6e13839))
+* **theme:** applica il tema salvato all'avvio dell'app ([58505d0](https://github.com/savez/fidality-card/commit/58505d06046805c74eb9ffd393a66c0fe42b1e78))
+
 ## [1.6.1](https://github.com/savez/fidality-card/compare/v1.6.0...v1.6.1) (2026-06-22)
 
 
