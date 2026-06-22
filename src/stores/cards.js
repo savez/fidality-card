@@ -9,6 +9,7 @@ import {
   togglePin as dbTogglePin,
   exportAll as dbExportAll,
   importAll as dbImportAll,
+  buildDump as dbBuildDump,
 } from '@/db/cards.js'
 import { getBrand } from '@/brands/brands.js'
 
@@ -80,6 +81,12 @@ export const useCardsStore = defineStore('cards', () => {
     return dbExportAll()
   }
 
+  // Dump sincrono dagli items in memoria (per navigator.share, che esige
+  // una transient activation senza await intermedi).
+  function exportBackupSync() {
+    return dbBuildDump(items.value.map((c) => ({ ...c })))
+  }
+
   async function importBackup(dump) {
     const result = await dbImportAll(dump)
     await refresh()
@@ -98,6 +105,7 @@ export const useCardsStore = defineStore('cards', () => {
     remove,
     get,
     exportBackup,
+    exportBackupSync,
     importBackup,
   }
 })

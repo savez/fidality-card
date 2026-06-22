@@ -63,9 +63,15 @@ export async function deleteCard(id) {
   await db.cards.delete(id)
 }
 
-export async function exportAll() {
-  const cards = await listCards()
+// Costruisce il dump in modo sincrono da un array di card già in memoria.
+// Serve a "Condividi vault": navigator.share() richiede una transient activation
+// e va chiamato senza await intermedi (la lettura async da IndexedDB la farebbe scadere).
+export function buildDump(cards) {
   return { version: DUMP_VERSION, exportedAt: nowMs(), cards }
+}
+
+export async function exportAll() {
+  return buildDump(await listCards())
 }
 
 export async function importAll(dump) {

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useCardsStore } from '@/stores/cards.js'
 import { useTheme } from '@/composables/useTheme.js'
 import { backupFilename, buildBackupFile } from '@/share/backupFile.js'
@@ -9,6 +9,12 @@ const cards = useCardsStore()
 const fileInput = ref(null)
 const message = ref(null)
 const error = ref(null)
+
+// Garantisce che gli items siano in memoria, così onShare può costruire il dump
+// in modo sincrono senza await prima di navigator.share().
+onMounted(() => {
+  if (!cards.items.length) cards.refresh()
+})
 
 function downloadFile(file) {
   const url = URL.createObjectURL(file)
@@ -33,28 +39,34 @@ async function onExport() {
   }
 }
 
-async function onShare() {
+// Sincrono di proposito: navigator.share() deve essere chiamato durante la
+// transient activation del tap. Qualsiasi await prima (es. lettura IndexedDB)
+// la farebbe scadere → NotAllowedError ("permesso negato"). Quindi costruiamo
+// il dump dagli items in memoria e chiamiamo share senza await intermedi.
+function onShare() {
   error.value = null
   message.value = null
-  try {
-    const dump = await cards.exportBackup()
-    const file = buildBackupFile(dump, backupFilename())
-    if (navigator.canShare?.({ files: [file] })) {
-      await navigator.share({
-        files: [file],
-        title: 'Fidelity Card',
-        text: 'Backup delle mie fidelity card',
-      })
-      message.value = `Vault condiviso (${dump.cards.length} card).`
-    } else {
-      downloadFile(file)
-      message.value = 'Condivisione non supportata qui: file scaricato, condividilo manualmente.'
-    }
-  } catch (e) {
-    // L'utente ha annullato il foglio di condivisione: nessun errore da mostrare.
-    if (e?.name === 'AbortError') return
-    error.value = e.message
+  const dump = cards.exportBackupSync()
+  const file = buildBackupFile(dump, backupFilename())
+  if (!navigator.canShare?.({ files: [file] })) {
+    downloadFile(file)
+    message.value = 'Condivisione non supportata qui: file scaricato, condividilo manualmente.'
+    return
   }
+  navigator
+    .share({
+      files: [file],
+      title: 'Fidelity Card',
+      text: 'Backup delle mie fidelity card',
+    })
+    .then(() => {
+      message.value = `Vault condiviso (${dump.cards.length} card).`
+    })
+    .catch((e) => {
+      // L'utente ha annullato il foglio di condivisione: nessun errore da mostrare.
+      if (e?.name === 'AbortError') return
+      error.value = e.message ?? 'Condivisione non riuscita'
+    })
 }
 
 async function onImportFile(event) {
