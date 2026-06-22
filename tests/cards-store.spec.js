@@ -51,6 +51,13 @@ describe('cards store — filtered sort', () => {
     cards.items = [card('1', 'zucca'), card('2', 'Èxtra'), card('3', 'banana')]
     expect(cards.filtered.map((c) => c.name)).toEqual(['banana', 'Èxtra', 'zucca'])
   })
+
+  it('search = null (clear di Vuetify) → mostra tutte le card senza errori', () => {
+    const cards = useCardsStore()
+    cards.items = [card('1', 'Banana'), card('2', 'Anguria')]
+    cards.search = null
+    expect(cards.filtered.map((c) => c.name)).toEqual(['Anguria', 'Banana'])
+  })
 })
 
 describe('cards store — exportBackupSync', () => {
