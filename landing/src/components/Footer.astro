@@ -16,10 +16,51 @@ import { meta } from '../data/meta.js'
     <div class="footer-meta">
       <a href={meta.authorUrl} rel="noopener noreferrer" target="_blank">{meta.authorHandle}</a>
       <span aria-hidden="true">·</span>
-      <span>v{meta.version}</span>
+      <span id="app-version">v{meta.version}</span>
     </div>
   </div>
 </footer>
+
+<script>
+  // La versione mostrata viene dall'ultima release GitHub (tag), letta a runtime.
+  // Il valore build-time (meta.version) resta come fallback se l'API non risponde.
+  const KEY = 'landing:latest-release'
+  const TTL_MS = 60 * 60 * 1000 // 1h, per non sbattere sul rate limit dell'API GitHub
+  const API = 'https://api.github.com/repos/savez/fidality-card/releases/latest'
+
+  function showVersion(tag) {
+    const el = document.getElementById('app-version')
+    if (el && tag) el.textContent = 'v' + String(tag).replace(/^v/, '')
+  }
+
+  function readCache() {
+    try {
+      const { v, ts } = JSON.parse(localStorage.getItem(KEY) || '{}')
+      if (v && Date.now() - ts < TTL_MS) return v
+    } catch {}
+    return null
+  }
+
+  async function loadLatestVersion() {
+    const cached = readCache()
+    if (cached) {
+      showVersion(cached)
+      return
+    }
+    try {
+      const res = await fetch(API, { headers: { Accept: 'application/vnd.github+json' } })
+      if (!res.ok) return
+      const tag = (await res.json()).tag_name
+      if (!tag) return
+      showVersion(tag)
+      try {
+        localStorage.setItem(KEY, JSON.stringify({ v: tag, ts: Date.now() }))
+      } catch {}
+    } catch {}
+  }
+
+  loadLatestVersion()
+</script>
 
 <style>
   .footer {
