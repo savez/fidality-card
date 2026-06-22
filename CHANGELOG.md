@@ -1,5 +1,27 @@
 # Changelog
 
+## [2.0.0](https://github.com/savez/fidality-card/compare/v1.6.3...v2.0.0) (2026-06-22)
+
+
+### ✨ Features
+
+* **ui:** app bar pulita e bottom-nav con azione Nuova in risalto ([98f2cdb](https://github.com/savez/fidality-card/commit/98f2cdb4d2ae9df2e8a8f0535d78268bd9cba194))
+* **ui:** dettaglio ridisegnato + barcode a tutto schermo ([df075b3](https://github.com/savez/fidality-card/commit/df075b33cdfcbf31717ff88275c2df5b730f4bca))
+* **ui:** restyle frontend - direzione Pocket (v2.0.0) ([fcccfd5](https://github.com/savez/fidality-card/commit/fcccfd5600465fc8996bf9d41b5533fe2644e37c))
+* **ui:** tema Pocket - palette indaco, tipografia, token ([2b22cf2](https://github.com/savez/fidality-card/commit/2b22cf24eff01e7dcef13c612240edf5573551bf))
+* **ui:** tessere e home ridisegnate ([aa8ebb6](https://github.com/savez/fidality-card/commit/aa8ebb6f2c96e3330470b6d453c784750cab214e))
+
+
+### 🐛 Bug Fixes
+
+* **ui:** "Nuova" come FAB centrale rialzato ([b1ad566](https://github.com/savez/fidality-card/commit/b1ad566f8b569b6b8974526dfd1e480adb78ce39))
+
+
+### 📝 Documentation
+
+* streamline README ([#30](https://github.com/savez/fidality-card/issues/30)) ([c7e0ebf](https://github.com/savez/fidality-card/commit/c7e0ebf70be758344b915155c45e42be1b0806e7))
+* update README with recent features ([#28](https://github.com/savez/fidality-card/issues/28)) ([ba4c26b](https://github.com/savez/fidality-card/commit/ba4c26b1b24a0a86e140e7c42ef9fe9757cb22d2))
+
 ## [1.6.3](https://github.com/savez/fidality-card/compare/v1.6.2...v1.6.3) (2026-06-22)
 
 
