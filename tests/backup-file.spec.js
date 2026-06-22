@@ -9,6 +9,12 @@ describe('backupFilename', () => {
   it('zero-padding di mese e giorno', () => {
     expect(backupFilename(new Date('2026-01-05T00:00:00'))).toBe('fidelity-cards-2026-01-05.json')
   })
+
+  it('estensione personalizzabile (es. txt per la condivisione)', () => {
+    expect(backupFilename(new Date('2026-06-22T10:00:00'), 'txt')).toBe(
+      'fidelity-cards-2026-06-22.txt'
+    )
+  })
 })
 
 describe('buildBackupFile', () => {
@@ -24,5 +30,11 @@ describe('buildBackupFile', () => {
   it('il contenuto è il dump serializzato in JSON pretty', async () => {
     const file = buildBackupFile(dump, 'backup.json')
     expect(await file.text()).toBe(JSON.stringify(dump, null, 2))
+  })
+
+  it('tipo MIME personalizzabile (text/plain per lo share su Android)', () => {
+    const file = buildBackupFile(dump, 'backup.txt', 'text/plain')
+    expect(file.type).toBe('text/plain')
+    expect(file.name).toBe('backup.txt')
   })
 })
