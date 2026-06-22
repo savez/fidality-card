@@ -17,6 +17,16 @@ function systemPrefersDark() {
   return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false
 }
 
+// Nome del tema Vuetify ('light'|'dark') da applicare all'avvio, risolto dalla
+// modalità salvata e dalla preferenza di sistema. Usato come defaultTheme alla
+// creazione di Vuetify così il tema corretto è attivo dal primo paint, senza
+// dipendere da quale view viene montata.
+export function initialThemeName() {
+  const m = readStoredMode()
+  if (m === 'system') return systemPrefersDark() ? 'dark' : 'light'
+  return m
+}
+
 let mediaQuery = null
 let mediaListenerAttached = false
 const mode = ref(readStoredMode())
@@ -26,7 +36,9 @@ function ensureMediaListener() {
   if (mediaListenerAttached) return
   mediaQuery = window.matchMedia?.('(prefers-color-scheme: dark)')
   if (!mediaQuery) return
-  const handler = (e) => { systemDark.value = e.matches }
+  const handler = (e) => {
+    systemDark.value = e.matches
+  }
   // addEventListener is preferred; fallback for older Safari
   if (mediaQuery.addEventListener) mediaQuery.addEventListener('change', handler)
   else mediaQuery.addListener?.(handler)
@@ -42,9 +54,17 @@ export function useTheme() {
     return mode.value
   })
 
-  watch(effective, (next) => { vuetifyTheme.global.name.value = next }, { immediate: true })
+  watch(
+    effective,
+    (next) => {
+      vuetifyTheme.global.name.value = next
+    },
+    { immediate: true }
+  )
   watch(mode, (next) => {
-    try { localStorage.setItem(STORAGE_KEY, next) } catch {}
+    try {
+      localStorage.setItem(STORAGE_KEY, next)
+    } catch {}
   })
 
   function setMode(next) {
