@@ -1,9 +1,31 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { BrowserMultiFormatReader } from '@zxing/browser'
-import { BarcodeFormat } from '@zxing/library'
+import { BarcodeFormat, DecodeHintType } from '@zxing/library'
+import { SUPPORTED_FORMATS } from './barcodeFormat.js'
 
 const SCAN_TIMEOUT_MS = 20000
+
+// Hints: TRY_HARDER rende la scansione più aggressiva sui codici difficili/densi;
+// POSSIBLE_FORMATS limita la ricerca ai formati che l'app supporta.
+const SCAN_HINTS = new Map([
+  [DecodeHintType.TRY_HARDER, true],
+  [
+    DecodeHintType.POSSIBLE_FORMATS,
+    SUPPORTED_FORMATS.map((name) => BarcodeFormat[name]).filter((v) => v != null),
+  ],
+])
+
+// Camera posteriore ad alta risoluzione: i barcode densi (barre sottili)
+// richiedono abbastanza pixel per risolvere il modulo più stretto.
+const VIDEO_CONSTRAINTS = {
+  audio: false,
+  video: {
+    facingMode: { ideal: 'environment' },
+    width: { ideal: 1920 },
+    height: { ideal: 1080 },
+  },
+}
 
 const emit = defineEmits(['decoded', 'error'])
 const videoEl = ref(null)
@@ -16,22 +38,26 @@ const timedOut = ref(false)
 
 onMounted(async () => {
   try {
-    reader = new BrowserMultiFormatReader()
+    reader = new BrowserMultiFormatReader(SCAN_HINTS)
     status.value = 'Inquadra il codice'
     timeoutHandle = setTimeout(() => {
       timedOut.value = true
-      status.value = 'Difficoltà a riconoscere il codice — prova l\'inserimento manuale'
+      status.value = "Difficoltà a riconoscere il codice — prova l'inserimento manuale"
     }, SCAN_TIMEOUT_MS)
-    controls = await reader.decodeFromVideoDevice(undefined, videoEl.value, (result, err) => {
-      if (result) {
-        const fmtNum = result.getBarcodeFormat?.()
-        const fmtName = (fmtNum != null && BarcodeFormat[fmtNum]) || 'UNKNOWN'
-        emit('decoded', {
-          barcode: result.getText(),
-          barcodeFormat: fmtName
-        })
+    controls = await reader.decodeFromConstraints(
+      VIDEO_CONSTRAINTS,
+      videoEl.value,
+      (result, err) => {
+        if (result) {
+          const fmtNum = result.getBarcodeFormat?.()
+          const fmtName = (fmtNum != null && BarcodeFormat[fmtNum]) || 'UNKNOWN'
+          emit('decoded', {
+            barcode: result.getText(),
+            barcodeFormat: fmtName,
+          })
+        }
       }
-    })
+    )
   } catch (e) {
     cameraError.value = e?.message ?? 'Impossibile accedere alla fotocamera'
     emit('error', e)
@@ -40,8 +66,12 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   if (timeoutHandle) clearTimeout(timeoutHandle)
-  try { controls?.stop() } catch {}
-  try { reader?.reset?.() } catch {}
+  try {
+    controls?.stop()
+  } catch {}
+  try {
+    reader?.reset?.()
+  } catch {}
 })
 </script>
 
