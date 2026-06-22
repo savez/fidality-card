@@ -52,3 +52,15 @@ describe('cards store — filtered sort', () => {
     expect(cards.filtered.map((c) => c.name)).toEqual(['banana', 'Èxtra', 'zucca'])
   })
 })
+
+describe('cards store — exportBackupSync', () => {
+  it('ritorna il dump in modo sincrono dagli items (non una Promise)', () => {
+    const cards = useCardsStore()
+    cards.items = [card('1', 'A'), card('2', 'B')]
+    const dump = cards.exportBackupSync()
+    expect(dump).not.toBeInstanceOf(Promise)
+    expect(dump.version).toBe(1)
+    expect(typeof dump.exportedAt).toBe('number')
+    expect(dump.cards.map((c) => c.id)).toEqual(['1', '2'])
+  })
+})
