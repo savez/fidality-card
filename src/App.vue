@@ -31,20 +31,27 @@ const versionDialogOpen = ref(false)
       <router-view />
     </v-main>
 
-    <v-bottom-navigation grow height="66" bg-color="surface">
+    <v-bottom-navigation grow height="68" bg-color="surface">
       <v-btn :to="{ name: 'cards' }" value="cards" stacked>
         <v-icon>mdi-credit-card-multiple</v-icon>
         <span>Card</span>
-      </v-btn>
-      <v-btn :to="{ name: 'card-new' }" value="new" stacked class="nav-new">
-        <v-icon>mdi-plus</v-icon>
-        <span>Nuova</span>
       </v-btn>
       <v-btn :to="{ name: 'settings' }" value="settings" stacked>
         <v-icon>mdi-cog</v-icon>
         <span>Impostazioni</span>
       </v-btn>
     </v-bottom-navigation>
+
+    <!-- "Nuova": FAB centrale rialzato sopra la bottom-nav -->
+    <v-btn
+      class="nav-fab"
+      :to="{ name: 'card-new' }"
+      color="primary"
+      icon="mdi-plus"
+      size="56"
+      elevation="6"
+      aria-label="Nuova card"
+    />
 
     <AppVersionDialog v-model="versionDialogOpen" />
   </v-app>
@@ -54,14 +61,12 @@ const versionDialogOpen = ref(false)
 .wordmark {
   font-size: 1.4rem;
 }
-/* "Nuova" come azione primaria in risalto nella bottom-nav */
-:deep(.nav-new) {
-  background: rgb(var(--v-theme-primary));
-  color: #fff;
-  border-radius: 14px;
-  margin: 8px 6px;
-}
-:deep(.nav-new .v-btn__overlay) {
-  opacity: 0;
+/* "Nuova": FAB centrale rialzato, sopra la bottom-nav */
+.nav-fab {
+  position: fixed;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%);
+  z-index: 1010;
 }
 </style>
