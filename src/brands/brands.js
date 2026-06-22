@@ -37,6 +37,14 @@ export const BRANDS = [
   { id: 'eni', name: 'Eni', color: '#FFCB05', iconDefault: 'mdi-gas-station' },
   { id: 'trenitalia', name: 'Trenitalia', color: '#CC0000', iconDefault: 'mdi-train' },
   { id: 'italo', name: 'Italo', color: '#A6192E', iconDefault: 'mdi-train' },
+  { id: 'rinascente', name: 'Rinascente', color: '#000000', iconDefault: 'mdi-hanger' },
+  { id: 'cienne', name: 'Cienne', color: '#1A1A1A', iconDefault: 'mdi-tshirt-crew' },
+  { id: 'barberinos', name: "Barberino's", color: '#2B2B2B', iconDefault: 'mdi-razor-double-edge' },
+  { id: 'agribrianza', name: 'Agribrianza', color: '#2E7D32', iconDefault: 'mdi-tree' },
+  { id: 'autogrill', name: 'Autogrill', color: '#E2001A', iconDefault: 'mdi-car' },
+  { id: 'cisalfa', name: 'Cisalfa', color: '#003DA5', iconDefault: 'mdi-shoe-sneaker' },
+  { id: 'sephora', name: 'Sephora', color: '#000000', iconDefault: 'mdi-spray' },
+  { id: 'stroili', name: 'Stroili', color: '#000000', iconDefault: 'mdi-diamond-stone' },
 ]
 
 const BY_ID = new Map(BRANDS.map((b) => [b.id, b]))
