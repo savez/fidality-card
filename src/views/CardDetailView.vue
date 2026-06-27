@@ -40,7 +40,14 @@ async function onDelete() {
     </div>
 
     <!-- card presentata -->
-    <div class="present" :style="{ backgroundColor: bgColor, color: fg }">
+    <div
+      class="present"
+      :style="{
+        backgroundColor: bgColor,
+        color: fg,
+        boxShadow: `0 1px 2px rgba(17,20,26,.05), 0 18px 30px -16px ${bgColor}66`,
+      }"
+    >
       <div class="present__top">
         <IconaDisplay :icona="card.icona" :brand-id="card.brandId" :size="40" />
         <span v-if="card.pinned" class="present__chip">
@@ -128,7 +135,6 @@ async function onDelete() {
 .present {
   border-radius: var(--r-card);
   padding: 18px;
-  box-shadow: var(--tile-shadow);
   position: relative;
   overflow: hidden;
 }
@@ -136,7 +142,12 @@ async function onDelete() {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(0, 0, 0, 0.12));
+  background: linear-gradient(
+    150deg,
+    rgba(255, 255, 255, 0.16) 0%,
+    rgba(255, 255, 255, 0) 46%,
+    rgba(0, 0, 0, 0.08) 100%
+  );
   pointer-events: none;
 }
 .present__top {
@@ -172,12 +183,16 @@ async function onDelete() {
   display: block;
   width: 100%;
   margin-top: 12px;
-  background: #ffffff;
-  border: 1px solid var(--line, #e2e6ee);
+  background: rgb(var(--v-theme-surface));
+  border: 1px solid var(--line);
   border-radius: var(--r-card);
   padding: 18px 16px 12px;
   cursor: pointer;
   box-shadow: var(--tile-shadow);
+  transition: transform 0.12s ease;
+}
+.scan:active {
+  transform: scale(0.985);
 }
 .scan__hint {
   margin-top: 8px;
@@ -185,8 +200,23 @@ async function onDelete() {
   align-items: center;
   justify-content: center;
   gap: 5px;
-  color: #6b7180;
+  color: rgba(var(--v-theme-on-surface), 0.6);
   font-size: 0.78rem;
   font-weight: 600;
+}
+
+/* Meta come scheda tecnica: etichetta muta in maiuscoletto, valore prominente. */
+.meta :deep(.v-list-item-title) {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+.meta :deep(.v-list-item-subtitle) {
+  font-size: 0.95rem;
+  font-weight: 600;
+  opacity: 1;
+  color: rgb(var(--v-theme-on-surface));
 }
 </style>
