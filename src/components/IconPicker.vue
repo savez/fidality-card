@@ -134,7 +134,7 @@ function onPickDefault() {
               persistent-hint
               maxlength="60"
             />
-            <div class="d-flex align-center gap-3 my-3">
+            <div class="d-flex align-center ga-3 my-3">
               <v-icon size="40">mdi-{{ customInput.replace(/^mdi-/, '') || 'tag' }}</v-icon>
               <span class="text-caption text-medium-emphasis">Preview</span>
             </div>
@@ -181,7 +181,7 @@ function onPickDefault() {
 }
 .icon-cell {
   aspect-ratio: 1;
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(var(--v-theme-on-surface), 0.06);
   border: 2px solid transparent;
   border-radius: 6px;
   display: flex;
@@ -191,7 +191,7 @@ function onPickDefault() {
   transition: background-color 0.12s ease;
 }
 .icon-cell:hover {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(var(--v-theme-on-surface), 0.12);
 }
 .icon-cell.selected {
   border-color: rgb(var(--v-theme-primary));

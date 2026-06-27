@@ -121,8 +121,8 @@ async function save() {
 </script>
 
 <template>
-  <v-container class="pa-3" style="max-width: 700px">
-    <h2 class="text-h5 mb-3">{{ isEdit ? 'Modifica card' : 'Nuova card' }}</h2>
+  <v-container class="pa-4" style="max-width: 600px">
+    <h2 class="font-display text-h5 mb-4">{{ isEdit ? 'Modifica card' : 'Nuova card' }}</h2>
 
     <v-tabs v-if="!isEdit" v-model="tab" grow class="mb-3">
       <v-tab value="scan">Scan</v-tab>
@@ -177,7 +177,7 @@ async function save() {
 
       <v-alert v-if="error" type="error" class="mt-3">{{ error }}</v-alert>
 
-      <div class="d-flex gap-2 mt-3">
+      <div class="d-flex ga-2 mt-3">
         <v-btn variant="text" @click="router.back()">Annulla</v-btn>
         <v-spacer />
         <v-btn type="submit" color="primary" :disabled="!isValid" :loading="saving">Salva</v-btn>

@@ -94,8 +94,8 @@ async function onImportFile(event) {
 </script>
 
 <template>
-  <v-container class="pa-3" style="max-width: 600px">
-    <h2 class="text-h5 mb-3">Impostazioni</h2>
+  <v-container class="pa-4" style="max-width: 600px">
+    <h2 class="font-display text-h5 mb-4">Impostazioni</h2>
 
     <h3 class="text-subtitle-1 mb-2">Tema</h3>
     <v-list density="comfortable" class="mb-4">

@@ -1,10 +1,25 @@
 <script setup>
-import { onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useCardsStore } from '@/stores/cards.js'
-import CardTile from '@/components/CardTile.vue'
+import WalletCard from '@/components/WalletCard.vue'
 
 const cards = useCardsStore()
 onMounted(cards.refresh)
+
+// Wallet: una sola carta espansa alla volta.
+const openId = ref(null)
+
+// Quando i filtri lasciano un solo risultato (es. ricerca con un match),
+// la apriamo automaticamente: il codice è pronto senza un tap in più.
+// Legato all'id dell'unico match — non si riapre a ogni tasto se lo chiudi.
+const soleMatchId = computed(() => (cards.filtered.length === 1 ? cards.filtered[0].id : null))
+watch(soleMatchId, (id) => {
+  if (id) openId.value = id
+})
+
+function onToggle(id) {
+  openId.value = openId.value === id ? null : id
+}
 
 function onTogglePin(id) {
   cards.togglePin(id)
@@ -12,25 +27,36 @@ function onTogglePin(id) {
 </script>
 
 <template>
-  <v-container class="pa-4" style="max-width: 760px">
+  <v-container class="pa-4" style="max-width: 520px">
+    <h1 class="font-display text-h5 mb-4">Le tue card</h1>
+
     <v-text-field
       v-model="cards.search"
       prepend-inner-icon="mdi-magnify"
       placeholder="Cerca per nome o brand"
+      bg-color="surface"
       clearable
       hide-details
-      class="mb-4"
+      class="mb-5"
     />
 
     <v-progress-linear v-if="cards.loading" indeterminate class="mb-3" />
 
-    <div v-if="cards.filtered.length" class="card-grid">
-      <CardTile v-for="c in cards.filtered" :key="c.id" :card="c" @toggle-pin="onTogglePin" />
+    <div v-if="cards.filtered.length" class="wallet">
+      <WalletCard
+        v-for="c in cards.filtered"
+        :key="c.id"
+        :card="c"
+        :open="openId === c.id"
+        @toggle="onToggle"
+        @toggle-pin="onTogglePin"
+      />
     </div>
 
     <v-empty-state
       v-else-if="!cards.loading"
-      icon="mdi-credit-card-off"
+      icon="mdi-wallet-outline"
+      color="primary"
       title="Nessuna card"
       text="Aggiungi la tua prima fidelity card con il pulsante 'Nuova'."
       class="mt-8"
@@ -39,19 +65,10 @@ function onTogglePin(id) {
 </template>
 
 <style scoped>
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-@media (min-width: 600px) {
-  .card-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-@media (min-width: 860px) {
-  .card-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
+.wallet {
+  display: flex;
+  flex-direction: column;
+  /* spazio per l'ombra della prima carta */
+  padding-top: 4px;
 }
 </style>
