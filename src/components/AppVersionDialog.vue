@@ -9,6 +9,7 @@ const emit = defineEmits(['update:modelValue'])
 
 const version = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '?.?.?'
 const changelogUrl = 'https://github.com/savez/fidality-card/releases'
+const repoUrl = 'https://github.com/savez/fidality-card'
 
 const { updateCheckStatus, checkForUpdate, resetCheckStatus } = usePwaUpdate()
 
@@ -45,7 +46,10 @@ async function onCheckUpdate() {
         <div class="text-h4 font-weight-bold mb-2" style="font-family: ui-monospace, monospace">
           v{{ version }}
         </div>
-        <div class="text-caption text-medium-emphasis mb-4">PWA Vue 3 · open source · MIT</div>
+        <div class="text-caption text-medium-emphasis mb-1">PWA Vue 3 · open source · MIT</div>
+        <a :href="repoUrl" target="_blank" rel="noopener" class="text-caption d-block mb-4">
+          ✨ Built by a human + AI, for everyone — GitHub ↗
+        </a>
 
         <v-divider class="mb-4" />
 
