@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/savez/fidality-card/compare/v2.1.0...v2.2.0) (2026-07-09)
+
+
+### ✨ Features
+
+* **logs:** tracciamento aperture card con log GPS opzionale ([#35](https://github.com/savez/fidality-card/issues/35)) ([8f5b665](https://github.com/savez/fidality-card/commit/8f5b66514aeb787dae949180d4f7c2463866837b))
+
 ## [2.1.0](https://github.com/savez/fidality-card/compare/v2.0.0...v2.1.0) (2026-07-09)
 
 
