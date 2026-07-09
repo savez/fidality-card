@@ -1,0 +1,90 @@
+---
+const features = [
+  {
+    icon: '📍',
+    title: 'Cronologia aperture',
+    body:
+      'Ogni volta che apri una card, viene segnata data e ora. Con il permesso di posizione, aggiunge anche il luogo.',
+  },
+  {
+    icon: '🔒',
+    title: '100% locale',
+    body:
+      'I log restano sul tuo dispositivo. Nessun server, nessuna chiamata di rete, nessun tracciamento.',
+  },
+  {
+    icon: '🎛️',
+    title: 'Sempre reversibile',
+    body:
+      'Disattivi tutto con un interruttore e cancelli la cronologia — di una singola card o intera — quando vuoi.',
+  },
+]
+---
+
+<section class="usage section">
+  <div class="container">
+    <span class="pill badge-new">Novità</span>
+    <h2 class="usage-title">Sai quando (e dove) usi le tue card.</h2>
+    <p class="usage-sub">
+      Apri una card e l'app annota data e ora — e, se concedi il permesso, la posizione.
+      Tutto resta sul telefono, sotto il tuo controllo.
+    </p>
+    <div class="usage-grid">
+      {features.map((f) => (
+        <div class="card usage-card">
+          <div class="usage-icon" aria-hidden="true">{f.icon}</div>
+          <h3>{f.title}</h3>
+          <p>{f.body}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .badge-new {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .usage-title {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    max-width: 22ch;
+  }
+
+  .usage-sub {
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+    max-width: 56ch;
+  }
+
+  .usage-grid {
+    margin-top: 2.5rem;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  .usage-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .usage-card h3 {
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .usage-card p {
+    color: var(--text-muted);
+  }
+
+  @media (min-width: 768px) {
+    .usage-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
