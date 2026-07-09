@@ -32,6 +32,14 @@ db.version(3)
       })
   })
 
+// v4: aggiunge la tabella `logs` per il tracciamento aperture card
+// (evento apertura + GPS opzionale). Tabella nuova, cards/meta invariate → no upgrade().
+db.version(4).stores({
+  cards: 'id, name, brandId, updatedAt, pinned',
+  meta: 'key',
+  logs: 'id, cardId, openedAt',
+})
+
 export async function probeDb() {
   try {
     await db.open()

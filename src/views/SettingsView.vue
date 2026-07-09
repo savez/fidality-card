@@ -1,14 +1,37 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useCardsStore } from '@/stores/cards.js'
 import { useTheme } from '@/composables/useTheme.js'
 import { backupFilename, buildBackupFile } from '@/share/backupFile.js'
+import { useLogsStore } from '@/stores/logs.js'
 
 const { mode: themeMode, setMode: setThemeMode } = useTheme()
 const cards = useCardsStore()
 const fileInput = ref(null)
 const message = ref(null)
 const error = ref(null)
+
+const logs = useLogsStore()
+const showClearAll = ref(false)
+const logCount = ref(0)
+
+const loggingEnabled = computed({
+  get: () => logs.enabled,
+  set: (v) => logs.setEnabled(v),
+})
+
+async function onClearAllLogs() {
+  error.value = null
+  message.value = null
+  try {
+    await logs.clearAll()
+    logCount.value = 0
+    showClearAll.value = false
+    message.value = 'Tutti i log sono stati cancellati.'
+  } catch (e) {
+    error.value = e.message
+  }
+}
 
 // Mostra "Condividi vault" solo dove la condivisione di file è davvero supportata
 // (di fatto: mobile Android/iOS). Su desktop resta solo "Esporta backup JSON".
@@ -24,8 +47,9 @@ const canShareFiles = (() => {
 
 // Garantisce che gli items siano in memoria, così onShare può costruire il dump
 // in modo sincrono senza await prima di navigator.share().
-onMounted(() => {
+onMounted(async () => {
   if (!cards.items.length) cards.refresh()
+  logCount.value = await logs.count()
 })
 
 function downloadFile(file) {
@@ -143,7 +167,66 @@ async function onImportFile(event) {
       @change="onImportFile"
     />
 
+    <h3 class="text-subtitle-1 mb-2 mt-6">Utilizzo card</h3>
+    <v-list density="comfortable" class="usage mb-2">
+      <v-list-item>
+        <template #prepend><v-icon>mdi-history</v-icon></template>
+        <v-list-item-title>Registra utilizzo card</v-list-item-title>
+        <v-list-item-subtitle class="usage__hint">
+          Salva data, ora e — se concedi il permesso — la posizione GPS quando apri una card per più
+          di 3 secondi.
+        </v-list-item-subtitle>
+        <template #append>
+          <v-switch v-model="loggingEnabled" color="primary" hide-details inset />
+        </template>
+      </v-list-item>
+    </v-list>
+    <v-btn
+      block
+      variant="outlined"
+      color="error"
+      prepend-icon="mdi-delete-sweep"
+      :disabled="logCount === 0"
+      @click="showClearAll = true"
+    >
+      Cancella tutti i log ({{ logCount }})
+    </v-btn>
+
+    <v-dialog v-model="showClearAll" max-width="420">
+      <v-card>
+        <v-card-title>Cancellare tutti i log?</v-card-title>
+        <v-card-text>
+          La cronologia delle aperture di tutte le card verrà eliminata. Operazione non reversibile.
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" @click="showClearAll = false">Annulla</v-btn>
+          <v-btn color="error" @click="onClearAllLogs">Cancella tutto</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-alert v-if="message" type="success" class="mt-3">{{ message }}</v-alert>
     <v-alert v-if="error" type="error" class="mt-3">{{ error }}</v-alert>
   </v-container>
 </template>
+
+<style scoped>
+/* La descrizione del toggle deve andare a capo per intero: di default il
+   subtitle di Vuetify viene troncato a una riga con ellissi. */
+.usage :deep(.usage__hint) {
+  display: block;
+  white-space: normal;
+  overflow: visible;
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  line-height: 1.35;
+  margin-top: 2px;
+}
+/* Con la descrizione su più righe, icona e switch si allineano al titolo. */
+.usage :deep(.v-list-item__prepend),
+.usage :deep(.v-list-item__append) {
+  align-self: flex-start;
+  padding-top: 4px;
+}
+</style>
