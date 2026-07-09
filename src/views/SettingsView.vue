@@ -168,11 +168,11 @@ async function onImportFile(event) {
     />
 
     <h3 class="text-subtitle-1 mb-2 mt-6">Utilizzo card</h3>
-    <v-list density="comfortable" class="mb-2">
+    <v-list density="comfortable" class="usage mb-2">
       <v-list-item>
         <template #prepend><v-icon>mdi-history</v-icon></template>
         <v-list-item-title>Registra utilizzo card</v-list-item-title>
-        <v-list-item-subtitle style="white-space: normal">
+        <v-list-item-subtitle class="usage__hint">
           Salva data, ora e — se concedi il permesso — la posizione GPS quando apri una card per più
           di 3 secondi.
         </v-list-item-subtitle>
@@ -210,3 +210,23 @@ async function onImportFile(event) {
     <v-alert v-if="error" type="error" class="mt-3">{{ error }}</v-alert>
   </v-container>
 </template>
+
+<style scoped>
+/* La descrizione del toggle deve andare a capo per intero: di default il
+   subtitle di Vuetify viene troncato a una riga con ellissi. */
+.usage :deep(.usage__hint) {
+  display: block;
+  white-space: normal;
+  overflow: visible;
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  line-height: 1.35;
+  margin-top: 2px;
+}
+/* Con la descrizione su più righe, icona e switch si allineano al titolo. */
+.usage :deep(.v-list-item__prepend),
+.usage :deep(.v-list-item__append) {
+  align-self: flex-start;
+  padding-top: 4px;
+}
+</style>
