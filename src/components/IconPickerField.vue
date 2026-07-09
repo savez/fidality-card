@@ -28,7 +28,7 @@ function onClear() {
 
 <template>
   <div class="icon-picker-field mb-3">
-    <div class="d-flex align-center gap-3">
+    <div class="d-flex align-center ga-3">
       <div class="icon-preview">
         <IconaDisplay :icona="modelValue" :brand-id="brandId" :size="36" />
       </div>
@@ -56,7 +56,7 @@ function onClear() {
   width: 56px;
   height: 56px;
   border-radius: 8px;
-  background: rgba(0, 0, 0, 0.06);
+  background: rgba(var(--v-theme-on-surface), 0.06);
   display: flex;
   align-items: center;
   justify-content: center;

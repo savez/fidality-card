@@ -5,7 +5,29 @@
   --r-tile: 12px;
   --r-card: 14px;
   --r-control: 10px;
+}
+
+/* Token che dipendono dal tema: definiti sulle classi tema di Vuetify così
+   reagiscono a light/dark. --line era referenziato (CardDetailView .scan) ma
+   non esisteva: qui smette di essere un token fantasma. L'ombra in dark usa
+   nero così l'elevazione si legge davvero su #0f1115. */
+.v-theme--light {
+  --line: #e2e6ee;
   --tile-shadow: 0 1px 2px rgba(17, 20, 26, 0.05), 0 12px 26px -14px rgba(17, 20, 26, 0.28);
+}
+.v-theme--dark {
+  --line: #262a31;
+  --tile-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 14px 28px -12px rgba(0, 0, 0, 0.7);
+}
+
+/* Bottone primario disabilitato: di default Vuetify lo rende come blocco indaco
+   semi-trasparente (sembra mezzo renderizzato). Lo neutralizziamo a livello app
+   senza toccare la logica :disabled, in entrambi i temi. */
+.v-btn--disabled.v-btn--variant-elevated,
+.v-btn--disabled.v-btn--variant-flat {
+  background-color: rgba(var(--v-theme-on-surface), 0.08) !important;
+  color: rgba(var(--v-theme-on-surface), 0.38) !important;
+  box-shadow: none !important;
 }
 
 /* Body: Inter (iper-leggibile). Display: Bricolage, usato con parsimonia. */

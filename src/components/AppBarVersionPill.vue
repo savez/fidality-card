@@ -18,9 +18,12 @@ const version = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '?.?.
 
 <style scoped>
 .version-pill {
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  color: white;
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  background: rgba(var(--v-theme-on-background), 0.06);
+  border: 1px solid rgba(var(--v-theme-on-background), 0.16);
+  color: rgba(var(--v-theme-on-background), 0.82);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 11px;
   font-weight: 600;
@@ -33,10 +36,10 @@ const version = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '?.?.
   transition: background-color 0.15s ease;
 }
 .version-pill:hover {
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(var(--v-theme-on-background), 0.1);
 }
 .version-pill:focus-visible {
-  outline: 2px solid white;
+  outline: 2px solid rgb(var(--v-theme-primary));
   outline-offset: 2px;
 }
 </style>

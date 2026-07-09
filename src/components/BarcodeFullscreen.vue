@@ -54,7 +54,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
   position: fixed;
   inset: 0;
   z-index: 2000;
-  background: #ffffff;
+  background: rgb(var(--v-theme-background));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -71,23 +71,36 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
 }
 .fs__close {
   position: absolute;
-  top: 16px;
+  top: calc(env(safe-area-inset-top, 0px) + 16px);
   right: 16px;
   width: 42px;
   height: 42px;
   border-radius: 10px;
-  border: 1px solid #e2e6ee;
-  background: #fff;
-  color: #14161a;
+  border: 1px solid rgb(var(--v-theme-surface-variant));
+  background: rgb(var(--v-theme-surface));
+  color: rgb(var(--v-theme-on-surface));
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
   display: grid;
   place-items: center;
   cursor: pointer;
+  transition: transform 0.12s ease;
 }
+.fs__close:active {
+  transform: scale(0.94);
+}
+/* Il bianco resta confinato qui: lo scanner ottiene una generosa quiet-zone
+   bianca attorno al codice anche in dark, senza accecare l'utente. */
 .fs__inner {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
+  background: #fff;
+  border-radius: var(--r-card);
+  padding: 24px;
+  /* Separa la card bianca dal backdrop chiaro (#eef1f6) in light; in dark
+     aggiunge profondità senza danni. */
+  box-shadow: 0 10px 40px -12px rgba(0, 0, 0, 0.35);
 }
 .fs__name {
   color: #14161a;
@@ -103,8 +116,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
 }
 .fs__hint {
   position: absolute;
-  bottom: 22px;
-  color: #9aa0ac;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
+  color: rgba(var(--v-theme-on-background), 0.6);
   font-size: 0.82rem;
   text-align: center;
 }
