@@ -8,6 +8,9 @@ import BarcodeDisplay from '@/components/BarcodeDisplay.vue'
 import BarcodeFullscreen from '@/components/BarcodeFullscreen.vue'
 import IconaDisplay from '@/components/IconaDisplay.vue'
 import ShareDialog from '@/share/ShareDialog.vue'
+import { useLogsStore } from '@/stores/logs.js'
+import { useUsageLogger } from '@/composables/useUsageLogger.js'
+import { formatCoords, mapUrl } from '@/utils/logFormat.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,13 +20,37 @@ const showShare = ref(false)
 const showDelete = ref(false)
 const showFull = ref(false)
 
+const logs = useLogsStore()
+const showClearLogs = ref(false)
+
+// Registra l'apertura di questa card (gate 3s + GPS). Va chiamato in setup
+// perché registra hook di lifecycle. Se la card non esiste, l'onMounted sotto
+// fa redirect e lo unmount annulla il timer prima dei 3s → nessun log spurio.
+useUsageLogger(route.params.id)
+
+function fmtDate(ms) {
+  return new Date(ms).toLocaleDateString('it-IT')
+}
+function fmtTime(ms) {
+  return new Date(ms).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
+}
+
+async function onClearLogs() {
+  await logs.clearForCard(route.params.id)
+  showClearLogs.value = false
+}
+
 const brand = computed(() => getBrand(card.value?.brandId))
 const bgColor = computed(() => brand.value?.color ?? '#607D8B')
 const fg = computed(() => readableTextColor(bgColor.value))
 
 onMounted(async () => {
   card.value = await cards.get(route.params.id)
-  if (!card.value) router.replace({ name: 'cards' })
+  if (!card.value) {
+    router.replace({ name: 'cards' })
+    return
+  }
+  logs.loadForCard(route.params.id)
 })
 
 async function onDelete() {
@@ -98,6 +125,63 @@ async function onDelete() {
         Elimina
       </v-btn>
     </div>
+
+    <!-- cronologia aperture -->
+    <div class="d-flex align-center mt-6 mb-2">
+      <h3 class="text-subtitle-1 flex-grow-1">Cronologia aperture</h3>
+      <v-btn
+        v-if="logs.items.length"
+        size="small"
+        variant="text"
+        color="error"
+        prepend-icon="mdi-delete-sweep"
+        @click="showClearLogs = true"
+      >
+        Cancella log
+      </v-btn>
+    </div>
+
+    <div v-if="logs.items.length" class="logs">
+      <v-table density="compact">
+        <thead>
+          <tr>
+            <th class="text-left">Data</th>
+            <th class="text-left">Ora</th>
+            <th class="text-left">Posizione</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="log in logs.items" :key="log.id">
+            <td>{{ fmtDate(log.openedAt) }}</td>
+            <td>{{ fmtTime(log.openedAt) }}</td>
+            <td>
+              <a
+                v-if="log.lat != null && log.lng != null"
+                :href="mapUrl(log.lat, log.lng)"
+                target="_blank"
+                rel="noopener"
+              >
+                {{ formatCoords(log.lat, log.lng) }}
+              </a>
+              <span v-else>—</span>
+            </td>
+          </tr>
+        </tbody>
+      </v-table>
+    </div>
+    <p v-else class="text-medium-emphasis text-body-2 mb-0">Nessuna apertura registrata.</p>
+
+    <v-dialog v-model="showClearLogs" max-width="420">
+      <v-card>
+        <v-card-title>Cancellare i log di questa card?</v-card-title>
+        <v-card-text>La cronologia delle aperture di questa card verrà eliminata.</v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" @click="showClearLogs = false">Annulla</v-btn>
+          <v-btn color="error" @click="onClearLogs">Cancella</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <ShareDialog v-if="showShare" :card="card" @close="showShare = false" />
 
@@ -188,5 +272,11 @@ async function onDelete() {
   color: #6b7180;
   font-size: 0.78rem;
   font-weight: 600;
+}
+.logs {
+  max-height: 320px;
+  overflow-y: auto;
+  border: 1px solid var(--line, #e2e6ee);
+  border-radius: var(--r-card);
 }
 </style>
