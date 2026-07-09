@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/savez/fidality-card/compare/v2.0.0...v2.1.0) (2026-07-09)
+
+
+### ✨ Features
+
+* **ui:** aggiungi credito GitHub nel modale versione ([#33](https://github.com/savez/fidality-card/issues/33)) ([7e2bd39](https://github.com/savez/fidality-card/commit/7e2bd391f9e12074e700d4ea7babf6bfb2d555fb))
+
 ## [2.0.0](https://github.com/savez/fidality-card/compare/v1.6.3...v2.0.0) (2026-06-22)
 
 
