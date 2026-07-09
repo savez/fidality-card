@@ -13,19 +13,32 @@ export function useUsageLogger(cardId) {
 
   async function fire() {
     if (!logs.enabled) return
-    const id = await logs.recordOpen({ cardId, openedAt })
+    let id
+    try {
+      id = await logs.recordOpen({ cardId, openedAt })
+    } catch {
+      // Best-effort logging: swallow write failures (quota, private mode, etc.)
+      return
+    }
     if (!navigator.geolocation) return
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        logs.attachCoords(id, {
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-          accuracy: pos.coords.accuracy,
-        })
-      },
-      () => {},
-      { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
-    )
+    try {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          logs
+            .attachCoords(id, {
+              lat: pos.coords.latitude,
+              lng: pos.coords.longitude,
+              accuracy: pos.coords.accuracy,
+            })
+            .catch(() => {})
+        },
+        () => {},
+        { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
+      )
+    } catch {
+      // Some non-compliant embedded browsers throw synchronously instead of
+      // invoking the error callback; ignore since GPS enrichment is optional.
+    }
   }
 
   onMounted(() => {

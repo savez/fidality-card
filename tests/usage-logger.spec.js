@@ -26,6 +26,7 @@ const deny = () =>
 
 let store
 beforeEach(() => {
+  localStorage.clear()
   setActivePinia(createPinia())
   store = useLogsStore()
   store.recordOpen = vi.fn().mockResolvedValue('log-1')
@@ -92,5 +93,37 @@ describe('useUsageLogger', () => {
     await vi.advanceTimersByTimeAsync(3000)
     await flushPromises()
     expect(store.recordOpen).not.toHaveBeenCalled()
+  })
+
+  it('recordOpen in errore → nessuna unhandled rejection', async () => {
+    grant({ latitude: 1, longitude: 2, accuracy: 5 })
+    store.recordOpen = vi.fn().mockRejectedValue(new Error('quota exceeded'))
+    mount(Host, { props: { cardId: 'c1' } })
+    await vi.advanceTimersByTimeAsync(3000)
+    await flushPromises()
+    expect(store.recordOpen).toHaveBeenCalledOnce()
+    expect(store.attachCoords).not.toHaveBeenCalled()
+  })
+
+  it('getCurrentPosition lancia in modo sincrono → nessuna unhandled rejection', async () => {
+    setGeolocation({
+      getCurrentPosition: () => {
+        throw new Error('geolocation unavailable')
+      },
+    })
+    mount(Host, { props: { cardId: 'c1' } })
+    await vi.advanceTimersByTimeAsync(3000)
+    await flushPromises()
+    expect(store.recordOpen).toHaveBeenCalledOnce()
+    expect(store.attachCoords).not.toHaveBeenCalled()
+  })
+
+  it('attachCoords in errore → nessuna unhandled rejection', async () => {
+    grant({ latitude: 1, longitude: 2, accuracy: 5 })
+    store.attachCoords = vi.fn().mockRejectedValue(new Error('quota exceeded'))
+    mount(Host, { props: { cardId: 'c1' } })
+    await vi.advanceTimersByTimeAsync(3000)
+    await flushPromises()
+    expect(store.attachCoords).toHaveBeenCalledOnce()
   })
 })
