@@ -22,10 +22,15 @@ const loggingEnabled = computed({
 
 async function onClearAllLogs() {
   error.value = null
-  await logs.clearAll()
-  logCount.value = 0
-  showClearAll.value = false
-  message.value = 'Tutti i log sono stati cancellati.'
+  message.value = null
+  try {
+    await logs.clearAll()
+    logCount.value = 0
+    showClearAll.value = false
+    message.value = 'Tutti i log sono stati cancellati.'
+  } catch (e) {
+    error.value = e.message
+  }
 }
 
 // Mostra "Condividi vault" solo dove la condivisione di file è davvero supportata
