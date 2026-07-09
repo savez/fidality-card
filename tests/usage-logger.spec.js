@@ -120,10 +120,27 @@ describe('useUsageLogger', () => {
 
   it('attachCoords in errore → nessuna unhandled rejection', async () => {
     grant({ latitude: 1, longitude: 2, accuracy: 5 })
-    store.attachCoords = vi.fn().mockRejectedValue(new Error('quota exceeded'))
+    // Nota: NON usiamo `vi.fn(...)` qui. Anche passandogli un'implementazione
+    // che ritorna un `Promise.reject(...)` "nudo", lo spy interno di Vitest
+    // (tinyspy) allega comunque un proprio `.then(onFulfilled, onRejected)`
+    // alla promise per popolare `mock.results`/`mock.resolves` — e questo di
+    // per sé la marca come "handled" agli occhi di Node, indipendentemente
+    // dal `.catch(() => {})` nel codice sorgente. Usando una funzione
+    // "normale" (non wrappata da vi.fn) nessuno intercetta la promise
+    // rejection tranne il `.catch()` che il composable deve aggiungere: se lo
+    // rimuoviamo, Node segnala davvero una unhandled rejection e il test
+    // fallisce, rendendolo un vero test di regressione.
+    let called = false
+    let calledArgs
+    store.attachCoords = (...args) => {
+      called = true
+      calledArgs = args
+      return Promise.reject(new Error('quota exceeded'))
+    }
     mount(Host, { props: { cardId: 'c1' } })
     await vi.advanceTimersByTimeAsync(3000)
     await flushPromises()
-    expect(store.attachCoords).toHaveBeenCalledOnce()
+    expect(called).toBe(true)
+    expect(calledArgs).toEqual(['log-1', { lat: 1, lng: 2, accuracy: 5 }])
   })
 })
