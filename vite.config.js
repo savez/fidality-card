@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import { defaultExclude } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -64,5 +65,8 @@ export default defineConfig({
     environment: 'happy-dom',
     globals: true,
     setupFiles: ['./tests/setup.js'],
+    // .claude/ ospita worktree paralleli (git-ignored ma dentro l'albero del
+    // repo): senza questa esclusione vitest ne raccoglie anche i test.
+    exclude: [...defaultExclude, '**/.claude/**'],
   },
 })
