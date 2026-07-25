@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.3.0](https://github.com/savez/fidality-card/compare/v2.2.0...v2.3.0) (2026-07-25)
+
+
+### ✨ Features
+
+* **pwa:** aggiungi componente banner installazione PWA ([cc004c0](https://github.com/savez/fidality-card/commit/cc004c03c98f80bdd63e21b2fdf81d23a17f541c))
+* **pwa:** aggiungi composable per eleggibilità popup installazione ([71413ed](https://github.com/savez/fidality-card/commit/71413ed4d01d957fcf78ed364167d870497cafea))
+* **pwa:** integra il banner di installazione nell'app ([c0856db](https://github.com/savez/fidality-card/commit/c0856dbedf748a643e14b20f18a4f30223aa2583))
+
+
+### 🐛 Bug Fixes
+
+* **test:** escludi .claude/ dalla raccolta test di vitest ([6699ffb](https://github.com/savez/fidality-card/commit/6699ffb539d92a95edaf2844f846c19e5e7fcf39))
+
 ## [2.2.0](https://github.com/savez/fidality-card/compare/v2.1.0...v2.2.0) (2026-07-09)
 
 
