@@ -4,6 +4,7 @@ import { useDbStatus } from '@/composables/useDbStatus.js'
 import { useTheme } from '@/composables/useTheme.js'
 import AppBarVersionPill from '@/components/AppBarVersionPill.vue'
 import AppVersionDialog from '@/components/AppVersionDialog.vue'
+import InstallPromptBanner from '@/components/InstallPromptBanner.vue'
 
 // Attiva l'applicazione reattiva del tema a livello app (anche al reload e ai
 // cambi di preferenza di sistema), indipendentemente dalla route corrente.
@@ -54,6 +55,7 @@ const versionDialogOpen = ref(false)
     />
 
     <AppVersionDialog v-model="versionDialogOpen" />
+    <InstallPromptBanner />
   </v-app>
 </template>
 
