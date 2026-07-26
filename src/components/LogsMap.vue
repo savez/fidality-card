@@ -10,6 +10,7 @@ const props = defineProps({
 
 const mapEl = ref(null)
 let map = null
+let disposed = false
 
 function escapeHtml(str) {
   return str.replace(
@@ -43,6 +44,11 @@ onMounted(async () => {
   const L = leafletModule.default ?? leafletModule
   await import('leaflet/dist/leaflet.css')
 
+  // Race mount/unmount: se il componente è stato smontato mentre gli import
+  // erano in volo, mapEl.value è già null e onUnmounted è già passato senza
+  // nulla da ripulire — usciamo prima di creare mappa/marker/listener.
+  if (disposed || !mapEl.value) return
+
   map = L.map(mapEl.value)
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -66,6 +72,7 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
+  disposed = true
   map?.remove()
   map = null
 })
