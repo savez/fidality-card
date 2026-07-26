@@ -33,6 +33,7 @@
     "@zxing/library": "^0.21.3",
     "dexie": "^4.4.3",
     "jsbarcode": "^3.12.3",
+    "leaflet": "^1.9.4",
     "pinia": "^2.3.1",
     "qrcode": "^1.5.4",
     "uuid": "^10.0.0",

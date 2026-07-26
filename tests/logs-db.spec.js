@@ -7,6 +7,7 @@ import {
   deleteLogsByCard,
   clearAllLogs,
   countAllLogs,
+  listAllLogs,
 } from '@/db/logs.js'
 
 beforeEach(async () => {
@@ -56,5 +57,13 @@ describe('logs DB', () => {
     expect(await countAllLogs()).toBe(2)
     await clearAllLogs()
     expect(await countAllLogs()).toBe(0)
+  })
+
+  it('listAllLogs ritorna tutti i log di tutte le card, ordinati per data decrescente', async () => {
+    await addOpenLog({ cardId: 'c1', openedAt: 100 })
+    await addOpenLog({ cardId: 'c2', openedAt: 300 })
+    await addOpenLog({ cardId: 'c1', openedAt: 200 })
+    const rows = await listAllLogs()
+    expect(rows.map((r) => r.openedAt)).toEqual([300, 200, 100])
   })
 })
