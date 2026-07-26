@@ -24,7 +24,7 @@ function buildDivIcon(L, point) {
   const resolved = resolveIcon({ icona: point.icona, brandId: point.brandId })
   const inner =
     resolved.type === 'mdi'
-      ? `<i class="mdi ${resolved.value}" aria-hidden="true"></i>`
+      ? `<i class="mdi ${escapeHtml(resolved.value)}" aria-hidden="true"></i>`
       : `<span aria-hidden="true">${escapeHtml(resolved.value)}</span>`
   return L.divIcon({
     className: 'logs-map-marker',
