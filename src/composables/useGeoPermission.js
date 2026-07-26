@@ -7,6 +7,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 export function useGeoPermission() {
   const state = ref('unsupported')
   let permissionStatus = null
+  let active = true
 
   function handleChange() {
     state.value = permissionStatus.state
@@ -15,7 +16,9 @@ export function useGeoPermission() {
   onMounted(async () => {
     if (!navigator.permissions?.query) return
     try {
-      permissionStatus = await navigator.permissions.query({ name: 'geolocation' })
+      const status = await navigator.permissions.query({ name: 'geolocation' })
+      if (!active) return
+      permissionStatus = status
       state.value = permissionStatus.state
       permissionStatus.addEventListener?.('change', handleChange)
     } catch {
@@ -24,6 +27,7 @@ export function useGeoPermission() {
   })
 
   onUnmounted(() => {
+    active = false
     permissionStatus?.removeEventListener?.('change', handleChange)
   })
 
