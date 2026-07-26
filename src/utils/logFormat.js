@@ -1,3 +1,11 @@
+export function fmtDate(ms) {
+  return new Date(ms).toLocaleDateString('it-IT')
+}
+
+export function fmtTime(ms) {
+  return new Date(ms).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
+}
+
 // Coordinate arrotondate a 5 decimali (~1 m) per la visualizzazione.
 export function formatCoords(lat, lng) {
   return `${lat.toFixed(5)}, ${lng.toFixed(5)}`
