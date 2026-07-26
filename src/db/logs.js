@@ -37,3 +37,11 @@ export async function clearAllLogs() {
 export async function countAllLogs() {
   return db.logs.count()
 }
+
+// Tutti i log di tutte le card, più recente in cima. Usata dalla pagina di
+// riepilogo posizioni (vista cross-card) — a differenza di listLogsByCard,
+// che filtra su una singola card.
+export async function listAllLogs() {
+  const rows = await db.logs.toArray()
+  return rows.sort((a, b) => b.openedAt - a.openedAt)
+}
