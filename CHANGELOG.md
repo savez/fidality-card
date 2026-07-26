@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.0](https://github.com/savez/fidality-card/compare/v2.3.0...v2.4.0) (2026-07-26)
+
+
+### ✨ Features
+
+* **logs:** storico posizioni GPS in Impostazioni ([#39](https://github.com/savez/fidality-card/issues/39)) ([33c7de7](https://github.com/savez/fidality-card/commit/33c7de7c2d36fffdcc15f5da386bee129a15d9aa))
+
 ## [2.3.0](https://github.com/savez/fidality-card/compare/v2.2.0...v2.3.0) (2026-07-25)
 
 
