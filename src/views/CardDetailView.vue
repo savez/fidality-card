@@ -10,7 +10,7 @@ import IconaDisplay from '@/components/IconaDisplay.vue'
 import ShareDialog from '@/share/ShareDialog.vue'
 import { useLogsStore } from '@/stores/logs.js'
 import { useUsageLogger } from '@/composables/useUsageLogger.js'
-import { formatCoords, mapUrl } from '@/utils/logFormat.js'
+import LogsTable from '@/components/LogsTable.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -27,13 +27,6 @@ const showClearLogs = ref(false)
 // perché registra hook di lifecycle. Se la card non esiste, l'onMounted sotto
 // fa redirect e lo unmount annulla il timer prima dei 3s → nessun log spurio.
 useUsageLogger(route.params.id)
-
-function fmtDate(ms) {
-  return new Date(ms).toLocaleDateString('it-IT')
-}
-function fmtTime(ms) {
-  return new Date(ms).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
-}
 
 async function onClearLogs() {
   await logs.clearForCard(route.params.id)
@@ -141,36 +134,7 @@ async function onDelete() {
       </v-btn>
     </div>
 
-    <div v-if="logs.items.length" class="logs">
-      <v-table density="compact">
-        <thead>
-          <tr>
-            <th class="text-left">Data</th>
-            <th class="text-left">Ora</th>
-            <th class="text-left">Posizione</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="log in logs.items" :key="log.id">
-            <td class="logs__date">{{ fmtDate(log.openedAt) }}</td>
-            <td class="logs__time">{{ fmtTime(log.openedAt) }}</td>
-            <td>
-              <a
-                v-if="log.lat != null && log.lng != null"
-                class="log-loc"
-                :href="mapUrl(log.lat, log.lng)"
-                target="_blank"
-                rel="noopener"
-              >
-                <v-icon size="13">mdi-map-marker</v-icon>
-                {{ formatCoords(log.lat, log.lng) }}
-              </a>
-              <span v-else class="log-loc-empty">—</span>
-            </td>
-          </tr>
-        </tbody>
-      </v-table>
-    </div>
+    <LogsTable v-if="logs.items.length" :logs="logs.items" />
     <div v-else class="logs-empty">
       <v-icon size="26" class="logs-empty__icon">mdi-history</v-icon>
       <p class="logs-empty__text">Nessuna apertura registrata.</p>
@@ -278,84 +242,6 @@ async function onDelete() {
   font-size: 0.78rem;
   font-weight: 600;
 }
-/* La cronologia è un "surface card" sorella di .meta / .scan: stesso raggio,
-   stessa ombra, hairline che si adatta al tema (chiaro/scuro) tramite i token
-   di bordo nativi di Vuetify invece del --line (solo chiaro). */
-.logs {
-  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-  border-radius: var(--r-card);
-  box-shadow: var(--tile-shadow);
-  overflow: hidden;
-}
-.logs :deep(.v-table) {
-  background: transparent;
-  border-radius: inherit;
-}
-.logs :deep(.v-table__wrapper) {
-  max-height: 340px;
-  overflow-y: auto;
-}
-/* Header = etichette dati: maiuscoletto discreto, sticky durante lo scroll. */
-.logs :deep(thead th) {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  height: 40px !important;
-  background: rgb(var(--v-theme-surface));
-  border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity)) !important;
-  font-size: 0.68rem !important;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: rgba(var(--v-theme-on-surface), 0.55) !important;
-}
-.logs :deep(tbody td) {
-  height: 46px !important;
-  border-bottom: 1px solid rgba(var(--v-border-color), calc(var(--v-border-opacity) * 0.55)) !important;
-  font-size: 0.9rem;
-}
-.logs :deep(tbody tr:last-child td) {
-  border-bottom: none !important;
-}
-.logs :deep(tbody tr:hover) {
-  background: rgba(var(--v-theme-on-surface), 0.035);
-}
-.logs :deep(.logs__date) {
-  font-weight: 600;
-}
-/* Ora con cifre tabellari così le colonne restano allineate. */
-.logs :deep(.logs__time) {
-  font-variant-numeric: tabular-nums;
-  color: rgba(var(--v-theme-on-surface), 0.72);
-}
-
-/* Link GPS: pill indaco tappabile con affordance chiara, non un link blu grezzo. */
-.log-loc {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px 4px 7px;
-  border-radius: 999px;
-  background: rgba(var(--v-theme-primary), 0.1);
-  color: rgb(var(--v-theme-primary));
-  font-size: 0.8rem;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  line-height: 1.3;
-  text-decoration: none;
-  transition: background 0.15s ease;
-}
-.log-loc:hover {
-  background: rgba(var(--v-theme-primary), 0.18);
-}
-.log-loc:focus-visible {
-  outline: 2px solid rgb(var(--v-theme-primary));
-  outline-offset: 2px;
-}
-.log-loc-empty {
-  color: rgba(var(--v-theme-on-surface), 0.38);
-}
-
 /* Stato vuoto: placeholder calmo e centrato, stesso raggio delle altre superfici. */
 .logs-empty {
   display: flex;
