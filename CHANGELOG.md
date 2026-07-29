@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/savez/fidality-card/compare/v2.4.0...v2.5.0) (2026-07-29)
+
+
+### ✨ Features
+
+* **support:** aggiungi badge 'Offrimi una birra' (Buy Me a Coffee) ([#41](https://github.com/savez/fidality-card/issues/41)) ([0e0cc50](https://github.com/savez/fidality-card/commit/0e0cc50865c166d08d6f05d3533b6b62e311f8d9))
+
 ## [2.4.0](https://github.com/savez/fidality-card/compare/v2.3.0...v2.4.0) (2026-07-26)
 
 
