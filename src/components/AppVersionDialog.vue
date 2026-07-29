@@ -1,6 +1,7 @@
 <script setup>
 import { watch } from 'vue'
 import { usePwaUpdate } from '@/composables/usePwaUpdate.js'
+import { SUPPORT_URL } from '@/config/support.js'
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
@@ -47,8 +48,11 @@ async function onCheckUpdate() {
           v{{ version }}
         </div>
         <div class="text-caption text-medium-emphasis mb-1">PWA Vue 3 · open source · MIT</div>
-        <a :href="repoUrl" target="_blank" rel="noopener" class="text-caption d-block mb-4">
+        <a :href="repoUrl" target="_blank" rel="noopener" class="text-caption d-block mb-1">
           ✨ Built by a human + AI, for everyone — GitHub ↗
+        </a>
+        <a :href="SUPPORT_URL" target="_blank" rel="noopener" class="text-caption d-block mb-4">
+          🍺 Offrimi una birra — Buy Me a Coffee ↗
         </a>
 
         <v-divider class="mb-4" />

@@ -5,6 +5,7 @@ import { useCardsStore } from '@/stores/cards.js'
 import { useTheme } from '@/composables/useTheme.js'
 import { backupFilename, buildBackupFile } from '@/share/backupFile.js'
 import { useLogsStore } from '@/stores/logs.js'
+import SupportCard from '@/components/SupportCard.vue'
 
 const { mode: themeMode, setMode: setThemeMode } = useTheme()
 const router = useRouter()
@@ -217,6 +218,9 @@ async function onImportFile(event) {
 
     <v-alert v-if="message" type="success" class="mt-3">{{ message }}</v-alert>
     <v-alert v-if="error" type="error" class="mt-3">{{ error }}</v-alert>
+
+    <h3 class="text-subtitle-1 mb-2 mt-6">Supporta</h3>
+    <SupportCard />
   </v-container>
 </template>
 
