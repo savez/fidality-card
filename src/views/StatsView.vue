@@ -9,6 +9,7 @@ import PodiumChart from '@/components/PodiumChart.vue'
 const cards = useCardsStore()
 const logs = useLogsStore()
 const allLogs = ref([])
+const loaded = ref(false)
 const range = ref('week')
 
 const RANGES = [
@@ -21,6 +22,7 @@ const RANGES = [
 onMounted(async () => {
   if (cards.items.length === 0) await cards.refresh()
   allLogs.value = await logs.getAll()
+  loaded.value = true
 })
 
 const ranking = computed(() =>
@@ -42,11 +44,20 @@ function brandColor(card) {
   <v-container class="pa-3" style="max-width: 600px">
     <h2 class="text-h5 mb-3">Statistiche</h2>
 
-    <v-btn-toggle v-model="range" mandatory density="comfortable" class="mb-4" divided>
-      <v-btn v-for="r in RANGES" :key="r.value" :value="r.value" size="small">
+    <div class="range-toggle mb-5" role="group" aria-label="Periodo">
+      <v-btn
+        v-for="r in RANGES"
+        :key="r.value"
+        :variant="range === r.value ? 'flat' : 'tonal'"
+        :color="range === r.value ? 'primary' : undefined"
+        class="range-toggle__btn"
+        rounded="pill"
+        size="small"
+        @click="range = r.value"
+      >
         {{ r.label }}
       </v-btn>
-    </v-btn-toggle>
+    </div>
 
     <template v-if="ranking.length > 0">
       <PodiumChart :top="top" />
@@ -71,10 +82,10 @@ function brandColor(card) {
       </v-list>
     </template>
 
-    <v-card v-else variant="tonal" class="pa-6 text-center mt-4">
+    <v-card v-else-if="loaded" variant="tonal" class="pa-6 text-center mt-4">
       <v-icon size="48" class="mb-2">mdi-podium</v-icon>
       <div v-if="logs.enabled" class="text-body-1">
-        Nessun dato ancora. Usa le tue carte per popolare il podio! 🏆
+        Nessun utilizzo in questo periodo. Usa le tue carte per popolare il podio! 🏆
       </div>
       <div v-else class="text-body-1">
         Il tracciamento degli utilizzi è disattivato. Riattivalo dalle
@@ -84,3 +95,18 @@ function brandColor(card) {
     </v-card>
   </v-container>
 </template>
+
+<style scoped>
+/* Selettore periodo: pillole spaziate, larghezza equa, vanno a capo su schermi
+   stretti così non toccano mai il bordo. L'attivo è pieno (primary), gli altri
+   tonali — distinguibili sia in tema chiaro che scuro. */
+.range-toggle {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.range-toggle__btn {
+  flex: 1 1 auto;
+  letter-spacing: 0;
+}
+</style>
