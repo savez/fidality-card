@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config'
 import { readFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 
@@ -7,16 +8,32 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // Risolve la versione dell'app mostrata nel footer.
 // Ordine di priorità:
-//   1) env PUBLIC_APP_VERSION → usata in CI per leggere da `origin/main`
-//      (il branch `landing` non riceve i version bump di release-please)
-//   2) root package.json sul branch corrente → comoda in dev locale
-// In CI il branch `landing` è in genere indietro rispetto a main, quindi
-// senza l'env var il footer mostrerebbe una versione stale.
+//   1) env PUBLIC_APP_VERSION → valore esplicito, se mai servisse forzarlo
+//   2) `git show origin/main:package.json` → stessa fonte usata da CI
+//      (il branch `landing` non riceve i version bump di release-please,
+//      quindi la versione reale vive solo su `main`)
+//   3) root package.json sul branch corrente → fallback se origin/main
+//      non è raggiungibile (es. clone offline o senza remote configurato)
 function resolveAppVersion() {
   const fromEnv = process.env.PUBLIC_APP_VERSION
   if (fromEnv && typeof fromEnv === 'string' && fromEnv.trim() !== '') {
     return fromEnv.trim()
   }
+
+  try {
+    const raw = execFileSync('git', ['show', 'origin/main:package.json'], {
+      cwd: __dirname,
+      encoding: 'utf-8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+    const pkg = JSON.parse(raw)
+    if (pkg.version && typeof pkg.version === 'string') {
+      return pkg.version
+    }
+  } catch {
+    // origin/main non raggiungibile: si passa al fallback locale.
+  }
+
   const pkgPath = path.resolve(__dirname, '../package.json')
   let raw
   try {
