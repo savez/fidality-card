@@ -1,16 +1,19 @@
 ---
 const points = [
   {
+    icon: '💾',
     title: 'IndexedDB locale',
     body:
       'I dati delle card vivono nel database del tuo browser. Niente cloud, niente account.',
   },
   {
+    icon: '🔌',
     title: 'Nessun backend',
     body:
       'L\'app è 100% client-side. La condivisione viaggia nel fragment dell\'URL, mai su un server.',
   },
   {
+    icon: '🔓',
     title: 'Licenza MIT',
     body:
       'Codice aperto. Puoi forkarlo, leggerlo, modificarlo e auto-ospitare la tua istanza.',
@@ -27,6 +30,7 @@ const points = [
     <div class="privacy-grid">
       {points.map((p) => (
         <div class="card privacy-card">
+          <div class="privacy-icon" aria-hidden="true">{p.icon}</div>
           <h3>{p.title}</h3>
           <p>{p.body}</p>
         </div>
@@ -52,6 +56,11 @@ const points = [
     display: grid;
     gap: 1rem;
     grid-template-columns: 1fr;
+  }
+
+  .privacy-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
   }
 
   .privacy-card h3 {
