@@ -37,6 +37,10 @@ const versionDialogOpen = ref(false)
         <v-icon>mdi-credit-card-multiple</v-icon>
         <span>Card</span>
       </v-btn>
+      <v-btn :to="{ name: 'stats' }" value="stats" stacked>
+        <v-icon>mdi-podium</v-icon>
+        <span>Statistiche</span>
+      </v-btn>
       <v-btn :to="{ name: 'settings' }" value="settings" stacked>
         <v-icon>mdi-cog</v-icon>
         <span>Impostazioni</span>
