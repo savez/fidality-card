@@ -52,7 +52,7 @@ async function onCheckUpdate() {
           ✨ Built by a human + AI, for everyone — GitHub ↗
         </a>
         <a :href="SUPPORT_URL" target="_blank" rel="noopener" class="text-caption d-block mb-4">
-          🍺 Offrimi una birra — Buy Me a Coffee ↗
+          🍺 Offrimi una birra — Sostienimi ↗
         </a>
 
         <v-divider class="mb-4" />
