@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { useCardsStore } from '@/stores/cards.js'
 import { useTheme } from '@/composables/useTheme.js'
 import { backupFilename, buildBackupFile } from '@/share/backupFile.js'
@@ -8,7 +7,6 @@ import { useLogsStore } from '@/stores/logs.js'
 import SupportCard from '@/components/SupportCard.vue'
 
 const { mode: themeMode, setMode: setThemeMode } = useTheme()
-const router = useRouter()
 const cards = useCardsStore()
 const fileInput = ref(null)
 const message = ref(null)
@@ -181,13 +179,6 @@ async function onImportFile(event) {
         </v-list-item-subtitle>
         <template #append>
           <v-switch v-model="loggingEnabled" color="primary" hide-details inset />
-        </template>
-      </v-list-item>
-      <v-list-item @click="router.push({ name: 'settings-locations' })">
-        <template #prepend><v-icon>mdi-map-marker-radius</v-icon></template>
-        <v-list-item-title>Storico posizioni GPS</v-list-item-title>
-        <template #append>
-          <v-icon size="20" color="medium-emphasis">mdi-chevron-right</v-icon>
         </template>
       </v-list-item>
     </v-list>

@@ -34,21 +34,31 @@ const versionDialogOpen = ref(false)
 
     <v-bottom-navigation height="68" bg-color="surface" class="app-bottom-nav">
       <div class="nav-side">
-        <v-btn :to="{ name: 'cards' }" value="cards" stacked class="nav-btn">
+        <v-btn :to="{ name: 'cards' }" value="cards" class="nav-btn" aria-label="Card">
           <v-icon>mdi-credit-card-multiple</v-icon>
-          <span>Card</span>
         </v-btn>
-        <v-btn :to="{ name: 'stats' }" value="stats" stacked class="nav-btn">
+        <v-btn :to="{ name: 'stats' }" value="stats" class="nav-btn" aria-label="Statistiche">
           <v-icon>mdi-podium</v-icon>
-          <span>Statistiche</span>
         </v-btn>
       </div>
       <!-- Spazio centrale riservato al FAB "Nuova", così nessuna voce ci finisce sotto -->
       <span class="nav-fab-slot" aria-hidden="true"></span>
-      <div class="nav-side nav-side--single">
-        <v-btn :to="{ name: 'settings' }" value="settings" stacked class="nav-btn">
+      <div class="nav-side">
+        <v-btn
+          :to="{ name: 'settings-locations' }"
+          value="locations"
+          class="nav-btn"
+          aria-label="Storico posizioni GPS"
+        >
+          <v-icon>mdi-map-marker-radius</v-icon>
+        </v-btn>
+        <v-btn
+          :to="{ name: 'settings' }"
+          value="settings"
+          class="nav-btn"
+          aria-label="Impostazioni"
+        >
           <v-icon>mdi-cog</v-icon>
-          <span>Impostazioni</span>
         </v-btn>
       </div>
     </v-bottom-navigation>
@@ -83,9 +93,6 @@ const versionDialogOpen = ref(false)
   display: flex;
   flex: 1 1 0;
   height: 100%;
-}
-.nav-side--single {
-  justify-content: center;
 }
 .nav-side .nav-btn {
   flex: 1 1 0;

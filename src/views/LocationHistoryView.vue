@@ -47,7 +47,7 @@ function panelCount(n) {
 <template>
   <v-container class="pa-4" style="max-width: 600px">
     <div class="d-flex align-center mb-4">
-      <v-btn icon="mdi-arrow-left" variant="text" @click="router.push({ name: 'settings' })" />
+      <v-btn icon="mdi-arrow-left" variant="text" @click="router.back()" />
       <h2 class="font-display text-h5 ml-1">Storico posizioni</h2>
     </div>
 
