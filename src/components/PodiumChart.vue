@@ -12,7 +12,10 @@ const props = defineProps({
 // Ordine visivo dei gradini: 2° a sinistra, 1° al centro, 3° a destra.
 // Mostriamo solo le posizioni realmente presenti (1, 2 o 3 carte).
 const steps = computed(() => {
-  const order = [1, 0, 2] // indici in `top` → colonne da sinistra a destra
+  // Ordine visivo dei gradini in base a quante carte ci sono:
+  // 3 → 2°·1°·3° (podio classico), 2 → 1°·2°, 1 → 1°.
+  const n = props.top.length
+  const order = n >= 3 ? [1, 0, 2] : n === 2 ? [0, 1] : [0]
   return order.filter((i) => props.top[i]).map((i) => ({ rank: i + 1, entry: props.top[i] }))
 })
 
