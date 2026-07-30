@@ -1,0 +1,134 @@
+---
+// Banner di supporto: l'unico momento "caldo" della pagina.
+// L'accento ambra (--beer) rima con il badge Dexie/IndexedDB (#FFB300)
+// e ricolora il device del hero-glow. Copy coerente con la support card
+// dell'app ("Offrimi una birra"). Un solo target focalizzabile: la CTA.
+import { meta } from '../data/meta.js'
+---
+
+<section class="support section" id="support">
+  <div class="container">
+    <div class="support-card">
+      <div class="support-glow" aria-hidden="true"></div>
+      <span class="support-seal" aria-hidden="true">🍺</span>
+      <div class="support-body">
+        <span class="support-eyebrow">Progetto indipendente</span>
+        <h2 class="support-title">Offrimi una birra.</h2>
+        <p class="support-sub">
+          Fidelity Card è gratis, open-source e senza tracker — sviluppato nel
+          tempo libero. Se ti risparmia la fila alla cassa, offrimi una birra.
+        </p>
+      </div>
+      <a
+        class="support-cta"
+        href={meta.supportUrl}
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Offrimi una birra ↗
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .support-card {
+    --beer: #ffb300;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 1.75rem);
+    flex-wrap: wrap;
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+    border-radius: var(--radius-card);
+    background: var(--bg-elevated);
+    border: 1px solid rgba(255, 179, 0, 0.28);
+  }
+
+  /* Rima strutturale con hero-glow, ricolorata in ambra. */
+  .support-glow {
+    position: absolute;
+    top: -60%;
+    right: -10%;
+    width: min(420px, 70%);
+    height: 380px;
+    background: radial-gradient(ellipse at center, rgba(255, 179, 0, 0.16) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .support-seal {
+    position: relative;
+    z-index: 1;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    font-size: 1.6rem;
+    border-radius: 999px;
+    background: radial-gradient(circle at 35% 30%, rgba(255, 179, 0, 0.35), rgba(255, 179, 0, 0.12));
+    box-shadow: inset 0 0 0 1px rgba(255, 179, 0, 0.4);
+  }
+
+  .support-body {
+    position: relative;
+    z-index: 1;
+    flex: 1 1 16rem;
+    min-width: 0;
+  }
+
+  .support-eyebrow {
+    display: inline-block;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--beer);
+    margin-bottom: 0.4rem;
+  }
+
+  .support-title {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .support-sub {
+    color: var(--text-muted);
+    margin-top: 0.6rem;
+    max-width: 52ch;
+  }
+
+  .support-cta {
+    position: relative;
+    z-index: 1;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.4rem;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    color: #2b1d00;
+    background: var(--beer);
+    transition:
+      transform 150ms ease,
+      box-shadow 150ms ease;
+  }
+
+  .support-cta:hover {
+    opacity: 1;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px -8px rgba(255, 179, 0, 0.6);
+  }
+
+  .support-cta:focus-visible {
+    outline: 2px solid var(--beer);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 640px) {
+    .support-cta {
+      width: 100%;
+    }
+  }
+</style>

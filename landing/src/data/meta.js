@@ -11,5 +11,6 @@ export const meta = {
   licenseUrl: 'https://github.com/savez/fidality-card/blob/main/LICENSE',
   authorHandle: '@savez',
   authorUrl: 'https://github.com/savez',
+  supportUrl: 'https://buymeacoffee.com/goeokwihgz',
   version: import.meta.env.PUBLIC_APP_VERSION ?? 'dev',
 }
