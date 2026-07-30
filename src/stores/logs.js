@@ -7,6 +7,7 @@ import {
   deleteLogsByCard,
   clearAllLogs,
   countAllLogs,
+  listAllLogs,
 } from '@/db/logs.js'
 
 const STORAGE_KEY = 'fidality-card:usage-logging'
@@ -31,6 +32,10 @@ export const useLogsStore = defineStore('logs', () => {
     } finally {
       loading.value = false
     }
+  }
+
+  async function getAll() {
+    return listAllLogs()
   }
 
   async function recordOpen({ cardId, openedAt }) {
@@ -68,6 +73,7 @@ export const useLogsStore = defineStore('logs', () => {
     loading,
     enabled,
     loadForCard,
+    getAll,
     recordOpen,
     attachCoords,
     clearForCard,

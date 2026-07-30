@@ -15,6 +15,7 @@ const routes = [
     component: () => import('@/views/CardEditView.vue'),
   },
   { path: '/import', name: 'import', component: () => import('@/views/ImportView.vue') },
+  { path: '/stats', name: 'stats', component: () => import('@/views/StatsView.vue') },
   { path: '/settings', name: 'settings', component: () => import('@/views/SettingsView.vue') },
   {
     path: '/settings/posizioni',

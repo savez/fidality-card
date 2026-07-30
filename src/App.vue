@@ -32,15 +32,35 @@ const versionDialogOpen = ref(false)
       <router-view />
     </v-main>
 
-    <v-bottom-navigation grow height="68" bg-color="surface">
-      <v-btn :to="{ name: 'cards' }" value="cards" stacked>
-        <v-icon>mdi-credit-card-multiple</v-icon>
-        <span>Card</span>
-      </v-btn>
-      <v-btn :to="{ name: 'settings' }" value="settings" stacked>
-        <v-icon>mdi-cog</v-icon>
-        <span>Impostazioni</span>
-      </v-btn>
+    <v-bottom-navigation height="68" bg-color="surface" class="app-bottom-nav">
+      <div class="nav-side">
+        <v-btn :to="{ name: 'cards' }" value="cards" class="nav-btn" aria-label="Card">
+          <v-icon>mdi-credit-card-multiple</v-icon>
+        </v-btn>
+        <v-btn :to="{ name: 'stats' }" value="stats" class="nav-btn" aria-label="Statistiche">
+          <v-icon>mdi-podium</v-icon>
+        </v-btn>
+      </div>
+      <!-- Spazio centrale riservato al FAB "Nuova", così nessuna voce ci finisce sotto -->
+      <span class="nav-fab-slot" aria-hidden="true"></span>
+      <div class="nav-side">
+        <v-btn
+          :to="{ name: 'settings-locations' }"
+          value="locations"
+          class="nav-btn"
+          aria-label="Storico posizioni GPS"
+        >
+          <v-icon>mdi-map-marker-radius</v-icon>
+        </v-btn>
+        <v-btn
+          :to="{ name: 'settings' }"
+          value="settings"
+          class="nav-btn"
+          aria-label="Impostazioni"
+        >
+          <v-icon>mdi-cog</v-icon>
+        </v-btn>
+      </div>
     </v-bottom-navigation>
 
     <!-- "Nuova": FAB centrale rialzato sopra la bottom-nav -->
@@ -62,6 +82,25 @@ const versionDialogOpen = ref(false)
 <style scoped>
 .wordmark {
   font-size: 1.4rem;
+}
+/* Barra inferiore: due metà uguali che affiancano lo slot centrale del FAB,
+   così il "+" resta centrato e nessuna voce gli finisce sotto. */
+.app-bottom-nav :deep(.v-bottom-navigation__content) {
+  width: 100%;
+  justify-content: space-between;
+}
+.nav-side {
+  display: flex;
+  flex: 1 1 0;
+  height: 100%;
+}
+.nav-side .nav-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+}
+.nav-fab-slot {
+  flex: 0 0 72px;
 }
 /* "Nuova": FAB centrale rialzato, sopra la bottom-nav */
 .nav-fab {
