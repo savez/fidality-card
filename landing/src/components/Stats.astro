@@ -1,0 +1,111 @@
+---
+// Annuncia la pagina Statistiche (podio carta più usata), rilasciata in 2.6.0 (#44).
+// A differenza di UsageLog (badge statico "Novità"), qui uso una pill versione+data:
+// segnala che è l'ultima release senza sovrapporsi al badge di UsageLog, ormai storico.
+import { meta } from '../data/meta.js'
+
+const release = { version: '2.6.0', date: '30 lug 2026' }
+---
+
+<section class="stats section">
+  <div class="container">
+    <div class="version-pill">
+      <span class="version-dot" aria-hidden="true"></span>
+      <span>v{release.version}</span>
+      <span class="version-sep" aria-hidden="true">·</span>
+      <span>{release.date}</span>
+    </div>
+    <h2 class="stats-title">Le tue card, in classifica.</h2>
+    <p class="stats-sub">
+      La pagina Statistiche mostra il podio delle fidelity card che apri più spesso —
+      calcolato dai log che hai già sul dispositivo, senza nulla da configurare.
+    </p>
+    <div class="card stats-card">
+      <div class="stats-icon" aria-hidden="true">🏆</div>
+      <h3>Podio della carta più usata</h3>
+      <p>
+        Le card che apri più spesso, in cima alla classifica — aggiornata
+        automaticamente ogni volta che scansioni un barcode.
+      </p>
+    </div>
+    <a class="stats-link" href={meta.changelogUrl} rel="noopener noreferrer" target="_blank">
+      Vedi il changelog completo →
+    </a>
+  </div>
+</section>
+
+<style>
+  .version-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-pill);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .version-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+    animation: stats-pulse 2s ease-in-out infinite;
+  }
+
+  .version-sep {
+    color: var(--text-muted);
+  }
+
+  @keyframes stats-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+
+  .stats-title {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    max-width: 22ch;
+  }
+
+  .stats-sub {
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+    max-width: 56ch;
+  }
+
+  .stats-card {
+    margin-top: 2.5rem;
+    max-width: 32rem;
+  }
+
+  .stats-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .stats-card h3 {
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .stats-card p {
+    color: var(--text-muted);
+  }
+
+  .stats-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-weight: 600;
+  }
+</style>
