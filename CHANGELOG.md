@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.0](https://github.com/savez/fidality-card/compare/v2.5.0...v2.6.0) (2026-07-30)
+
+
+### ✨ Features
+
+* pagina Statistiche (podio carta più usata) + storico GPS nella nav ([#44](https://github.com/savez/fidality-card/issues/44)) ([0905ebb](https://github.com/savez/fidality-card/commit/0905ebbd3a9c7316e49ad973db23e34f2e48a3e9))
+
 ## [2.5.0](https://github.com/savez/fidality-card/compare/v2.4.0...v2.5.0) (2026-07-29)
 
 
