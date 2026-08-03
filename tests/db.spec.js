@@ -121,3 +121,33 @@ describe('cards CRUD', () => {
     expect(unpinned.pinned).toBe(false)
   })
 })
+
+describe('cards db — saldo (balanceCents)', () => {
+  it('crea una card con saldo, incluso 0', async () => {
+    const c = await createCard({ ...baseInput, balanceCents: 0, initialBalanceCents: 5000 })
+    const read = await getCard(c.id)
+    expect(read.balanceCents).toBe(0) // 0 non deve diventare undefined
+    expect(read.initialBalanceCents).toBe(5000)
+  })
+
+  it('card senza saldo non ha la chiave balanceCents', async () => {
+    const c = await createCard({ ...baseInput })
+    const read = await getCard(c.id)
+    expect('balanceCents' in read).toBe(false)
+  })
+
+  it('update con balanceCents=null rimuove la chiave (torna fedeltà)', async () => {
+    const c = await createCard({ ...baseInput, balanceCents: 1000, initialBalanceCents: 1000 })
+    await updateCard(c.id, { balanceCents: null, initialBalanceCents: null })
+    const read = await getCard(c.id)
+    expect('balanceCents' in read).toBe(false)
+    expect('initialBalanceCents' in read).toBe(false)
+  })
+
+  it('update a balanceCents=0 mantiene la chiave (resta gift card)', async () => {
+    const c = await createCard({ ...baseInput, balanceCents: 1000, initialBalanceCents: 1000 })
+    await updateCard(c.id, { balanceCents: 0 })
+    const read = await getCard(c.id)
+    expect(read.balanceCents).toBe(0)
+  })
+})

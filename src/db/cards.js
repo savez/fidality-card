@@ -21,6 +21,8 @@ export async function createCard(input) {
     createdAt: t,
     updatedAt: t,
   }
+  if (input.balanceCents != null) card.balanceCents = input.balanceCents
+  if (input.initialBalanceCents != null) card.initialBalanceCents = input.initialBalanceCents
   await db.cards.add(card)
   return card
 }
@@ -42,6 +44,11 @@ export async function updateCard(id, patch) {
     id: existing.id,
     createdAt: existing.createdAt,
     updatedAt: nowMs(),
+  }
+  // Un saldo a null nel patch significa "rimuovi il campo" (torna card di fedeltà).
+  // Va gestito con delete: lo spread lascerebbe la chiave a null nel record.
+  for (const key of ['balanceCents', 'initialBalanceCents']) {
+    if (key in patch && patch[key] == null) delete next[key]
   }
   await db.cards.put(next)
   return next
