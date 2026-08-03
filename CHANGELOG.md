@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.7.1](https://github.com/savez/fidality-card/compare/v2.7.0...v2.7.1) (2026-08-03)
+
+
+### 📝 Documentation
+
+* AGENTS.md con regole di sviluppo (locale, no-tracking, PWA, KISS/YAGNI, workflow landing+LinkedIn) ([2393fa6](https://github.com/savez/fidality-card/commit/2393fa6d04b6540dea54ac377d23ec1f80ef2b4b))
+* AGENTS.md main solo per il codice + regola 'landing mai su main' ([094ab53](https://github.com/savez/fidality-card/commit/094ab5323179a7947b8f176956df673fb4087b86))
+
 ## [2.7.0](https://github.com/savez/fidality-card/compare/v2.6.0...v2.7.0) (2026-08-03)
 
 
