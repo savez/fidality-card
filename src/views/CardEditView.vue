@@ -7,6 +7,7 @@ import BarcodeScanner from '@/scan/BarcodeScanner.vue'
 import IconPickerField from '@/components/IconPickerField.vue'
 import { getBrand } from '@/brands/brands.js'
 import { inferBarcodeFormat, SUPPORTED_FORMATS, FORMAT_LABELS } from '@/scan/barcodeFormat.js'
+import { centsFromEuros } from '@/utils/balance.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -38,6 +39,9 @@ const formatItems = SUPPORTED_FORMATS.map((value) => ({
 }))
 const formatLabel = computed(() => FORMAT_LABELS[form.barcodeFormat] ?? form.barcodeFormat)
 
+const tracksBalance = ref(false)
+const balanceEuro = ref('') // stringa dell'input in euro
+
 onMounted(async () => {
   if (isEdit.value) {
     const c = await cards.get(route.params.id)
@@ -52,6 +56,10 @@ onMounted(async () => {
       })
       // Card esistente: il formato salvato è autorevole, non auto-dedurre.
       autoFormat.value = false
+      if (c.balanceCents != null) {
+        tracksBalance.value = true
+        balanceEuro.value = (c.balanceCents / 100).toFixed(2)
+      }
     }
   }
 })
@@ -107,6 +115,20 @@ async function save() {
       barcodeFormat: form.barcodeFormat,
       icona: form.icona?.trim() || undefined,
       note: form.note?.trim() || undefined,
+    }
+    if (tracksBalance.value && balanceEuro.value !== '' && balanceEuro.value != null) {
+      const cents = Math.max(0, centsFromEuros(balanceEuro.value))
+      payload.balanceCents = cents
+      // initialBalance: in creazione = saldo iniziale; in modifica si allinea al
+      // massimo visto, così la barra di consumo resta coerente senza "ricariche".
+      const prevInitial = isEdit.value
+        ? (await cards.get(route.params.id))?.initialBalanceCents
+        : null
+      payload.initialBalanceCents = Math.max(cents, prevInitial ?? 0)
+    } else {
+      // Switch off (o campo vuoto) → rimuovi il saldo: null segnala il delete lato db.
+      payload.balanceCents = null
+      payload.initialBalanceCents = null
     }
     let saved
     if (isEdit.value) saved = await cards.update(route.params.id, payload)
@@ -173,6 +195,23 @@ async function save() {
         :counter="NOTE_MAX"
         :maxlength="NOTE_MAX"
         rows="3"
+      />
+      <v-switch
+        v-model="tracksBalance"
+        color="primary"
+        label="Traccia un saldo (gift card / coupon)"
+        density="comfortable"
+        hide-details
+      />
+      <v-text-field
+        v-if="tracksBalance"
+        v-model="balanceEuro"
+        label="Saldo (€)"
+        type="number"
+        inputmode="decimal"
+        min="0"
+        step="0.01"
+        prefix="€"
       />
 
       <v-alert v-if="error" type="error" class="mt-3">{{ error }}</v-alert>
