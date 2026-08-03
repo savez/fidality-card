@@ -11,6 +11,14 @@ import ShareDialog from '@/share/ShareDialog.vue'
 import { useLogsStore } from '@/stores/logs.js'
 import { useUsageLogger } from '@/composables/useUsageLogger.js'
 import LogsTable from '@/components/LogsTable.vue'
+import {
+  hasBalance,
+  balanceGroup,
+  formatCents,
+  consumedRatio,
+  centsFromEuros,
+  subtractCents,
+} from '@/utils/balance.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -19,6 +27,13 @@ const card = ref(null)
 const showShare = ref(false)
 const showDelete = ref(false)
 const showFull = ref(false)
+const showSpend = ref(false)
+const spendEuro = ref('')
+
+const showBalance = computed(() => hasBalance(card.value))
+const isEmpty = computed(() => balanceGroup(card.value) === 'empty')
+const balanceText = computed(() => formatCents(card.value?.balanceCents))
+const consumed = computed(() => consumedRatio(card.value))
 
 const logs = useLogsStore()
 const showClearLogs = ref(false)
@@ -50,6 +65,15 @@ async function onDelete() {
   await cards.remove(card.value.id)
   router.replace({ name: 'cards' })
 }
+
+async function onSpend() {
+  const spent = Math.max(0, centsFromEuros(spendEuro.value || 0))
+  const next = subtractCents(card.value.balanceCents, spent)
+  const updated = await cards.update(card.value.id, { balanceCents: next })
+  card.value = updated
+  spendEuro.value = ''
+  showSpend.value = false
+}
 </script>
 
 <template>
@@ -70,6 +94,30 @@ async function onDelete() {
       </div>
       <div class="present__name">{{ card.name }}</div>
       <div class="present__brand">{{ brand?.name ?? 'Personalizzato' }}</div>
+    </div>
+
+    <div v-if="showBalance" class="balance-panel">
+      <div class="balance-panel__row">
+        <span class="balance-panel__label">Saldo residuo</span>
+        <span v-if="isEmpty" class="balance-panel__badge">Esaurita</span>
+      </div>
+      <div class="balance-panel__amount">{{ balanceText }}</div>
+      <v-progress-linear
+        :model-value="consumed * 100"
+        color="primary"
+        height="6"
+        rounded
+        class="mb-3"
+      />
+      <v-btn
+        block
+        variant="tonal"
+        prepend-icon="mdi-cash-minus"
+        :disabled="isEmpty"
+        @click="showSpend = true"
+      >
+        Registra spesa
+      </v-btn>
     </div>
 
     <!-- scan panel: tocca per ingrandire -->
@@ -174,6 +222,30 @@ async function onDelete() {
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="showSpend" max-width="420">
+      <v-card>
+        <v-card-title>Registra una spesa</v-card-title>
+        <v-card-text>
+          <div class="mb-2 text-medium-emphasis">Saldo attuale: {{ balanceText }}</div>
+          <v-text-field
+            v-model="spendEuro"
+            label="Importo speso (€)"
+            type="number"
+            inputmode="decimal"
+            min="0"
+            step="0.01"
+            prefix="€"
+            autofocus
+          />
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" @click="showSpend = false">Annulla</v-btn>
+          <v-btn color="primary" @click="onSpend">Scala saldo</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -260,5 +332,34 @@ async function onDelete() {
   margin: 0;
   font-size: 0.875rem;
   color: rgba(var(--v-theme-on-surface), 0.6);
+}
+.balance-panel {
+  margin-top: 12px;
+  padding: 16px;
+  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+  border-radius: var(--r-card);
+}
+.balance-panel__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.balance-panel__label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(var(--v-theme-on-surface), 0.7);
+}
+.balance-panel__badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(var(--v-theme-on-surface), 0.12);
+}
+.balance-panel__amount {
+  font-weight: 800;
+  font-size: 1.6rem;
+  letter-spacing: -0.02em;
+  margin: 2px 0 10px;
 }
 </style>
