@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.7.0](https://github.com/savez/fidality-card/compare/v2.6.0...v2.7.0) (2026-08-03)
+
+
+### ✨ Features
+
+* **balance:** helper cents/formato/predicati saldo ([5d5a718](https://github.com/savez/fidality-card/commit/5d5a7189223824deb8c28766b20ea97faa02da47))
+* **cards:** chip di filtro per stato saldo ([b1bc284](https://github.com/savez/fidality-card/commit/b1bc284f302138632b48805070e519f5bd1825ae))
+* **db:** persistenza balanceCents con rimozione chiave su null ([a8b6f02](https://github.com/savez/fidality-card/commit/a8b6f0264ddbac705ec33d2bcd287921fec347f6))
+* **detail:** saldo in evidenza e Registra spesa (MVP) ([e5bb50c](https://github.com/savez/fidality-card/commit/e5bb50c698f675a54c8980a4cc2c1b255aa1d4d2))
+* **edit:** switch e campo per il saldo della card ([707607d](https://github.com/savez/fidality-card/commit/707607d009b6b765b5151ce2d40e40cca72895d7))
+* **store:** filtro card per stato saldo ([1d2bb67](https://github.com/savez/fidality-card/commit/1d2bb676b33151d1278bcebc1aaf01dcc3d04eff))
+* **tile:** pill saldo, barra di consumo e badge esaurita ([591f4ba](https://github.com/savez/fidality-card/commit/591f4ba8170b18d6b7aa468b065ca97b5db82793))
+
 ## [2.6.0](https://github.com/savez/fidality-card/compare/v2.5.0...v2.6.0) (2026-07-30)
 
 
