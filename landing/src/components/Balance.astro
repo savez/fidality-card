@@ -1,0 +1,131 @@
+---
+// Annuncia il saldo delle gift card, rilasciato in 2.7.0 (#46).
+// È l'ultima release: porta la "version pill" (come Stats), che passa qui
+// dalla 2.6.0. Griglia a 3 punti sullo stile di UsageLog.
+const release = { version: '2.7.0', date: '3 ago 2026' }
+
+const features = [
+  {
+    icon: '💳',
+    title: 'Un saldo su ogni card',
+    body:
+      'Aggiungi un importo a qualsiasi tessera: diventa una gift card, con il residuo sempre in vista sulla card.',
+  },
+  {
+    icon: '➖',
+    title: 'Registra spesa in un tap',
+    body:
+      'Dopo l’acquisto scali l’importo a mano. La barra di consumo avanza e, a zero, la card diventa “Esaurita” senza sparire.',
+  },
+  {
+    icon: '🗂️',
+    title: 'Filtra per stato',
+    body:
+      'Un filtro divide a colpo d’occhio le fedeltà, le gift card con saldo e quelle esaurite.',
+  },
+]
+---
+
+<section class="balance section">
+  <div class="container">
+    <div class="version-pill">
+      <span class="version-dot" aria-hidden="true"></span>
+      <span>v{release.version}</span>
+      <span class="version-sep" aria-hidden="true">·</span>
+      <span>{release.date}</span>
+    </div>
+    <h2 class="balance-title">Anche le gift card, con il loro saldo.</h2>
+    <p class="balance-sub">
+      Trasforma una tessera in gift card indicando un saldo, poi scalalo a mano dopo
+      ogni utilizzo. Nessun collegamento alla cassa, nessun importo inviato da nessuna
+      parte: il conteggio resta tuo, sul telefono.
+    </p>
+    <div class="balance-grid">
+      {features.map((f) => (
+        <div class="card balance-card">
+          <div class="balance-icon" aria-hidden="true">{f.icon}</div>
+          <h3>{f.title}</h3>
+          <p>{f.body}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .version-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-pill);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .version-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+    animation: balance-pulse 2s ease-in-out infinite;
+  }
+
+  .version-sep {
+    color: var(--text-muted);
+  }
+
+  @keyframes balance-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+
+  .balance-title {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    max-width: 22ch;
+  }
+
+  .balance-sub {
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+    max-width: 56ch;
+  }
+
+  .balance-grid {
+    margin-top: 2.5rem;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  .balance-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .balance-card h3 {
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .balance-card p {
+    color: var(--text-muted);
+  }
+
+  @media (min-width: 768px) {
+    .balance-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
