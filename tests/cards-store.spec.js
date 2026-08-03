@@ -60,6 +60,41 @@ describe('cards store — filtered sort', () => {
   })
 })
 
+describe('cards store — filtro saldo', () => {
+  it('filter=all è il default e mostra tutto', () => {
+    const cards = useCardsStore()
+    cards.items = [card('1', 'A'), { ...card('2', 'B'), balanceCents: 500 }]
+    expect(cards.filter).toBe('all')
+    expect(cards.filtered.map((c) => c.name)).toEqual(['A', 'B'])
+  })
+
+  it('separa fedeltà / con saldo / esaurite', () => {
+    const cards = useCardsStore()
+    cards.items = [
+      card('1', 'Fedelta'),
+      { ...card('2', 'Attiva'), balanceCents: 500 },
+      { ...card('3', 'Esaurita'), balanceCents: 0 },
+    ]
+    cards.filter = 'loyalty'
+    expect(cards.filtered.map((c) => c.name)).toEqual(['Fedelta'])
+    cards.filter = 'active'
+    expect(cards.filtered.map((c) => c.name)).toEqual(['Attiva'])
+    cards.filter = 'empty'
+    expect(cards.filtered.map((c) => c.name)).toEqual(['Esaurita'])
+  })
+
+  it('si combina in AND con la ricerca testuale', () => {
+    const cards = useCardsStore()
+    cards.items = [
+      { ...card('1', 'Coop'), balanceCents: 500 },
+      { ...card('2', 'Conad'), balanceCents: 0 },
+    ]
+    cards.filter = 'active'
+    cards.search = 'co'
+    expect(cards.filtered.map((c) => c.name)).toEqual(['Coop'])
+  })
+})
+
 describe('cards store — exportBackupSync', () => {
   it('ritorna il dump in modo sincrono dagli items (non una Promise)', () => {
     const cards = useCardsStore()

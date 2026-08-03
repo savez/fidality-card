@@ -12,17 +12,20 @@ import {
   buildDump as dbBuildDump,
 } from '@/db/cards.js'
 import { getBrand } from '@/brands/brands.js'
+import { matchesBalanceFilter } from '@/utils/balance.js'
 
 export const useCardsStore = defineStore('cards', () => {
   const items = ref([])
   const loading = ref(false)
   const search = ref('')
+  const filter = ref('all')
 
   const filtered = computed(() => {
     // search può diventare null col clear (X) di Vuetify: coalescing a '' per non rompere il filtro.
     const q = (search.value ?? '').trim().toLowerCase()
 
     const matched = items.value.filter((c) => {
+      if (!matchesBalanceFilter(c, filter.value)) return false
       if (!q) return true
       const cardName = c.name.toLowerCase()
       const brandName = getBrand(c.brandId)?.name?.toLowerCase() ?? ''
@@ -99,6 +102,7 @@ export const useCardsStore = defineStore('cards', () => {
     filtered,
     loading,
     search,
+    filter,
     refresh,
     create,
     update,
