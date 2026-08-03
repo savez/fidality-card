@@ -22,6 +22,13 @@ function onTogglePin(id) {
       class="mb-4"
     />
 
+    <v-chip-group v-model="cards.filter" mandatory selected-class="text-primary" class="mb-3">
+      <v-chip value="all" size="small" variant="tonal">Tutte</v-chip>
+      <v-chip value="loyalty" size="small" variant="tonal">Fedeltà</v-chip>
+      <v-chip value="active" size="small" variant="tonal">Con saldo</v-chip>
+      <v-chip value="empty" size="small" variant="tonal">Esaurite</v-chip>
+    </v-chip-group>
+
     <v-progress-linear v-if="cards.loading" indeterminate class="mb-3" />
 
     <div v-if="cards.filtered.length" class="card-grid">
