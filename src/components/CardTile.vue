@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { getBrand } from '@/brands/brands.js'
 import { readableTextColor } from '@/utils/contrast.js'
+import { hasBalance, balanceGroup, formatCents, consumedRatio } from '@/utils/balance.js'
 import IconaDisplay from './IconaDisplay.vue'
 
 const props = defineProps({ card: { type: Object, required: true } })
@@ -10,6 +11,13 @@ defineEmits(['toggle-pin'])
 const brand = computed(() => getBrand(props.card.brandId))
 const bgColor = computed(() => brand.value?.color ?? '#607D8B')
 const fg = computed(() => readableTextColor(bgColor.value))
+
+const showBalance = computed(() => hasBalance(props.card))
+const isEmpty = computed(() => balanceGroup(props.card) === 'empty')
+const balanceLabel = computed(() =>
+  isEmpty.value ? 'Esaurita' : formatCents(props.card.balanceCents)
+)
+const consumed = computed(() => consumedRatio(props.card))
 </script>
 
 <template>
@@ -35,6 +43,13 @@ const fg = computed(() => readableTextColor(bgColor.value))
     <div class="tile__name">
       <div class="nm text-truncate">{{ card.name }}</div>
       <div class="sub text-truncate">{{ brand?.name ?? 'Personalizzato' }}</div>
+      <div v-if="showBalance" class="bal" :class="{ 'bal--empty': isEmpty }">
+        {{ balanceLabel }}
+      </div>
+    </div>
+
+    <div v-if="showBalance" class="bal-bar" aria-hidden="true">
+      <div class="bal-bar__fill" :style="{ width: (consumed * 100).toFixed(0) + '%' }" />
     </div>
   </v-card>
 </template>
@@ -104,5 +119,34 @@ const fg = computed(() => readableTextColor(bgColor.value))
 .pin:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 2px;
+}
+.bal {
+  position: relative;
+  margin-top: 6px;
+  align-self: flex-start;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #14161a;
+}
+.bal--empty {
+  background: rgba(0, 0, 0, 0.28);
+  color: #fff;
+}
+.bal-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.18);
+}
+.bal-bar__fill {
+  height: 100%;
+  background: rgba(255, 255, 255, 0.92);
+  transition: width 0.2s ease;
 }
 </style>
