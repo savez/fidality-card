@@ -48,10 +48,12 @@ Questo progetto è una PWA per fidelity card. Ogni contributo deve rispettare qu
 - **Soldi in centesimi interi**, mai float. In generale, attenzione ai fallback falsy (`x || default`) su valori dove `0`/`''` sono legittimi.
 - **Commit convenzionali** (`feat:`, `fix:`, `chore:`…) — le release sono automatizzate da release-please su push a `main`.
 
-### Workflow per ogni nuova funzionalità
+### Branch e deploy
 
-Alla consegna di ogni nuova funzionalità, oltre al codice:
+- **`main`** è il branch del **codice** dell'app (questo `AGENTS.md` vale per il codice).
+- **`landing`** è un branch **separato** che ospita la landing page (Astro) e ha un proprio `AGENTS.md`.
+- **`landing` non va MAI unito a `main`** (e viceversa): sono due linee distinte. Le feature entrano su `main`; la landing si aggiorna sul suo branch, con PR **verso `landing`**.
 
-1. **Aggiorna la landing.** Sul branch `landing` (progetto Astro in `landing/`), segnala la novità aggiornando/aggiungendo la sezione dedicata in `landing/src/`, seguendo il pattern dei componenti esistenti (`UsageLog.astro`, `Stats.astro`). La feature più recente porta la "version pill" con versione + data.
-2. **Apri una PR verso `landing`.** Al merge, il workflow `.github/workflows/pages.yml` fa il build e il deploy automatico su `gh-pages`.
-3. **Prepara un post LinkedIn** pronto da copiare che annuncia la funzionalità (tono divulgativo, in italiano, coerente coi vincoli locale/no-tracking/PWA).
+### Alla consegna di una funzionalità
+
+Il codice va su `main`. L'annuncio della novità (aggiornamento landing + post LinkedIn) segue le regole del branch `landing` — vedi l'`AGENTS.md` di quel branch.
