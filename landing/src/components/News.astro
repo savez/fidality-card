@@ -1,0 +1,212 @@
+---
+// Sezione "Novità" unificata: timeline delle release, più recente in cima.
+// Sostituisce le vecchie sezioni per-versione (Stats, Balance): un'unica
+// cronologia estendibile. Le voci sono dati statici (un changelog è storia);
+// la più recente porta il tag "Ultima release".
+import { meta } from '../data/meta.js'
+
+const releases = [
+  {
+    version: '2.7.0',
+    date: '3 ago 2026',
+    title: 'Saldo sulle gift card',
+    body: 'Aggiungi un saldo a una tessera e scalalo a mano dopo ogni spesa. Nessun importo lascia il telefono.',
+    chips: ['Saldo per card', 'Registra spesa', 'Filtro per stato'],
+    latest: true,
+  },
+  {
+    version: '2.6.0',
+    date: '30 lug 2026',
+    title: 'Statistiche: podio della carta più usata',
+    body: 'Il podio delle card che apri più spesso, calcolato dai log già sul dispositivo.',
+  },
+  {
+    version: '2.5.0',
+    date: '29 lug 2026',
+    title: 'Badge “Offrimi una birra”',
+    body: 'Un modo semplice per sostenere il progetto, se ti va.',
+  },
+  {
+    version: '2.4.0',
+    date: '26 lug 2026',
+    title: 'Storico posizioni GPS in Impostazioni',
+    body: 'Rivedi (e cancelli) i luoghi registrati, quando vuoi. Sempre opt-in.',
+  },
+]
+---
+
+<section class="news section" id="novita">
+  <div class="container">
+    <span class="eyebrow">Novità</span>
+    <h2 class="news-title">Cosa è cambiato, versione per versione.</h2>
+    <p class="news-sub">
+      Ogni release, in ordine. L’ultima in cima — sempre 100% locale, senza tracciamento.
+    </p>
+
+    <ol class="timeline">
+      {releases.map((r) => (
+        <li class:list={['entry', { 'is-latest': r.latest }]}>
+          <div class="meta">
+            <span class="ver">v{r.version}</span>
+            <span class="dot-sep" aria-hidden="true">·</span>
+            <span class="date">{r.date}</span>
+            {r.latest && <span class="tag-latest">Ultima release</span>}
+          </div>
+          <h3>{r.title}</h3>
+          <p>{r.body}</p>
+          {r.chips && (
+            <div class="chips">
+              {r.chips.map((c) => <span class="chip">{c}</span>)}
+            </div>
+          )}
+        </li>
+      ))}
+    </ol>
+
+    <a class="news-link" href={meta.changelogUrl} rel="noopener noreferrer" target="_blank">
+      Vedi il changelog completo →
+    </a>
+  </div>
+</section>
+
+<style>
+  .eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+
+  .news-title {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    max-width: 24ch;
+    margin-top: 0.6rem;
+  }
+
+  .news-sub {
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+    max-width: 60ch;
+  }
+
+  .timeline {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0 0 0 1.9rem;
+    position: relative;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent), rgba(70, 227, 183, 0.15) 42%, var(--border));
+    border-radius: 2px;
+  }
+
+  .entry {
+    position: relative;
+    padding-bottom: 2.1rem;
+  }
+
+  .entry:last-child {
+    padding-bottom: 0;
+  }
+
+  .entry::before {
+    content: '';
+    position: absolute;
+    left: -1.9rem;
+    top: 5px;
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background: var(--bg);
+    border: 2px solid var(--border);
+  }
+
+  .entry.is-latest::before {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow:
+      0 0 0 5px var(--accent-soft),
+      0 0 14px var(--accent);
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .ver {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .entry.is-latest .ver {
+    color: var(--accent);
+  }
+
+  .dot-sep {
+    color: var(--border);
+  }
+
+  .date {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tag-latest {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid rgba(70, 227, 183, 0.35);
+    border-radius: var(--radius-pill);
+    padding: 0.12rem 0.6rem;
+  }
+
+  .entry h3 {
+    font-size: 1.15rem;
+    margin-top: 0.5rem;
+  }
+
+  .entry p {
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+    max-width: 62ch;
+  }
+
+  .chips {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-top: 0.7rem;
+  }
+
+  .chip {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    padding: 0.2rem 0.65rem;
+  }
+
+  .news-link {
+    display: inline-block;
+    margin-top: 2.2rem;
+    font-weight: 600;
+  }
+</style>
