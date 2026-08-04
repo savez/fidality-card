@@ -38,8 +38,7 @@ async function copyLink() {
             Tocca
             <strong>Condividi</strong>
             (iPhone) o il menu ⋮ (Android), poi
-            <strong>"Aggiungi alla schermata Home"</strong>
-            .
+            <strong>"Aggiungi alla schermata Home".</strong>
           </li>
           <li>Rinomina l'icona come preferisci e conferma.</li>
         </ol>

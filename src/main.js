@@ -21,6 +21,11 @@ initPwa()
 initInstallPrompt()
 initDbStatus().then(async () => {
   await router.isReady()
-  await applyIntent(router)
+  try {
+    await applyIntent(router)
+  } catch {
+    // Scorciatoia best-effort: se il DB non è leggibile, monta comunque l'app
+    // (l'alert su dbError in App.vue spiega il problema all'utente).
+  }
   app.mount('#app')
 })
