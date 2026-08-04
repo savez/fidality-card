@@ -8,6 +8,7 @@ import { vuetify } from './plugins/vuetify.js'
 import { initPwa } from './composables/usePwaUpdate.js'
 import { initInstallPrompt } from './composables/usePwaInstall.js'
 import { initDbStatus } from './composables/useDbStatus.js'
+import { applyIntent } from './shortcuts/applyIntent.js'
 import './styles/app.css'
 
 const app = createApp(App)
@@ -18,4 +19,8 @@ app.use(router)
 
 initPwa()
 initInstallPrompt()
-initDbStatus().then(() => app.mount('#app'))
+initDbStatus().then(async () => {
+  await router.isReady()
+  await applyIntent(router)
+  app.mount('#app')
+})
