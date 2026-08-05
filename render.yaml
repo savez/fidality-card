@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: fidality-card
+    name: fidelity-card
     runtime: static
     buildCommand: npm ci && npm run build
     staticPublishPath: ./dist

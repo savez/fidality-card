@@ -13,7 +13,7 @@ Se trovi una vulnerabilità di sicurezza, **non aprire una issue pubblica**.
 
 Usa invece **GitHub Security Advisories** (privato, solo tu e il maintainer vedete il report):
 
-🔗 https://github.com/savez/fidality-card/security/advisories/new
+🔗 https://github.com/savez/fidelity-card/security/advisories/new
 
 In alternativa, contattami via GitHub messaging come [@savez](https://github.com/savez).
 
@@ -57,7 +57,7 @@ Questo è un progetto **personale e self-hosted**:
 - I dati delle card vivono **solo in IndexedDB sul device dell'utente**, mai inviati a server custom
 - Non c'è un backend del maintainer da bucare
 - Vulnerabilità del browser/SO dell'utente sono fuori scope (forka e patcha la tua istanza)
-- L'istanza pubblica `fidality-card.onrender.com` serve solo asset statici — niente endpoint server-side da exploitare
+- L'istanza pubblica `fidelity-card.onrender.com` serve solo asset statici — niente endpoint server-side da exploitare
 
 ## License
 

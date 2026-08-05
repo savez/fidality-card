@@ -4,19 +4,19 @@
   <img src="public/banner.svg" alt="Fidelity Card — PWA Vue 3 open-source per le tue tessere fedeltà" width="100%" />
 </p>
 
-[![CI](https://github.com/savez/fidality-card/actions/workflows/ci.yml/badge.svg)](https://github.com/savez/fidality-card/actions/workflows/ci.yml)
-[![Live demo](https://img.shields.io/website?url=https%3A%2F%2Ffidality-card.onrender.com&label=demo&up_message=online&down_message=offline&up_color=46E3B7)](https://fidality-card.onrender.com)
-[![Website](https://img.shields.io/badge/website-savez.github.io-46E3B7)](https://savez.github.io/fidality-card/)
+[![CI](https://github.com/savez/fidelity-card/actions/workflows/ci.yml/badge.svg)](https://github.com/savez/fidelity-card/actions/workflows/ci.yml)
+[![Live demo](https://img.shields.io/website?url=https%3A%2F%2Ffidelity-card.onrender.com&label=demo&up_message=online&down_message=offline&up_color=46E3B7)](https://fidelity-card.onrender.com)
+[![Website](https://img.shields.io/badge/website-savez.github.io-46E3B7)](https://savez.github.io/fidelity-card/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/github/package-json/v/savez/fidality-card)](package.json)
+[![Version](https://img.shields.io/github/package-json/v/savez/fidelity-card)](package.json)
 [![Vue 3](https://img.shields.io/badge/Vue-3-42b883)](https://vuejs.org/)
 [![PWA](https://img.shields.io/badge/PWA-installable-5A0FC8)](https://web.dev/progressive-web-apps/)
 
 PWA Vue 3 per salvare, organizzare e condividere fidelity card senza backend custom.
 
-🌐 **Pagina progetto**: <https://savez.github.io/fidality-card/>
+🌐 **Pagina progetto**: <https://savez.github.io/fidelity-card/>
 
-🚀 **Live demo**: <https://fidality-card.onrender.com>
+🚀 **Live demo**: <https://fidelity-card.onrender.com>
 
 ## In breve
 
@@ -56,7 +56,7 @@ Il deploy della demo passa da Render:
 
 1. Crea un account su Render
 2. New → **Blueprint**
-3. Collega il repo `savez/fidality-card`
+3. Collega il repo `savez/fidelity-card`
 4. Conferma il servizio e avvia il deploy
 
 Ogni push su `main` aggiorna la demo automaticamente.
@@ -86,8 +86,8 @@ Leggi [CONTRIBUTING.md](CONTRIBUTING.md) per ambiente di sviluppo, commit conven
 
 ## Support
 
-- Bug o feature request → [Issue](https://github.com/savez/fidality-card/issues/new)
-- Domande o discussioni → [Discussions](https://github.com/savez/fidality-card/discussions)
+- Bug o feature request → [Issue](https://github.com/savez/fidelity-card/issues/new)
+- Domande o discussioni → [Discussions](https://github.com/savez/fidelity-card/discussions)
 
 ## License
 

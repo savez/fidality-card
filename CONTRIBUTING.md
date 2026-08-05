@@ -6,8 +6,8 @@ Grazie per l'interesse a contribuire a **Fidelity Card**! Questa è una piccola 
 
 1. Forka il repo su GitHub e clona il tuo fork:
    ```bash
-   git clone https://github.com/<tuo-username>/fidality-card.git
-   cd fidality-card
+   git clone https://github.com/<tuo-username>/fidelity-card.git
+   cd fidelity-card
    ```
 2. Usa Node 20:
    ```bash

@@ -9,8 +9,8 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const version = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '?.?.?'
-const changelogUrl = 'https://github.com/savez/fidality-card/releases'
-const repoUrl = 'https://github.com/savez/fidality-card'
+const changelogUrl = 'https://github.com/savez/fidelity-card/releases'
+const repoUrl = 'https://github.com/savez/fidelity-card'
 
 const { updateCheckStatus, checkForUpdate, resetCheckStatus } = usePwaUpdate()
 
