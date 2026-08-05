@@ -56,4 +56,5 @@ Questo progetto è una PWA per fidelity card. Ogni contributo deve rispettare qu
 
 ### Alla consegna di una funzionalità
 
-Il codice va su `main`. L'annuncio della novità (aggiornamento landing + post LinkedIn) segue le regole del branch `landing` — vedi l'`AGENTS.md` di quel branch.
+- **Racconta la novità nell'app.** Se la funzione si vede, aggiungi una voce in `src/config/releaseNotes.js` **nella stessa PR**, con il numero di versione che release-please assegnerà (feat → minor, fix → patch). Finché quel bump non esce la voce resta invisibile, quindi si "arma" da sola con la release. Le patch senza impatto visibile non si annunciano.
+- Il codice va su `main`. L'annuncio esterno (aggiornamento landing + post LinkedIn) segue le regole del branch `landing` — vedi l'`AGENTS.md` di quel branch.

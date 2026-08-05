@@ -8,6 +8,7 @@ import { vuetify } from './plugins/vuetify.js'
 import { initPwa } from './composables/usePwaUpdate.js'
 import { initInstallPrompt } from './composables/usePwaInstall.js'
 import { initDbStatus } from './composables/useDbStatus.js'
+import { initWhatsNew } from './composables/useWhatsNew.js'
 import { applyIntent } from './shortcuts/applyIntent.js'
 import './styles/app.css'
 
@@ -21,6 +22,9 @@ initPwa()
 initInstallPrompt()
 initDbStatus().then(async () => {
   await router.isReady()
+  // Prima del mount: legge il DB per capire se l'utente usava già l'app, così
+  // App.vue trova le novità pendenti già calcolate.
+  await initWhatsNew()
   try {
     await applyIntent(router)
   } catch {

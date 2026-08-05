@@ -1,6 +1,7 @@
 <script setup>
 import { watch } from 'vue'
 import { usePwaUpdate } from '@/composables/usePwaUpdate.js'
+import { useWhatsNew } from '@/composables/useWhatsNew.js'
 import { SUPPORT_URL } from '@/config/support.js'
 
 const props = defineProps({
@@ -13,6 +14,7 @@ const changelogUrl = 'https://github.com/savez/fidelity-card/releases'
 const repoUrl = 'https://github.com/savez/fidelity-card'
 
 const { updateCheckStatus, checkForUpdate, resetCheckStatus } = usePwaUpdate()
+const { hasNotesToReread, showLatestNotes } = useWhatsNew()
 
 // Quando il dialog si chiude, resettiamo lo stato di check così la prossima apertura è pulita.
 watch(
@@ -27,6 +29,12 @@ function close() {
 }
 async function onCheckUpdate() {
   await checkForUpdate()
+}
+// Chiude questo dialog prima di aprire quello delle novità: due v-dialog
+// annidati si sovrapporrebbero senza motivo.
+function onShowWhatsNew() {
+  close()
+  showLatestNotes()
 }
 </script>
 
@@ -56,6 +64,17 @@ async function onCheckUpdate() {
         </a>
 
         <v-divider class="mb-4" />
+
+        <v-btn
+          v-if="hasNotesToReread"
+          block
+          variant="outlined"
+          prepend-icon="mdi-party-popper"
+          class="mb-2"
+          @click="onShowWhatsNew"
+        >
+          Rivedi le novità
+        </v-btn>
 
         <v-btn
           block

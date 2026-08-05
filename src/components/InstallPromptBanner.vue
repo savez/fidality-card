@@ -1,10 +1,12 @@
 <script setup>
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { usePwaInstall } from '@/composables/usePwaInstall.js'
+import { useWhatsNew } from '@/composables/useWhatsNew.js'
 
 const SHOW_DELAY_MS = 5000
 
 const { canInstall, platform, evaluateEligibility, promptInstall, dismiss } = usePwaInstall()
+const { whatsNewVisible } = useWhatsNew()
 const visible = ref(false)
 const delayElapsed = ref(false)
 let timer = null
@@ -28,8 +30,10 @@ onUnmounted(() => {
 // I 5s sono un minimo, non un singolo istante di campionamento: il banner
 // compare quando ENTRAMBE le condizioni sono vere, in qualunque ordine
 // arrivino (delay scaduto, evento beforeinstallprompt arrivato/iOS rilevato).
-watch([canInstall, delayElapsed], ([can, elapsed]) => {
-  visible.value = can && elapsed
+// Il modale "Novità" ha la precedenza: se è aperto il banner attende, senza
+// registrare alcun dismiss, e ricompare appena il modale è chiuso.
+watch([canInstall, delayElapsed, whatsNewVisible], ([can, elapsed, whatsNew]) => {
+  visible.value = can && elapsed && !whatsNew
 })
 
 function close() {

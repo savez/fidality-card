@@ -1,10 +1,12 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useDbStatus } from '@/composables/useDbStatus.js'
 import { useTheme } from '@/composables/useTheme.js'
+import { useWhatsNew } from '@/composables/useWhatsNew.js'
 import AppBarVersionPill from '@/components/AppBarVersionPill.vue'
 import AppVersionDialog from '@/components/AppVersionDialog.vue'
 import InstallPromptBanner from '@/components/InstallPromptBanner.vue'
+import WhatsNewDialog from '@/components/WhatsNewDialog.vue'
 
 // Attiva l'applicazione reattiva del tema a livello app (anche al reload e ai
 // cambi di preferenza di sistema), indipendentemente dalla route corrente.
@@ -13,6 +15,16 @@ useTheme()
 const { dbError } = useDbStatus()
 
 const versionDialogOpen = ref(false)
+
+// Modale "Novità": le voci pendenti sono già calcolate da initWhatsNew() in
+// main.js; qui parte solo il timer che decide se aprirle ora o al boot dopo.
+const {
+  visibleEntries,
+  whatsNewVisible,
+  startBootDecision,
+  dismiss: dismissWhatsNew,
+} = useWhatsNew()
+onMounted(() => startBootDecision())
 </script>
 
 <template>
@@ -76,6 +88,7 @@ const versionDialogOpen = ref(false)
 
     <AppVersionDialog v-model="versionDialogOpen" />
     <InstallPromptBanner />
+    <WhatsNewDialog v-if="whatsNewVisible" :entries="visibleEntries" @close="dismissWhatsNew" />
   </v-app>
 </template>
 
