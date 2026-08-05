@@ -57,7 +57,7 @@ const appVersion = resolveAppVersion()
 
 export default defineConfig({
   site: 'https://savez.github.io',
-  base: '/fidelity-card',
+  base: '/fidality-card',
   output: 'static',
   trailingSlash: 'always',
   vite: {
