@@ -26,7 +26,7 @@ import { meta } from '../data/meta.js'
   // Il valore build-time (meta.version) resta come fallback se l'API non risponde.
   const KEY = 'landing:latest-release'
   const TTL_MS = 60 * 60 * 1000 // 1h, per non sbattere sul rate limit dell'API GitHub
-  const API = 'https://api.github.com/repos/savez/fidality-card/releases/latest'
+  const API = 'https://api.github.com/repos/savez/fidelity-card/releases/latest'
 
   function showVersion(tag) {
     const el = document.getElementById('app-version')
