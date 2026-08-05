@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.0](https://github.com/savez/fidality-card/compare/v2.7.1...v2.8.0) (2026-08-05)
+
+
+### ✨ Features
+
+* scorciatoie in home per la carta più usata e una carta scelta ([#51](https://github.com/savez/fidality-card/issues/51)) ([de1e6ae](https://github.com/savez/fidality-card/commit/de1e6ae3a7f26590a6c46be2b12854e34b5ec248))
+
 ## [2.7.1](https://github.com/savez/fidality-card/compare/v2.7.0...v2.7.1) (2026-08-03)
 
 
