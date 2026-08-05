@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.9.0](https://github.com/savez/fidality-card/compare/v2.8.0...v2.9.0) (2026-08-05)
+
+
+### ✨ Features
+
+* modale novità a ogni nuova versione ([9aee5f4](https://github.com/savez/fidality-card/commit/9aee5f45800d70a70cb15c2741b92c4d4df6ef68))
+
+
+### 🐛 Bug Fixes
+
+* correggi refuso "fidality" -&gt; "fidelity" nel progetto [skip ci] ([6e490cf](https://github.com/savez/fidality-card/commit/6e490cffe79a63cf5576ae9da5a4453c9955ffe8))
+* **docs:** ripristina URL Pages fidality-card in README [skip ci] ([9bcc646](https://github.com/savez/fidality-card/commit/9bcc64653c2bdc3b3245c4ed30b520d150933150))
+
 ## [2.8.0](https://github.com/savez/fidality-card/compare/v2.7.1...v2.8.0) (2026-08-05)
 
 
