@@ -6,7 +6,7 @@
 
 [![CI](https://github.com/savez/fidelity-card/actions/workflows/ci.yml/badge.svg)](https://github.com/savez/fidelity-card/actions/workflows/ci.yml)
 [![Live demo](https://img.shields.io/website?url=https%3A%2F%2Ffidelity-card.onrender.com&label=demo&up_message=online&down_message=offline&up_color=46E3B7)](https://fidelity-card.onrender.com)
-[![Website](https://img.shields.io/badge/website-savez.github.io-46E3B7)](https://savez.github.io/fidelity-card/)
+[![Website](https://img.shields.io/badge/website-savez.github.io-46E3B7)](https://savez.github.io/fidality-card/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Version](https://img.shields.io/github/package-json/v/savez/fidelity-card)](package.json)
 [![Vue 3](https://img.shields.io/badge/Vue-3-42b883)](https://vuejs.org/)
@@ -14,7 +14,7 @@
 
 PWA Vue 3 per salvare, organizzare e condividere fidelity card senza backend custom.
 
-🌐 **Pagina progetto**: <https://savez.github.io/fidelity-card/>
+🌐 **Pagina progetto**: <https://savez.github.io/fidality-card/>
 
 🚀 **Live demo**: <https://fidelity-card.onrender.com>
 
