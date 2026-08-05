@@ -5,6 +5,7 @@ import { useTheme } from '@/composables/useTheme.js'
 import { backupFilename, buildBackupFile } from '@/share/backupFile.js'
 import { useLogsStore } from '@/stores/logs.js'
 import SupportCard from '@/components/SupportCard.vue'
+import ShortcutHintDialog from '@/components/ShortcutHintDialog.vue'
 
 const { mode: themeMode, setMode: setThemeMode } = useTheme()
 const cards = useCardsStore()
@@ -15,6 +16,9 @@ const error = ref(null)
 const logs = useLogsStore()
 const showClearAll = ref(false)
 const logCount = ref(0)
+
+const showShortcutHint = ref(false)
+const mostUsedUrl = `${window.location.origin}${window.location.pathname}?open=most-used`
 
 const loggingEnabled = computed({
   get: () => logs.enabled,
@@ -193,6 +197,18 @@ async function onImportFile(event) {
       Cancella tutti i log ({{ logCount }})
     </v-btn>
 
+    <h3 class="text-subtitle-1 mb-2 mt-6">Scorciatoie</h3>
+    <v-list density="comfortable" class="usage mb-2">
+      <v-list-item @click="showShortcutHint = true">
+        <template #prepend><v-icon>mdi-home-plus</v-icon></template>
+        <v-list-item-title>Aggiungi "Carta più usata" in home</v-list-item-title>
+        <v-list-item-subtitle class="usage__hint">
+          Crea un'icona che apre subito il barcode della carta che usi di più negli ultimi 30
+          giorni.
+        </v-list-item-subtitle>
+      </v-list-item>
+    </v-list>
+
     <v-dialog v-model="showClearAll" max-width="420">
       <v-card>
         <v-card-title>Cancellare tutti i log?</v-card-title>
@@ -206,6 +222,13 @@ async function onImportFile(event) {
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <ShortcutHintDialog
+      v-if="showShortcutHint"
+      :url="mostUsedUrl"
+      title='Aggiungi "Carta più usata" in home'
+      @close="showShortcutHint = false"
+    />
 
     <v-alert v-if="message" type="success" class="mt-3">{{ message }}</v-alert>
     <v-alert v-if="error" type="error" class="mt-3">{{ error }}</v-alert>

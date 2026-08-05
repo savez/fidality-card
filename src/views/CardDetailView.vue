@@ -8,6 +8,7 @@ import BarcodeDisplay from '@/components/BarcodeDisplay.vue'
 import BarcodeFullscreen from '@/components/BarcodeFullscreen.vue'
 import IconaDisplay from '@/components/IconaDisplay.vue'
 import ShareDialog from '@/share/ShareDialog.vue'
+import ShortcutHintDialog from '@/components/ShortcutHintDialog.vue'
 import { useLogsStore } from '@/stores/logs.js'
 import { useUsageLogger } from '@/composables/useUsageLogger.js'
 import LogsTable from '@/components/LogsTable.vue'
@@ -29,6 +30,10 @@ const showDelete = ref(false)
 const showFull = ref(false)
 const showSpend = ref(false)
 const spendEuro = ref('')
+const showShortcutHint = ref(false)
+const shortcutUrl = computed(
+  () => `${window.location.origin}${window.location.pathname}?open=${card.value?.id}`
+)
 
 const showBalance = computed(() => hasBalance(card.value))
 const isEmpty = computed(() => balanceGroup(card.value) === 'empty')
@@ -59,6 +64,7 @@ onMounted(async () => {
     return
   }
   logs.loadForCard(route.params.id)
+  if (route.query.fs === '1') showFull.value = true
 })
 
 async function onDelete() {
@@ -166,6 +172,15 @@ async function onSpend() {
         Elimina
       </v-btn>
     </div>
+    <v-btn
+      class="mt-2"
+      block
+      variant="outlined"
+      prepend-icon="mdi-home-plus"
+      @click="showShortcutHint = true"
+    >
+      Aggiungi in home
+    </v-btn>
 
     <!-- cronologia aperture -->
     <div class="d-flex align-center mt-6 mb-2">
@@ -201,6 +216,13 @@ async function onSpend() {
     </v-dialog>
 
     <ShareDialog v-if="showShare" :card="card" @close="showShare = false" />
+
+    <ShortcutHintDialog
+      v-if="showShortcutHint"
+      :url="shortcutUrl"
+      :title="`Aggiungi ${card.name} in home`"
+      @close="showShortcutHint = false"
+    />
 
     <BarcodeFullscreen
       v-if="showFull"
