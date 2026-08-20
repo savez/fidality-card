@@ -8,9 +8,10 @@
 // serviti dalla regola runtimeCaching CacheFirst in vite.config.js: la prima
 // volta servono rete, poi sono offline per sempre.
 
-// Cache di sessione: brandId → punti. Un array vuoto significa "già provato,
-// niente da avere" (file assente, offline, JSON malformato) e vale a evitare
-// di ritentare a ogni avvio. Si azzera da sé al reload dell'app.
+// Cache di sessione: brandId → punti. Un array vuoto significa "il server ha
+// risposto e non c'è niente da avere" (file assente, JSON malformato): inutile
+// ritentare. Un errore di rete invece NON viene memorizzato — vedi fetchBrand.
+// Si azzera da sé al reload dell'app.
 const loaded = new Map()
 
 function version() {
@@ -27,14 +28,19 @@ async function fetchBrand(brandId) {
   try {
     const res = await fetch(`${baseUrl()}pois/${brandId}.json?v=${version()}`)
     if (!res.ok) {
+      // 404: questo brand non ha un file nel catalogo (non è mappato in OSM).
+      // È una risposta definitiva, si memorizza.
       loaded.set(brandId, [])
       return
     }
     const json = await res.json()
     loaded.set(brandId, Array.isArray(json?.points) ? json.points : [])
   } catch {
-    // Offline, o brand senza file: si scende al livello 3 (cluster dai log).
-    loaded.set(brandId, [])
+    // Rete assente, o risposta illeggibile: si scende al livello 3 (cluster dai
+    // log) e NON si memorizza il vuoto. Dentro un singolo avvio non cambia
+    // niente — loadPois viene chiamata una volta — ma evita che un tentativo
+    // andato a vuoto offline spenga il catalogo di quel brand per il resto
+    // della sessione, anche se la rete torna.
   }
 }
 

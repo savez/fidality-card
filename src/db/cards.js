@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import { db } from './index.js'
+import { deletePlacesByCard } from './places.js'
 
 const DUMP_VERSION = 1
 
@@ -68,6 +69,11 @@ export async function togglePin(id) {
 
 export async function deleteCard(id) {
   await db.cards.delete(id)
+  // I luoghi confermati per questa card non hanno più senso: se restassero,
+  // comparirebbero nell'elenco "Luoghi salvati" puntando al nulla. Sta qui e non
+  // nello store così vale per qualunque chiamante. (I log invece restano: chi li
+  // legge filtra già sulle card esistenti, e la cronologia è dato dell'utente.)
+  await deletePlacesByCard(id)
 }
 
 // Costruisce il dump in modo sincrono da un array di card già in memoria.

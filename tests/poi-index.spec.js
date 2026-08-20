@@ -57,7 +57,7 @@ describe('loadPois', () => {
     expect(fetchMock).toHaveBeenCalledTimes(1)
   })
 
-  it('anche un fallimento viene ricordato: non si ritenta a ogni avvio', async () => {
+  it('un 404 viene ricordato: quel brand non ha un file, inutile ritentare', async () => {
     const fetchMock = vi.fn().mockResolvedValue({ ok: false, status: 404 })
     vi.stubGlobal('fetch', fetchMock)
 
@@ -65,6 +65,19 @@ describe('loadPois', () => {
     await loadPois(['cienne'])
 
     expect(fetchMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('un errore di rete NON viene ricordato: un tentativo offline non spegne il catalogo', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockRejectedValueOnce(new TypeError('Failed to fetch'))
+      .mockResolvedValue(ok([[45.46, 9.19]]))
+    vi.stubGlobal('fetch', fetchMock)
+
+    expect((await loadPois(['esselunga'])).size).toBe(0)
+    // Tornata la rete, il secondo tentativo va a buon fine.
+    expect((await loadPois(['esselunga'])).get('esselunga')).toEqual([[45.46, 9.19]])
+    expect(fetchMock).toHaveBeenCalledTimes(2)
   })
 
   it('brand duplicati o nulli → una sola richiesta, niente crash', async () => {

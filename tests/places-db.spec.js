@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { db } from '@/db/index.js'
 import { addOpenLog, listAllLogs } from '@/db/logs.js'
+import { createCard, deleteCard } from '@/db/cards.js'
 import { addPlace, listPlaces, deletePlace, deletePlacesByCard, countPlaces } from '@/db/places.js'
 
 beforeEach(async () => {
@@ -81,5 +82,27 @@ describe('migrazione v4 → v5', () => {
     expect(logs.map((l) => l.openedAt)).toEqual([2000, 1000])
     expect(await countPlaces()).toBe(1)
     expect(db.verno).toBeGreaterThanOrEqual(5)
+  })
+})
+
+describe('pulizia alla cancellazione di una card', () => {
+  it('deleteCard porta via i luoghi di quella card e lascia gli altri', async () => {
+    await db.cards.clear()
+    const card = await createCard({
+      name: 'Esselunga',
+      brandId: 'esselunga',
+      barcode: '1',
+      barcodeFormat: 'CODE_128',
+      icona: null,
+      note: null,
+    })
+    await addPlace({ cardId: card.id, lat: 45.46, lng: 9.19 })
+    await addPlace({ cardId: 'altra', lat: 45.07, lng: 7.68 })
+    await addPlace({ lat: 44.49, lng: 11.34 }) // ignorato
+
+    await deleteCard(card.id)
+
+    const rows = await listPlaces()
+    expect(rows.map((p) => p.cardId).sort()).toEqual(['altra', null])
   })
 })
