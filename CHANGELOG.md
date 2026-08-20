@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.10.0](https://github.com/savez/fidality-card/compare/v2.9.0...v2.10.0) (2026-08-20)
+
+
+### ✨ Features
+
+* apri la carta del negozio dove sei (GPS + catalogo OpenStreetMap) ([#55](https://github.com/savez/fidality-card/issues/55)) ([e8593e5](https://github.com/savez/fidality-card/commit/e8593e534b830df53cb6870c9f6837bfcf7387fc))
+
 ## [2.9.0](https://github.com/savez/fidality-card/compare/v2.8.0...v2.9.0) (2026-08-05)
 
 
