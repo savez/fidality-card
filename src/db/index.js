@@ -40,6 +40,16 @@ db.version(4).stores({
   logs: 'id, cardId, openedAt',
 })
 
+// v5: aggiunge la tabella `places` — i posti che l'utente ha confermato per una
+// card ("qui c'è la mia Esselunga") o marcato come da ignorare (casa, ufficio:
+// `cardId: null`). Tabella nuova, le altre invariate → no upgrade().
+db.version(5).stores({
+  cards: 'id, name, brandId, updatedAt, pinned',
+  meta: 'key',
+  logs: 'id, cardId, openedAt',
+  places: 'id, cardId, updatedAt',
+})
+
 export async function probeDb() {
   try {
     await db.open()

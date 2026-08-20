@@ -10,6 +10,7 @@ import IconaDisplay from '@/components/IconaDisplay.vue'
 import ShareDialog from '@/share/ShareDialog.vue'
 import ShortcutHintDialog from '@/components/ShortcutHintDialog.vue'
 import { useLogsStore } from '@/stores/logs.js'
+import { addPlace } from '@/db/places.js'
 import { useUsageLogger } from '@/composables/useUsageLogger.js'
 import LogsTable from '@/components/LogsTable.vue'
 import {
@@ -42,6 +43,44 @@ const consumed = computed(() => consumedRatio(card.value))
 
 const logs = useLogsStore()
 const showClearLogs = ref(false)
+
+const savingPlace = ref(false)
+const placeMessage = ref(null)
+
+// Ancoraggio manuale di un posto a questa card. Qui il permesso di posizione si
+// può chiedere: parte da un tap, quindi il prompt è atteso — al contrario del
+// boot, dove initNearbyOpen si limita a leggere il permesso già concesso.
+// Ripetibile di proposito: chi frequenta tre Conad diversi li salva tutti.
+async function onSavePlace() {
+  savingPlace.value = true
+  placeMessage.value = null
+  try {
+    const pos = await new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error('Questo browser non fornisce la posizione.'))
+        return
+      }
+      navigator.geolocation.getCurrentPosition(resolve, reject, {
+        enableHighAccuracy: true,
+        timeout: 15000,
+      })
+    })
+    await addPlace({
+      cardId: card.value.id,
+      lat: pos.coords.latitude,
+      lng: pos.coords.longitude,
+      accuracy: pos.coords.accuracy,
+    })
+    placeMessage.value =
+      'Posto salvato. Se attivi "Apri la carta del posto dove sei" nelle impostazioni, qui la carta si aprirà da sola.'
+  } catch (e) {
+    placeMessage.value = e?.message
+      ? `Posizione non disponibile: ${e.message}`
+      : 'Posizione non disponibile.'
+  } finally {
+    savingPlace.value = false
+  }
+}
 
 // Registra l'apertura di questa card (gate 3s + GPS). Va chiamato in setup
 // perché registra hook di lifecycle. Se la card non esiste, l'onMounted sotto
@@ -181,6 +220,19 @@ async function onSpend() {
     >
       Aggiungi in home
     </v-btn>
+    <v-btn
+      class="mt-2"
+      block
+      variant="outlined"
+      prepend-icon="mdi-map-marker-plus"
+      :loading="savingPlace"
+      @click="onSavePlace"
+    >
+      Salva questo posto per questa carta
+    </v-btn>
+    <p v-if="placeMessage" class="text-caption text-medium-emphasis mt-2 mb-0">
+      {{ placeMessage }}
+    </p>
 
     <!-- cronologia aperture -->
     <div class="d-flex align-center mt-6 mb-2">

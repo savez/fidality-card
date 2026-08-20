@@ -42,3 +42,34 @@ describe('applyIntent — contratto ?fs=1 con CardDetailView', () => {
     expect(replace).not.toHaveBeenCalled()
   })
 })
+
+// Il valore di ritorno governa initNearbyOpen: un default sbagliato qui
+// disattiverebbe in silenzio l'apertura in base al posto per chi lancia l'app
+// dalle scorciatoie del manifest.
+describe('applyIntent — valore di ritorno', () => {
+  it('nessun intento nella URL → false', async () => {
+    expect(await applyIntent({ replace: vi.fn() }, { search: '' })).toBe(false)
+  })
+
+  it('intento che non risolve nessuna card → false, così il geo può partire', async () => {
+    await createCard({
+      name: 'Non pinnata',
+      barcode: '456',
+      barcodeFormat: 'CODE_128',
+      icona: null,
+      note: null,
+    })
+    expect(await applyIntent({ replace: vi.fn() }, { search: '?open=pinned' })).toBe(false)
+  })
+
+  it('navigazione avvenuta → true', async () => {
+    const card = await createCard({
+      name: 'Coop',
+      barcode: '123',
+      barcodeFormat: 'CODE_128',
+      icona: null,
+      note: null,
+    })
+    expect(await applyIntent({ replace: vi.fn() }, { search: `?open=${card.id}` })).toBe(true)
+  })
+})

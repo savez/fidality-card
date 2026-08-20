@@ -14,6 +14,24 @@
 
 export const releaseNotes = [
   {
+    version: '2.10.0',
+    title: 'La carta giusta appena entri in negozio',
+    highlights: [
+      {
+        text: 'Attiva "Apri la carta del posto dove sei" nelle impostazioni: all\'avvio dell\'app, se sei in un negozio di cui hai la carta, te la propone.',
+        icon: 'mdi-map-marker-radius',
+      },
+      {
+        text: 'Confermi una volta e nei posti che conosci la carta si apre da sola, senza chiederti niente.',
+        icon: 'mdi-map-marker-check',
+      },
+      {
+        text: 'A casa o in ufficio puoi dire "non chiedere qui" e non ti disturba più. Tutto resta sul telefono.',
+        icon: 'mdi-map-marker-off',
+      },
+    ],
+  },
+  {
     version: '2.9.0',
     title: 'Scopri cosa cambia a ogni aggiornamento',
     highlights: [

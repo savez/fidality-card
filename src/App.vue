@@ -6,6 +6,7 @@ import { useWhatsNew } from '@/composables/useWhatsNew.js'
 import AppBarVersionPill from '@/components/AppBarVersionPill.vue'
 import AppVersionDialog from '@/components/AppVersionDialog.vue'
 import InstallPromptBanner from '@/components/InstallPromptBanner.vue'
+import NearbyCardPrompt from '@/components/NearbyCardPrompt.vue'
 import WhatsNewDialog from '@/components/WhatsNewDialog.vue'
 
 // Attiva l'applicazione reattiva del tema a livello app (anche al reload e ai
@@ -88,6 +89,7 @@ onMounted(() => startBootDecision())
 
     <AppVersionDialog v-model="versionDialogOpen" />
     <InstallPromptBanner />
+    <NearbyCardPrompt />
     <WhatsNewDialog v-if="whatsNewVisible" :entries="visibleEntries" @close="dismissWhatsNew" />
   </v-app>
 </template>

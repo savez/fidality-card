@@ -68,6 +68,21 @@ export default defineConfig({
             urlPattern: /^https:\/\/.*\.(googleapis|firebaseapp|firebaseio)\.com\/.*/,
             handler: 'NetworkOnly',
           },
+          {
+            // Catalogo punti vendita (public/pois/*.json): fuori dal precache —
+            // i .json non sono nei globPatterns — così si scarica solo il file
+            // dei brand che l'utente ha davvero in cassaforte, alla prima volta
+            // che serve. Poi resta in cache e la funzione lavora offline.
+            // CacheFirst perché il contenuto cambia solo con una release, e la
+            // URL porta ?v=<versione>: la cache si invalida da sé.
+            urlPattern: /\/pois\/.*\.json$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: `fidelity-card-pois-v${pkg.version}`,
+              expiration: { maxEntries: 40 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
         ],
       },
     }),

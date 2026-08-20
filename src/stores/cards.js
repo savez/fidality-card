@@ -11,6 +11,7 @@ import {
   importAll as dbImportAll,
   buildDump as dbBuildDump,
 } from '@/db/cards.js'
+import { deletePlacesByCard } from '@/db/places.js'
 import { getBrand } from '@/brands/brands.js'
 import { matchesBalanceFilter } from '@/utils/balance.js'
 
@@ -72,6 +73,9 @@ export const useCardsStore = defineStore('cards', () => {
 
   async function remove(id) {
     await dbDelete(id)
+    // I luoghi confermati per questa card non hanno più senso: se restassero,
+    // comparirebbero nell'elenco "Luoghi salvati" puntando al nulla.
+    await deletePlacesByCard(id)
     items.value = items.value.filter((c) => c.id !== id)
   }
 
