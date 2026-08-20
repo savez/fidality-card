@@ -5,4 +5,5 @@ package-lock.json
 specifiche-iniziali.md
 docs/
 public/icons/
+public/pois/
 *.svg

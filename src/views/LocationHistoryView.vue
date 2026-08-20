@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCardsStore } from '@/stores/cards.js'
 import { listAllLogs } from '@/db/logs.js'
+import { listPlaces, deletePlace } from '@/db/places.js'
 import { groupLogsByCard } from '@/utils/groupLogsByCard.js'
 import { useGeoPermission } from '@/composables/useGeoPermission.js'
 import LogsMap from '@/components/LogsMap.vue'
@@ -15,11 +16,33 @@ const loading = ref(true)
 
 const { state: geoPermission } = useGeoPermission()
 
+const places = ref([])
+
 onMounted(async () => {
   if (!cards.items.length) await cards.refresh()
   logs.value = await listAllLogs()
+  places.value = await listPlaces()
   loading.value = false
 })
+
+// I luoghi confermati: quelli con una card ci fanno aprire la carta da soli,
+// quelli con cardId null sono i "non chiedere qui". Questa lista è la via per
+// correggere un aggancio sbagliato senza cancellare i log.
+const placeRows = computed(() =>
+  places.value.map((place) => ({
+    ...place,
+    card: place.cardId ? (cards.items.find((c) => c.id === place.cardId) ?? null) : null,
+  }))
+)
+
+async function onDeletePlace(id) {
+  await deletePlace(id)
+  places.value = places.value.filter((p) => p.id !== id)
+}
+
+function coords(place) {
+  return `${place.lat.toFixed(4)}, ${place.lng.toFixed(4)}`
+}
 
 const groups = computed(() => groupLogsByCard(cards.items, logs.value))
 
@@ -76,6 +99,34 @@ function panelCount(n) {
         <v-icon size="26" class="logs-empty__icon">mdi-map-marker-outline</v-icon>
         <p class="logs-empty__text">Nessuna posizione salvata finora.</p>
       </div>
+
+      <template v-if="placeRows.length">
+        <h3 class="text-subtitle-1 mb-2">Luoghi salvati</h3>
+        <p class="text-body-2 text-medium-emphasis mb-2">
+          I posti che hai confermato: qui la carta si apre da sola. Eliminane uno per farti
+          richiedere di nuovo.
+        </p>
+        <v-list density="comfortable" class="mb-6" bg-color="surface" rounded="lg">
+          <v-list-item v-for="place in placeRows" :key="place.id">
+            <template #prepend>
+              <v-icon>{{ place.card ? 'mdi-map-marker-check' : 'mdi-map-marker-off' }}</v-icon>
+            </template>
+            <v-list-item-title>
+              {{ place.card?.name ?? (place.cardId ? 'Card eliminata' : 'Ignorato qui') }}
+            </v-list-item-title>
+            <v-list-item-subtitle>{{ coords(place) }}</v-list-item-subtitle>
+            <template #append>
+              <v-btn
+                icon="mdi-delete"
+                variant="text"
+                density="comfortable"
+                :aria-label="`Elimina luogo ${place.card?.name ?? 'ignorato'}`"
+                @click="onDeletePlace(place.id)"
+              />
+            </template>
+          </v-list-item>
+        </v-list>
+      </template>
 
       <template v-if="groups.length">
         <h3 class="text-subtitle-1 mb-2">Cronologia per card</h3>

@@ -23,6 +23,7 @@ PWA Vue 3 per salvare, organizzare e condividere fidelity card senza backend cus
 - 📷 Scansione barcode / QR dalla fotocamera
 - ✍️ Inserimento manuale del codice
 - 🏪 Brand italiani pronti all’uso
+- 📍 Apertura della carta in base al negozio dove sei (opzionale, tutto on-device)
 - ⭐ Card pinnabili e ordinate automaticamente
 - 🔗 Condivisione via QR, link e Web Share API
 - 📥 Import da QR / link condiviso
@@ -67,11 +68,38 @@ Ogni push su `main` aggiorna la demo automaticamente.
 - **iOS / Safari**: Condividi → Aggiungi a Home
 - **Desktop**: icona di installazione nel browser
 
+## Apertura in base al posto
+
+Funzione opzionale (Impostazioni → Utilizzo card), spenta di default: all'avvio
+dell'app, se sei in un negozio di cui hai la carta, l'app te la propone; nei posti
+che hai già confermato la apre da sola.
+
+Il riconoscimento avviene **interamente sul dispositivo**. Le coordinate non
+lasciano mai il telefono: non c'è nessuna chiamata a servizi di geocodifica o di
+ricerca POI. L'unica API usata è `navigator.geolocation`, e solo se il permesso è
+già stato concesso — l'app non lo chiede all'avvio.
+
+Le posizioni dei punti vendita viaggiano dentro l'app, in `public/pois/`, un file
+per brand. Si rigenerano a mano quando serve:
+
+```bash
+node scripts/build-pois.mjs              # tutti i brand
+node scripts/build-pois.mjs --dry-run    # conta senza scrivere
+node scripts/build-pois.mjs esselunga    # un brand solo
+```
+
+Lo script non fa parte della build: interroga l'Overpass API di OpenStreetMap e
+il risultato viene committato. I file in `public/pois/` sono un **database
+derivato da OpenStreetMap**, distribuito sotto
+[ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/) —
+© OpenStreetMap contributors.
+
 ## Privacy
 
 - Nessun login
 - Nessun server custom
 - Nessun dato card inviato fuori dal device
+- Nessuna posizione inviata fuori dal device
 - Ogni installazione ha il suo IndexedDB isolato
 
 ## Troubleshooting rapido

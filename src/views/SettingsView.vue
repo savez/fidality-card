@@ -4,6 +4,7 @@ import { useCardsStore } from '@/stores/cards.js'
 import { useTheme } from '@/composables/useTheme.js'
 import { backupFilename, buildBackupFile } from '@/share/backupFile.js'
 import { useLogsStore } from '@/stores/logs.js'
+import { useNearbyOpen } from '@/composables/useNearbyOpen.js'
 import SupportCard from '@/components/SupportCard.vue'
 import ShortcutHintDialog from '@/components/ShortcutHintDialog.vue'
 
@@ -23,6 +24,12 @@ const mostUsedUrl = `${window.location.origin}${window.location.pathname}?open=m
 const loggingEnabled = computed({
   get: () => logs.enabled,
   set: (v) => logs.setEnabled(v),
+})
+
+const { enabled: nearbyEnabled, setEnabled: setNearbyEnabled } = useNearbyOpen()
+const nearbyOpenEnabled = computed({
+  get: () => nearbyEnabled.value,
+  set: (v) => setNearbyEnabled(v),
 })
 
 async function onClearAllLogs() {
@@ -183,6 +190,20 @@ async function onImportFile(event) {
         </v-list-item-subtitle>
         <template #append>
           <v-switch v-model="loggingEnabled" color="primary" hide-details inset />
+        </template>
+      </v-list-item>
+
+      <v-list-item>
+        <template #prepend><v-icon>mdi-map-marker-radius</v-icon></template>
+        <v-list-item-title>Apri la carta del posto dove sei</v-list-item-title>
+        <v-list-item-subtitle class="usage__hint">
+          All'avvio dell'app, se sei in un negozio di cui hai la carta, te la propone — e nei posti
+          che hai già confermato la apre da sola. Serve il permesso di posizione già concesso: non
+          te lo chiede all'avvio. I negozi riconosciuti arrivano da OpenStreetMap; per gli altri
+          impara dai tuoi utilizzi, quindi tieni attiva anche la registrazione qui sopra.
+        </v-list-item-subtitle>
+        <template #append>
+          <v-switch v-model="nearbyOpenEnabled" color="primary" hide-details inset />
         </template>
       </v-list-item>
     </v-list>
