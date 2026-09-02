@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.10.1](https://github.com/savez/fidality-card/compare/v2.10.0...v2.10.1) (2026-09-02)
+
+
+### 🐛 Bug Fixes
+
+* spiega come si usa il QR di condivisione ([#59](https://github.com/savez/fidality-card/issues/59)) ([44b1fc6](https://github.com/savez/fidality-card/commit/44b1fc6c6e01d14652222ed72c88c0ba60972cd5))
+
 ## [2.10.0](https://github.com/savez/fidality-card/compare/v2.9.0...v2.10.0) (2026-08-20)
 
 
