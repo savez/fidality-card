@@ -52,14 +52,18 @@ async function save() {
         <IconaDisplay :icona="preview.icona" :brand-id="preview.brandId" :size="56" />
         <div>
           <div class="text-h6">{{ preview.name }}</div>
-          <div class="text-caption">{{ brand?.name ?? 'Personalizzato' }} · {{ preview.barcodeFormat }}</div>
+          <div class="text-caption">
+            {{ brand?.name ?? 'Personalizzato' }} · {{ preview.barcodeFormat }}
+          </div>
         </div>
       </div>
-      <div class="text-body-2 mt-3" v-if="preview.note" style="white-space: pre-wrap">{{ preview.note }}</div>
+      <div v-if="preview.note" class="text-body-2 mt-3" style="white-space: pre-wrap">
+        {{ preview.note }}
+      </div>
       <div class="d-flex mt-4">
         <v-btn variant="text" @click="router.replace({ name: 'cards' })">Annulla</v-btn>
         <v-spacer />
-        <v-btn color="primary" :loading="saving" @click="save">Salva nel mio DB</v-btn>
+        <v-btn color="primary" :loading="saving" @click="save">Aggiungi alle mie carte</v-btn>
       </div>
     </v-card>
   </v-container>
