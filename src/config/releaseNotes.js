@@ -14,6 +14,16 @@
 
 export const releaseNotes = [
   {
+    version: '2.10.1',
+    title: 'Condividere una carta è più chiaro',
+    highlights: [
+      {
+        text: "Quando condividi una carta con il QR, ora ti spiega cosa fare: basta inquadrarlo con la fotocamera dell'altro telefono, dove non serve avere l'app.",
+        icon: 'mdi-qrcode-scan',
+      },
+    ],
+  },
+  {
     version: '2.10.0',
     title: 'La carta giusta appena entri in negozio',
     highlights: [

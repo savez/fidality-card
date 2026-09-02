@@ -18,7 +18,9 @@ onMounted(async () => {
     url.value = `${window.location.origin}${window.location.pathname}#/import?d=${encoded}`
     if (qrCanvas.value) {
       await QRCode.toCanvas(qrCanvas.value, url.value, {
-        errorCorrectionLevel: 'M', width: Math.min(window.innerWidth - 96, 360), margin: 1
+        errorCorrectionLevel: 'M',
+        width: Math.min(window.innerWidth - 96, 360),
+        margin: 1,
       })
     }
   } catch (e) {
@@ -29,7 +31,7 @@ onMounted(async () => {
 async function copyLink() {
   await navigator.clipboard.writeText(url.value)
   copied.value = true
-  setTimeout(() => copied.value = false, 2000)
+  setTimeout(() => (copied.value = false), 2000)
 }
 </script>
 
@@ -52,11 +54,18 @@ async function copyLink() {
         <v-window v-else v-model="tab">
           <v-window-item value="qr">
             <div class="d-flex justify-center"><canvas ref="qrCanvas" /></div>
-            <div class="text-caption text-center mt-2">
-              Scansiona dall'altro telefono con la stessa app
+            <div class="text-body-2 text-center mt-3">
+              Inquadra il codice con la fotocamera dell'altro telefono.
+            </div>
+            <div class="text-caption text-medium-emphasis text-center mt-1">
+              Va bene qualsiasi lettore di QR: si apre un link che propone di aggiungere la carta.
+              Sull'altro telefono non serve avere l'app.
             </div>
           </v-window-item>
           <v-window-item value="link">
+            <div class="text-body-2 mb-2">
+              Manda il link a chi vuoi: aprendolo vedrà la carta e potrà aggiungerla alle sue.
+            </div>
             <v-textarea readonly :model-value="url" rows="4" />
             <v-btn block color="primary" prepend-icon="mdi-content-copy" @click="copyLink">
               {{ copied ? 'Copiato!' : 'Copia link' }}
