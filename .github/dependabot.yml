@@ -16,6 +16,12 @@ updates:
     # senza questo prefisso le PR di Dependabot verrebbero bocciate.
     commit-message:
       prefix: chore
+    ignore:
+      # ESLint 9+ impone la migrazione a flat config (eslint.config.js al posto
+      # di .eslintrc): è un lavoro a sé, non roba da PR automatica. Le patch
+      # della linea 8.x continuano ad arrivare. Da togliere dopo la migrazione.
+      - dependency-name: eslint
+        update-types: [version-update:semver-major]
     groups:
       # Il toolchain di sviluppo si muove insieme: una PR sola invece di venti.
       toolchain-dev:
