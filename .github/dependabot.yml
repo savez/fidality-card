@@ -1,0 +1,36 @@
+# Aggiornamenti di routine delle dipendenze.
+#
+# Gli alert di sicurezza arrivano comunque, a prescindere da questo file: qui si
+# governa solo la manutenzione ordinaria, così l'arretrato non si riaccumula.
+#
+# Niente `update-types: [minor, patch]`: i major vanno proposti, sono proprio
+# quelli che restando fermi diventano cari (vite 5 -> 8, vitest 2 -> 5).
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    # I commit convenzionali sono obbligatori e validati in CI da commitlint:
+    # senza questo prefisso le PR di Dependabot verrebbero bocciate.
+    commit-message:
+      prefix: chore
+    groups:
+      # Il toolchain di sviluppo si muove insieme: una PR sola invece di venti.
+      toolchain-dev:
+        dependency-type: development
+      # Senza questo gruppo le dipendenze runtime non riceverebbero mai una PR.
+      runtime:
+        dependency-type: production
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: chore
+    groups:
+      github-actions:
+        patterns:
+          - '*'
