@@ -26,15 +26,21 @@ export function encodePayload(card) {
     n: card.name,
     br: card.brandId ?? null,
     b: card.barcode,
-    bf: card.barcodeFormat
+    bf: card.barcodeFormat,
   }
   if (card.icona) obj.i = card.icona
   if (card.note) obj.nt = card.note
+  // Chiavi opzionali, restando a v:1: un'app vecchia le ignora e importa il
+  // documento come fidelity con barcode — degrado accettabile, nessun errore.
+  if (card.category === 'document') obj.c = 'document'
+  if (card.showBarcode === false) obj.sb = false
 
   const json = JSON.stringify(obj)
   const bytes = new TextEncoder().encode(json)
   if (bytes.length > MAX_PAYLOAD_BYTES) {
-    throw new Error(`Payload troppo grande (${bytes.length}B > ${MAX_PAYLOAD_BYTES}B). Accorcia le note.`)
+    throw new Error(
+      `Payload troppo grande (${bytes.length}B > ${MAX_PAYLOAD_BYTES}B). Accorcia le note.`
+    )
   }
   return toBase64Url(bytes)
 }
@@ -56,12 +62,16 @@ export function decodePayload(encoded) {
   if (obj.v !== VERSION) {
     throw new Error(`Versione payload non supportata: ${obj.v}. Aggiorna l'app.`)
   }
-  return {
+  const card = {
     name: obj.n,
     brandId: obj.br ?? null,
     barcode: obj.b,
     barcodeFormat: obj.bf,
     icona: obj.i,
-    note: obj.nt
+    note: obj.nt,
   }
+  // Solo valori noti: il payload arriva da fuori, un valore strano vale fidelity.
+  if (obj.c === 'document') card.category = 'document'
+  if (obj.sb === false) card.showBarcode = false
+  return card
 }
