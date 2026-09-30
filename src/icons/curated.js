@@ -43,6 +43,14 @@ export const CURATED_ICONS = [
   { id: 'mdi-tshirt-crew', label: 'Abbigliamento', category: 'Moda' },
   { id: 'mdi-bag-personal', label: 'Borsa', category: 'Moda' },
   { id: 'mdi-lipstick', label: 'Cosmetica', category: 'Moda' },
+  // Documenti
+  { id: 'mdi-card-account-details-outline', label: "Carta d'identità", category: 'Documenti' },
+  { id: 'mdi-hospital-box', label: 'Tessera sanitaria', category: 'Documenti' },
+  { id: 'mdi-passport', label: 'Passaporto', category: 'Documenti' },
+  { id: 'mdi-car-info', label: 'Patente / auto', category: 'Documenti' },
+  { id: 'mdi-bank', label: 'Banca / IBAN', category: 'Documenti' },
+  { id: 'mdi-shield-account', label: 'Assicurazione', category: 'Documenti' },
+  { id: 'mdi-file-document-outline', label: 'Documento', category: 'Documenti' },
   // Generico
   { id: 'mdi-tag', label: 'Tag', category: 'Generico' },
   { id: 'mdi-card-account-details', label: 'Card', category: 'Generico' },
@@ -61,6 +69,7 @@ export const CATEGORY_ORDER = [
   'Ristorazione',
   'Elettronica',
   'Moda',
+  'Documenti',
   'Generico',
 ]
 
