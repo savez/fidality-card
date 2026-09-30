@@ -199,7 +199,13 @@ async function onSpend() {
       </div>
     </button>
 
-    <v-list class="meta mt-4" lines="two" bg-color="surface" rounded="lg">
+    <v-list
+      v-if="!isDoc || barcodeVisible || card.note"
+      class="meta mt-4"
+      lines="two"
+      bg-color="surface"
+      rounded="lg"
+    >
       <v-list-item v-if="!isDoc">
         <v-list-item-title>Brand</v-list-item-title>
         <v-list-item-subtitle>{{ brand?.name ?? 'Personalizzato' }}</v-list-item-subtitle>
