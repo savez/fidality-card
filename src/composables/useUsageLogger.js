@@ -6,12 +6,15 @@ const DWELL_MS = 3000
 // Registra l'apertura di una card se la permanenza supera i 3 secondi.
 // A 3s scrive il log (coordinate null), poi chiede il GPS e — se concesso —
 // aggiorna la riga con le coordinate. Se si esce prima dei 3s, niente log.
-export function useUsageLogger(cardId) {
+// `skip` si valuta a 3s e non al mount: la card viene caricata in modo
+// asincrono, e solo allora si sa se è un documento (che non va tracciato).
+export function useUsageLogger(cardId, { skip } = {}) {
   const logs = useLogsStore()
   let timer = null
   let openedAt = 0
 
   async function fire() {
+    if (skip?.()) return
     if (!logs.enabled) return
     let id
     try {
