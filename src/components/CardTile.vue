@@ -3,13 +3,15 @@ import { computed } from 'vue'
 import { getBrand } from '@/brands/brands.js'
 import { readableTextColor } from '@/utils/contrast.js'
 import { hasBalance, balanceGroup, formatCents, consumedRatio } from '@/utils/balance.js'
+import { isDocument, DOCUMENT_COLOR } from '@/utils/category.js'
 import IconaDisplay from './IconaDisplay.vue'
 
 const props = defineProps({ card: { type: Object, required: true } })
 defineEmits(['toggle-pin'])
 
 const brand = computed(() => getBrand(props.card.brandId))
-const bgColor = computed(() => brand.value?.color ?? '#607D8B')
+const isDoc = computed(() => isDocument(props.card))
+const bgColor = computed(() => (isDoc.value ? DOCUMENT_COLOR : (brand.value?.color ?? '#607D8B')))
 const fg = computed(() => readableTextColor(bgColor.value))
 
 const showBalance = computed(() => hasBalance(props.card))
@@ -42,7 +44,9 @@ const consumed = computed(() => consumedRatio(props.card))
 
     <div class="tile__name">
       <div class="nm text-truncate">{{ card.name }}</div>
-      <div class="sub text-truncate">{{ brand?.name ?? 'Personalizzato' }}</div>
+      <div class="sub text-truncate">
+        {{ isDoc ? 'Documento' : (brand?.name ?? 'Personalizzato') }}
+      </div>
       <div v-if="showBalance" class="bal" :class="{ 'bal--empty': isEmpty }">
         {{ balanceLabel }}
       </div>

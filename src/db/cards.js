@@ -24,6 +24,8 @@ export async function createCard(input) {
   }
   if (input.balanceCents != null) card.balanceCents = input.balanceCents
   if (input.initialBalanceCents != null) card.initialBalanceCents = input.initialBalanceCents
+  if (input.category != null) card.category = input.category
+  if (input.showBarcode != null) card.showBarcode = input.showBarcode
   await db.cards.add(card)
   return card
 }
@@ -46,9 +48,10 @@ export async function updateCard(id, patch) {
     createdAt: existing.createdAt,
     updatedAt: nowMs(),
   }
-  // Un saldo a null nel patch significa "rimuovi il campo" (torna card di fedeltà).
-  // Va gestito con delete: lo spread lascerebbe la chiave a null nel record.
-  for (const key of ['balanceCents', 'initialBalanceCents']) {
+  // Un campo opzionale a null nel patch significa "rimuovi il campo": saldo a
+  // null → torna card di fedeltà; category/showBarcode a null → torna fidelity
+  // con barcode. Va gestito con delete: lo spread lascerebbe la chiave a null.
+  for (const key of ['balanceCents', 'initialBalanceCents', 'category', 'showBarcode']) {
     if (key in patch && patch[key] == null) delete next[key]
   }
   await db.cards.put(next)

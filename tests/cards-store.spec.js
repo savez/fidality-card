@@ -106,3 +106,36 @@ describe('cards store — exportBackupSync', () => {
     expect(dump.cards.map((c) => c.id)).toEqual(['1', '2'])
   })
 })
+
+describe('cards store — documenti', () => {
+  const doc = (id, name, pinned = false) => ({ ...card(id, name, pinned), category: 'document' })
+
+  it('filtered contiene solo fidelity, filteredDocuments solo documenti', () => {
+    const cards = useCardsStore()
+    cards.items = [card('1', 'Coop'), doc('2', 'Codice fiscale')]
+    expect(cards.filtered.map((c) => c.id)).toEqual(['1'])
+    expect(cards.filteredDocuments.map((c) => c.id)).toEqual(['2'])
+  })
+
+  it('la ricerca vale per entrambe le sezioni', () => {
+    const cards = useCardsStore()
+    cards.items = [card('1', 'Coop'), doc('2', 'Codice fiscale'), doc('3', 'Patente')]
+    cards.search = 'co'
+    expect(cards.filtered.map((c) => c.id)).toEqual(['1'])
+    expect(cards.filteredDocuments.map((c) => c.id)).toEqual(['2'])
+  })
+
+  it('i chip saldo non toccano i documenti e non li mostrano tra le fedeltà', () => {
+    const cards = useCardsStore()
+    cards.items = [doc('2', 'Codice fiscale')]
+    cards.filter = 'loyalty'
+    expect(cards.filtered).toEqual([])
+    expect(cards.filteredDocuments.map((c) => c.id)).toEqual(['2'])
+  })
+
+  it('documenti ordinati pin → alfabetico', () => {
+    const cards = useCardsStore()
+    cards.items = [doc('1', 'Patente'), doc('2', 'IBAN'), doc('3', 'Tessera', true)]
+    expect(cards.filteredDocuments.map((c) => c.name)).toEqual(['Tessera', 'IBAN', 'Patente'])
+  })
+})

@@ -8,6 +8,7 @@ import IconPickerField from '@/components/IconPickerField.vue'
 import { getBrand } from '@/brands/brands.js'
 import { inferBarcodeFormat, SUPPORTED_FORMATS, FORMAT_LABELS } from '@/scan/barcodeFormat.js'
 import { centsFromEuros } from '@/utils/balance.js'
+import { isDocument, showsBarcode, DOCUMENT } from '@/utils/category.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,6 +18,22 @@ const isEdit = computed(() => !!route.params.id)
 const tab = ref('manuale')
 const saving = ref(false)
 const error = ref(null)
+
+// Carta o documento. Preimpostato dalla query (il "+" della sezione Documenti)
+// o dal record in modifica; l'utente lo può cambiare quando vuole.
+const category = ref(route.query.category === DOCUMENT ? DOCUMENT : 'card')
+const isDoc = computed(() => category.value === DOCUMENT)
+
+// Il FAB centrale naviga a /cards/new senza smontare il componente: senza
+// questo watch resterebbe in modalità Documento anche arrivando da una card.
+watch(
+  () => route.query.category,
+  (value) => {
+    if (!isEdit.value) category.value = value === DOCUMENT ? DOCUMENT : 'card'
+  }
+)
+// Un documento parte solo testo: il barcode si accende a mano o con la scansione.
+const showBarcode = ref(false)
 
 const form = reactive({
   name: '',
@@ -41,6 +58,8 @@ const formatLabel = computed(() => FORMAT_LABELS[form.barcodeFormat] ?? form.bar
 
 const tracksBalance = ref(false)
 const balanceEuro = ref('') // stringa dell'input in euro
+// Passando a Documento, brand e saldo si perdono: meglio dirlo prima del salvataggio.
+const dropsCardFields = computed(() => isDoc.value && (form.brandId != null || tracksBalance.value))
 
 onMounted(async () => {
   if (isEdit.value) {
@@ -54,6 +73,8 @@ onMounted(async () => {
         icona: c.icona ?? undefined,
         note: c.note ?? '',
       })
+      category.value = isDocument(c) ? DOCUMENT : 'card'
+      showBarcode.value = isDocument(c) && showsBarcode(c)
       // Card esistente: il formato salvato è autorevole, non auto-dedurre.
       autoFormat.value = false
       if (c.balanceCents != null) {
@@ -91,6 +112,8 @@ function onDecoded(payload) {
   // Formato auto-rilevato dallo scanner: autorevole, non sovrascrivere.
   autoFormat.value = false
   tab.value = 'manuale'
+  // Se l'hai scansionato, è un codice da mostrare come barcode.
+  showBarcode.value = true
 }
 
 const NOTE_MAX = 800
@@ -116,19 +139,31 @@ async function save() {
       icona: form.icona?.trim() || undefined,
       note: form.note?.trim() || undefined,
     }
-    if (tracksBalance.value && balanceEuro.value !== '' && balanceEuro.value != null) {
-      const cents = Math.max(0, centsFromEuros(balanceEuro.value))
-      payload.balanceCents = cents
-      // initialBalance: in creazione = saldo iniziale; in modifica si allinea al
-      // massimo visto, così la barra di consumo resta coerente senza "ricariche".
-      const prevInitial = isEdit.value
-        ? (await cards.get(route.params.id))?.initialBalanceCents
-        : null
-      payload.initialBalanceCents = Math.max(cents, prevInitial ?? 0)
-    } else {
-      // Switch off (o campo vuoto) → rimuovi il saldo: null segnala il delete lato db.
+    if (isDoc.value) {
+      // Un documento non ha brand né saldo; showBarcode si scrive solo quando è false.
+      payload.brandId = null
       payload.balanceCents = null
       payload.initialBalanceCents = null
+      payload.category = DOCUMENT
+      payload.showBarcode = showBarcode.value ? null : false
+    } else {
+      // null → la chiave viene cancellata: la card torna una fidelity pulita.
+      payload.category = null
+      payload.showBarcode = null
+      if (tracksBalance.value && balanceEuro.value !== '' && balanceEuro.value != null) {
+        const cents = Math.max(0, centsFromEuros(balanceEuro.value))
+        payload.balanceCents = cents
+        // initialBalance: in creazione = saldo iniziale; in modifica si allinea al
+        // massimo visto, così la barra di consumo resta coerente senza "ricariche".
+        const prevInitial = isEdit.value
+          ? (await cards.get(route.params.id))?.initialBalanceCents
+          : null
+        payload.initialBalanceCents = Math.max(cents, prevInitial ?? 0)
+      } else {
+        // Switch off (o campo vuoto) → rimuovi il saldo: null segnala il delete lato db.
+        payload.balanceCents = null
+        payload.initialBalanceCents = null
+      }
     }
     let saved
     if (isEdit.value) saved = await cards.update(route.params.id, payload)
@@ -140,11 +175,30 @@ async function save() {
     saving.value = false
   }
 }
+
+const title = computed(() => {
+  const what = isDoc.value ? 'documento' : 'card'
+  return isEdit.value ? `Modifica ${what}` : isDoc.value ? 'Nuovo documento' : 'Nuova card'
+})
 </script>
 
 <template>
   <v-container class="pa-3" style="max-width: 700px">
-    <h2 class="text-h5 mb-3">{{ isEdit ? 'Modifica card' : 'Nuova card' }}</h2>
+    <h2 class="text-h5 mb-3">{{ title }}</h2>
+
+    <v-btn-toggle
+      v-model="category"
+      mandatory
+      divided
+      variant="outlined"
+      color="primary"
+      class="mb-3 w-100"
+    >
+      <v-btn value="card" prepend-icon="mdi-credit-card-outline" class="flex-grow-1">Carta</v-btn>
+      <v-btn value="document" prepend-icon="mdi-card-account-details-outline" class="flex-grow-1">
+        Documento
+      </v-btn>
+    </v-btn-toggle>
 
     <v-tabs v-if="!isEdit" v-model="tab" grow class="mb-3">
       <v-tab value="scan">Scan</v-tab>
@@ -159,11 +213,26 @@ async function save() {
     </v-window>
 
     <v-form @submit.prevent="save">
-      <v-text-field v-model="form.name" label="Nome card *" :counter="80" maxlength="80" required />
-      <BrandPicker v-model="form.brandId" />
+      <v-text-field
+        v-model="form.name"
+        :label="isDoc ? 'Nome *' : 'Nome card *'"
+        :counter="80"
+        maxlength="80"
+        required
+      />
+      <BrandPicker v-if="!isDoc" v-model="form.brandId" />
       <v-text-field v-model="form.barcode" label="Codice *" maxlength="256" required />
 
-      <div class="mb-2">
+      <v-switch
+        v-if="isDoc"
+        v-model="showBarcode"
+        color="primary"
+        label="Mostra come barcode"
+        density="comfortable"
+        hide-details
+        class="mb-2"
+      />
+      <div v-if="!isDoc || showBarcode" class="mb-2">
         <div class="d-flex align-center text-caption text-medium-emphasis">
           <span>Tipo codice: {{ formatLabel }}</span>
           <v-spacer />
@@ -188,7 +257,7 @@ async function save() {
           @update:model-value="autoFormat = false"
         />
       </div>
-      <IconPickerField v-model="form.icona" :brand-id="form.brandId" />
+      <IconPickerField v-model="form.icona" :brand-id="isDoc ? null : form.brandId" />
       <v-textarea
         v-model="form.note"
         label="Note"
@@ -196,23 +265,29 @@ async function save() {
         :maxlength="NOTE_MAX"
         rows="3"
       />
-      <v-switch
-        v-model="tracksBalance"
-        color="primary"
-        label="Traccia un saldo (gift card / coupon)"
-        density="comfortable"
-        hide-details
-      />
-      <v-text-field
-        v-if="tracksBalance"
-        v-model="balanceEuro"
-        label="Saldo (€)"
-        type="number"
-        inputmode="decimal"
-        min="0"
-        step="0.01"
-        prefix="€"
-      />
+      <template v-if="!isDoc">
+        <v-switch
+          v-model="tracksBalance"
+          color="primary"
+          label="Traccia un saldo (gift card / coupon)"
+          density="comfortable"
+          hide-details
+        />
+        <v-text-field
+          v-if="tracksBalance"
+          v-model="balanceEuro"
+          label="Saldo (€)"
+          type="number"
+          inputmode="decimal"
+          min="0"
+          step="0.01"
+          prefix="€"
+        />
+      </template>
+
+      <v-alert v-if="dropsCardFields" type="warning" variant="tonal" density="compact" class="mt-3">
+        Brand e saldo verranno rimossi al salvataggio.
+      </v-alert>
 
       <v-alert v-if="error" type="error" class="mt-3">{{ error }}</v-alert>
 

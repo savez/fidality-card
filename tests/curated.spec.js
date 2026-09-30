@@ -34,4 +34,16 @@ describe('curated icons catalog', () => {
     const used = new Set(CURATED_ICONS.map((i) => i.category))
     expect(used.size).toBe(CATEGORY_ORDER.length)
   })
+
+  it('ha una categoria Documenti con icone da documento', () => {
+    expect(CATEGORY_ORDER).toContain('Documenti')
+    const docs = CURATED_ICONS.filter((i) => i.category === 'Documenti').map((i) => i.id)
+    expect(docs).toEqual(
+      expect.arrayContaining([
+        'mdi-hospital-box',
+        'mdi-passport',
+        'mdi-card-account-details-outline',
+      ])
+    )
+  })
 })

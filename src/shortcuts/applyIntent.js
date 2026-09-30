@@ -2,6 +2,7 @@ import { parseIntent } from './intent.js'
 import { resolveTarget } from './target.js'
 import { listCards } from '@/db/cards.js'
 import { listAllLogs } from '@/db/logs.js'
+import { showsBarcode } from '@/utils/category.js'
 
 // Ritorna true solo se ha davvero navigato. Il valore conta: initNearbyOpen()
 // si tira indietro quando l'intento URL ha già scelto una card, ma deve poter
@@ -17,7 +18,9 @@ export async function applyIntent(router, location = window.location) {
 
   let navigated = false
   if (cardId) {
-    await router.replace(`/cards/${cardId}?fs=1`)
+    // fs=1 mette a schermo pieno il barcode: un documento solo testo non ne ha.
+    const target = cards.find((c) => c.id === cardId)
+    await router.replace(showsBarcode(target) ? `/cards/${cardId}?fs=1` : `/cards/${cardId}`)
     navigated = true
   }
 

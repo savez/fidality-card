@@ -65,4 +65,11 @@ describe('buildRanking', () => {
     const r = buildRanking(logs, cards, 0)
     expect(r.map((x) => x.card.name)).toEqual(['Alfa', 'Bravo', 'Charlie'])
   })
+
+  it('esclude i documenti anche se hanno log', () => {
+    const withDoc = [...cards, { id: 'd', name: 'Codice fiscale', category: 'document' }]
+    const logs = [log('d', 1), log('d', 2), log('d', 3), log('a', 4)]
+    const r = buildRanking(logs, withDoc, 0)
+    expect(r.map((x) => x.card.id)).toEqual(['a'])
+  })
 })

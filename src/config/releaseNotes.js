@@ -14,6 +14,24 @@
 
 export const releaseNotes = [
   {
+    version: '2.11.0',
+    title: 'Non solo fidelity: i tuoi documenti',
+    highlights: [
+      {
+        text: 'Codice fiscale, tessera sanitaria, IBAN: quando aggiungi una carta scegli "Documento" e la ritrovi in una sezione tutta sua, sotto le fidelity.',
+        icon: 'mdi-card-account-details-outline',
+      },
+      {
+        text: 'Copi il codice con un tocco, oppure lo mostri come barcode quando serve, per esempio in farmacia.',
+        icon: 'mdi-content-copy',
+      },
+      {
+        text: 'I documenti non finiscono nella cronologia delle aperture né nella posizione, e i documenti che avevi già salvato come carte li converti dalla modifica.',
+        icon: 'mdi-shield-lock-outline',
+      },
+    ],
+  },
+  {
     version: '2.10.1',
     title: 'Condividere una carta è più chiaro',
     highlights: [

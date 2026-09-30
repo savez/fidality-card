@@ -67,4 +67,29 @@ describe('resolveTarget', () => {
     const logs = [log('zzz', NOW - 1 * DAY), log('zzz', NOW - 2 * DAY), log('a', NOW - 1 * DAY)]
     expect(resolveTarget({ kind: 'most-used' }, { logs, cards, nowMs: NOW })).toBe('a')
   })
+
+  it('kind pinned ignora i documenti pinnati', () => {
+    const list = [
+      { id: 'd', name: 'Aaa codice fiscale', pinned: true, category: 'document' },
+      card('b', 'Bravo', true),
+    ]
+    expect(resolveTarget({ kind: 'pinned' }, { logs: [], cards: list, nowMs: NOW })).toBe('b')
+  })
+
+  it('kind pinned con solo documenti pinnati → null', () => {
+    const list = [{ id: 'd', name: 'CF', pinned: true, category: 'document' }]
+    expect(resolveTarget({ kind: 'pinned' }, { logs: [], cards: list, nowMs: NOW })).toBeNull()
+  })
+
+  it('most-used non sceglie un documento con molti log', () => {
+    const list = [...cards, { id: 'd', name: 'CF', category: 'document' }]
+    const logs = [log('d', NOW - DAY), log('d', NOW - DAY), log('a', NOW - DAY)]
+    expect(resolveTarget({ kind: 'most-used' }, { logs, cards: list, nowMs: NOW })).toBe('a')
+  })
+
+  it('kind card su un documento → lo apre comunque', () => {
+    const list = [{ id: 'd', name: 'CF', category: 'document' }]
+    const intent = { kind: 'card', id: 'd' }
+    expect(resolveTarget(intent, { logs: [], cards: list, nowMs: NOW })).toBe('d')
+  })
 })

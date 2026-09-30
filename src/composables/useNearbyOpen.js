@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import { isDocument } from '@/utils/category.js'
 import { listCards } from '@/db/cards.js'
 import { listAllLogs } from '@/db/logs.js'
 import { listPlaces, addPlace } from '@/db/places.js'
@@ -127,7 +128,10 @@ export async function initNearbyOpen(router, { intentApplied = false } = {}) {
     const fix = await currentFix()
     if (aborted || !fix) return
 
-    const [cards, places] = await Promise.all([listCards(), listPlaces()])
+    const [allCards, places] = await Promise.all([listCards(), listPlaces()])
+    // I documenti non c'entrano con i negozi: fuori dai candidati. I posti che
+    // puntano a un documento cadono da soli in resolveNearby (cardId sconosciuto).
+    const cards = allCards.filter((c) => !isDocument(c))
     const pois = await loadPois(cards.map((c) => c.brandId))
     if (aborted) return
 

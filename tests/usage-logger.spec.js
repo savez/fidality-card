@@ -13,6 +13,14 @@ const Host = defineComponent({
   },
 })
 
+const HostSkip = defineComponent({
+  props: { cardId: { type: String, required: true }, skip: { type: Function, required: true } },
+  setup(props) {
+    useUsageLogger(props.cardId, { skip: props.skip })
+    return () => null
+  },
+})
+
 function setGeolocation(impl) {
   Object.defineProperty(navigator, 'geolocation', {
     value: impl,
@@ -142,5 +150,33 @@ describe('useUsageLogger', () => {
     await flushPromises()
     expect(called).toBe(true)
     expect(calledArgs).toEqual(['log-1', { lat: 1, lng: 2, accuracy: 5 }])
+  })
+
+  it('skip() vero a 3s → nessun log e nessuna richiesta di posizione', async () => {
+    const getCurrentPosition = vi.fn()
+    setGeolocation({ getCurrentPosition })
+    mount(HostSkip, { props: { cardId: 'c1', skip: () => true } })
+    await vi.advanceTimersByTimeAsync(3000)
+    await flushPromises()
+    expect(store.recordOpen).not.toHaveBeenCalled()
+    expect(getCurrentPosition).not.toHaveBeenCalled()
+  })
+
+  it('skip valutato al momento del fire, non al mount', async () => {
+    grant({ latitude: 1, longitude: 2, accuracy: 5 })
+    let isDoc = false
+    mount(HostSkip, { props: { cardId: 'c1', skip: () => isDoc } })
+    isDoc = true // la card si scopre documento dopo il mount
+    await vi.advanceTimersByTimeAsync(3000)
+    await flushPromises()
+    expect(store.recordOpen).not.toHaveBeenCalled()
+  })
+
+  it('skip() falso → logga come sempre', async () => {
+    grant({ latitude: 1, longitude: 2, accuracy: 5 })
+    mount(HostSkip, { props: { cardId: 'c1', skip: () => false } })
+    await vi.advanceTimersByTimeAsync(3000)
+    await flushPromises()
+    expect(store.recordOpen).toHaveBeenCalledOnce()
   })
 })
