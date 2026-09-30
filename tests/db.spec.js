@@ -184,6 +184,7 @@ describe('cards db — categoria documento', () => {
     const asDoc = await getCard(c.id)
     expect(asDoc.category).toBe('document')
     expect('balanceCents' in asDoc).toBe(false)
+    expect('initialBalanceCents' in asDoc).toBe(false)
 
     await updateCard(c.id, { category: null, showBarcode: null })
     const back = await getCard(c.id)

@@ -103,4 +103,28 @@ describe('share payload', () => {
     expect('category' in decoded).toBe(false)
     expect('showBarcode' in decoded).toBe(false)
   })
+
+  it('sb:false senza c → ignored (barcode visibile, nessun documento)', () => {
+    const raw = JSON.stringify({ v: 1, n: 'X', br: null, b: '1', bf: 'CODE_128', sb: false })
+    const encoded = btoa(raw).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '')
+    const decoded = decodePayload(encoded)
+    expect('category' in decoded).toBe(false)
+    expect('showBarcode' in decoded).toBe(false)
+  })
+
+  it('c:boh sb:false → entrambi ignored (fidelity con barcode)', () => {
+    const raw = JSON.stringify({
+      v: 1,
+      n: 'X',
+      br: null,
+      b: '1',
+      bf: 'CODE_128',
+      c: 'boh',
+      sb: false,
+    })
+    const encoded = btoa(raw).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '')
+    const decoded = decodePayload(encoded)
+    expect('category' in decoded).toBe(false)
+    expect('showBarcode' in decoded).toBe(false)
+  })
 })

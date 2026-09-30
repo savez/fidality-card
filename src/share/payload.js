@@ -71,7 +71,10 @@ export function decodePayload(encoded) {
     note: obj.nt,
   }
   // Solo valori noti: il payload arriva da fuori, un valore strano vale fidelity.
-  if (obj.c === 'document') card.category = 'document'
-  if (obj.sb === false) card.showBarcode = false
+  // sb (showBarcode=false) si applica solo ai documenti: sb senza c viene ignorato.
+  if (obj.c === 'document') {
+    card.category = 'document'
+    if (obj.sb === false) card.showBarcode = false
+  }
   return card
 }
