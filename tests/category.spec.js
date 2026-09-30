@@ -13,9 +13,12 @@ describe('isDocument', () => {
 
 describe('showsBarcode', () => {
   it('assente → true (come oggi)', () => expect(showsBarcode({})).toBe(true))
-  it('false → false', () => expect(showsBarcode({ showBarcode: false })).toBe(false))
+  it('documento con false → false', () =>
+    expect(showsBarcode({ category: DOCUMENT, showBarcode: false })).toBe(false))
   it('true → true', () => expect(showsBarcode({ showBarcode: true })).toBe(true))
   it('card null → true', () => expect(showsBarcode(null)).toBe(true))
+  it('non-documento con false (backup a mano/futuro) → true, non deve nascondere il codice', () =>
+    expect(showsBarcode({ showBarcode: false })).toBe(true))
 })
 
 describe('splitByCategory', () => {

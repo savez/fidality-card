@@ -11,9 +11,13 @@ export function isDocument(card) {
 }
 
 // showBarcode esiste solo quando è false: una card senza chiave mostra il
-// barcode, come ha sempre fatto.
+// barcode, come ha sempre fatto. Solo un documento può nascondere il barcode:
+// uno `showBarcode: false` residuo su una card non-documento (es. da un backup
+// modificato a mano o futuro, che importAll copia verbatim) altrimenti la
+// lascerebbe senza barcode né pannello codice documento, cioè senza codice.
+// Rispecchia la regola di decodePayload: `sb` senza `c: 'document'` è ignorato.
 export function showsBarcode(card) {
-  return card?.showBarcode !== false
+  return !isDocument(card) || card?.showBarcode !== false
 }
 
 export function splitByCategory(list) {
