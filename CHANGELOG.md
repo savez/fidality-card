@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.0](https://github.com/savez/fidality-card/compare/v2.10.1...v2.11.0) (2026-09-30)
+
+
+### ✨ Features
+
+* categoria documenti (codice fiscale, tessera sanitaria…) ([#67](https://github.com/savez/fidality-card/issues/67)) ([5ebe683](https://github.com/savez/fidality-card/commit/5ebe6831644611e6c75192e8bc9b17f96fa2a63f))
+
 ## [2.10.1](https://github.com/savez/fidality-card/compare/v2.10.0...v2.10.1) (2026-09-02)
 
 
