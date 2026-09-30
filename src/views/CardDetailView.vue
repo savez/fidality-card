@@ -21,6 +21,7 @@ import {
   centsFromEuros,
   subtractCents,
 } from '@/utils/balance.js'
+import { isDocument, showsBarcode, DOCUMENT_COLOR } from '@/utils/category.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -85,7 +86,9 @@ async function onSavePlace() {
 // Registra l'apertura di questa card (gate 3s + GPS). Va chiamato in setup
 // perché registra hook di lifecycle. Se la card non esiste, l'onMounted sotto
 // fa redirect e lo unmount annulla il timer prima dei 3s → nessun log spurio.
-useUsageLogger(route.params.id)
+// I documenti non si tracciano. Se a 3s la card non è ancora caricata non si
+// sa cos'è: meglio perdere un'apertura che registrarla a un documento.
+useUsageLogger(route.params.id, { skip: () => !card.value || isDocument(card.value) })
 
 async function onClearLogs() {
   await logs.clearForCard(route.params.id)
@@ -93,8 +96,23 @@ async function onClearLogs() {
 }
 
 const brand = computed(() => getBrand(card.value?.brandId))
-const bgColor = computed(() => brand.value?.color ?? '#607D8B')
 const fg = computed(() => readableTextColor(bgColor.value))
+const isDoc = computed(() => isDocument(card.value))
+const barcodeVisible = computed(() => showsBarcode(card.value))
+const bgColor = computed(() => (isDoc.value ? DOCUMENT_COLOR : (brand.value?.color ?? '#607D8B')))
+
+const copyMessage = ref('')
+const showCopyMessage = ref(false)
+async function onCopy() {
+  try {
+    await navigator.clipboard.writeText(card.value.barcode)
+    copyMessage.value = 'Copiato'
+  } catch {
+    // Clipboard assente (http, browser embedded) o permesso negato.
+    copyMessage.value = 'Copia non riuscita, seleziona il codice a mano'
+  }
+  showCopyMessage.value = true
+}
 
 onMounted(async () => {
   card.value = await cards.get(route.params.id)
@@ -138,7 +156,9 @@ async function onSpend() {
         </span>
       </div>
       <div class="present__name">{{ card.name }}</div>
-      <div class="present__brand">{{ brand?.name ?? 'Personalizzato' }}</div>
+      <div class="present__brand">
+        {{ isDoc ? 'Documento' : (brand?.name ?? 'Personalizzato') }}
+      </div>
     </div>
 
     <div v-if="showBalance" class="balance-panel">
@@ -165,8 +185,13 @@ async function onSpend() {
       </v-btn>
     </div>
 
+    <div v-if="isDoc" class="doc-code">
+      <div class="doc-code__value">{{ card.barcode }}</div>
+      <v-btn variant="tonal" prepend-icon="mdi-content-copy" @click="onCopy">Copia</v-btn>
+    </div>
+
     <!-- scan panel: tocca per ingrandire -->
-    <button class="scan" type="button" @click="showFull = true">
+    <button v-if="barcodeVisible" class="scan" type="button" @click="showFull = true">
       <BarcodeDisplay :value="card.barcode" :format="card.barcodeFormat" />
       <div class="scan__hint">
         <v-icon size="16">mdi-arrow-expand</v-icon>
@@ -175,11 +200,11 @@ async function onSpend() {
     </button>
 
     <v-list class="meta mt-4" lines="two" bg-color="surface" rounded="lg">
-      <v-list-item>
+      <v-list-item v-if="!isDoc">
         <v-list-item-title>Brand</v-list-item-title>
         <v-list-item-subtitle>{{ brand?.name ?? 'Personalizzato' }}</v-list-item-subtitle>
       </v-list-item>
-      <v-list-item>
+      <v-list-item v-if="barcodeVisible">
         <v-list-item-title>Tipo codice</v-list-item-title>
         <v-list-item-subtitle>{{ card.barcodeFormat }}</v-list-item-subtitle>
       </v-list-item>
@@ -220,40 +245,44 @@ async function onSpend() {
     >
       Aggiungi in home
     </v-btn>
-    <v-btn
-      class="mt-2"
-      block
-      variant="outlined"
-      prepend-icon="mdi-map-marker-plus"
-      :loading="savingPlace"
-      @click="onSavePlace"
-    >
-      Salva questo posto per questa carta
-    </v-btn>
-    <p v-if="placeMessage" class="text-caption text-medium-emphasis mt-2 mb-0">
-      {{ placeMessage }}
-    </p>
+    <template v-if="!isDoc">
+      <v-btn
+        class="mt-2"
+        block
+        variant="outlined"
+        prepend-icon="mdi-map-marker-plus"
+        :loading="savingPlace"
+        @click="onSavePlace"
+      >
+        Salva questo posto per questa carta
+      </v-btn>
+      <p v-if="placeMessage" class="text-caption text-medium-emphasis mt-2 mb-0">
+        {{ placeMessage }}
+      </p>
+    </template>
 
     <!-- cronologia aperture -->
-    <div class="d-flex align-center mt-6 mb-2">
-      <h3 class="text-subtitle-1 flex-grow-1">Cronologia aperture</h3>
-      <v-btn
-        v-if="logs.items.length"
-        size="small"
-        variant="text"
-        color="error"
-        prepend-icon="mdi-delete-sweep"
-        @click="showClearLogs = true"
-      >
-        Cancella log
-      </v-btn>
-    </div>
+    <template v-if="!isDoc">
+      <div class="d-flex align-center mt-6 mb-2">
+        <h3 class="text-subtitle-1 flex-grow-1">Cronologia aperture</h3>
+        <v-btn
+          v-if="logs.items.length"
+          size="small"
+          variant="text"
+          color="error"
+          prepend-icon="mdi-delete-sweep"
+          @click="showClearLogs = true"
+        >
+          Cancella log
+        </v-btn>
+      </div>
 
-    <LogsTable v-if="logs.items.length" :logs="logs.items" />
-    <div v-else class="logs-empty">
-      <v-icon size="26" class="logs-empty__icon">mdi-history</v-icon>
-      <p class="logs-empty__text">Nessuna apertura registrata.</p>
-    </div>
+      <LogsTable v-if="logs.items.length" :logs="logs.items" />
+      <div v-else class="logs-empty">
+        <v-icon size="26" class="logs-empty__icon">mdi-history</v-icon>
+        <p class="logs-empty__text">Nessuna apertura registrata.</p>
+      </div>
+    </template>
 
     <v-dialog v-model="showClearLogs" max-width="420">
       <v-card>
@@ -277,7 +306,7 @@ async function onSpend() {
     />
 
     <BarcodeFullscreen
-      v-if="showFull"
+      v-if="showFull && barcodeVisible"
       :value="card.barcode"
       :format="card.barcodeFormat"
       :name="card.name"
@@ -287,7 +316,7 @@ async function onSpend() {
 
     <v-dialog v-model="showDelete" max-width="420">
       <v-card>
-        <v-card-title>Eliminare la card?</v-card-title>
+        <v-card-title>{{ isDoc ? 'Eliminare il documento?' : 'Eliminare la card?' }}</v-card-title>
         <v-card-text>Questa operazione non è reversibile.</v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -320,6 +349,8 @@ async function onSpend() {
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-snackbar v-model="showCopyMessage" timeout="2000">{{ copyMessage }}</v-snackbar>
   </v-container>
 </template>
 
@@ -387,6 +418,25 @@ async function onSpend() {
   color: #6b7180;
   font-size: 0.78rem;
   font-weight: 600;
+}
+.doc-code {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 18px 16px;
+  border-radius: var(--r-card);
+  background: rgb(var(--v-theme-surface));
+  box-shadow: var(--tile-shadow);
+}
+.doc-code__value {
+  flex: 1;
+  min-width: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
+  user-select: all;
 }
 /* Stato vuoto: placeholder calmo e centrato, stesso raggio delle altre superfici. */
 .logs-empty {
