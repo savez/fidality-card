@@ -1,0 +1,82 @@
+---
+const features = [
+  {
+    icon: '🆔',
+    title: 'Codice fiscale, tessera sanitaria, IBAN',
+    body:
+      'Quando aggiungi una card scegli "Documento" e la ritrovi in una sezione tutta sua, sotto le fidelity — niente brand, niente saldo, solo il codice che ti serve.',
+  },
+  {
+    icon: '📋',
+    title: 'Copia o barcode, come ti serve',
+    body:
+      'Copi il codice con un tocco per incollarlo dove vuoi, oppure lo mostri come barcode quando serve — per esempio in farmacia con la tessera sanitaria.',
+  },
+  {
+    icon: '🔒',
+    title: 'Fuori da cronologia e posizione',
+    body:
+      'I documenti non finiscono nella cronologia delle aperture né nella posizione. Una card che avevi già salvato la converti in documento dalla modifica, senza reinserirla.',
+  },
+]
+---
+
+<section class="documents section">
+  <div class="container">
+    <h2 class="documents-title">Non solo fidelity: anche i tuoi documenti.</h2>
+    <p class="documents-sub">
+      Codice fiscale, tessera sanitaria, IBAN, polizze: li tieni sul telefono insieme alle tue
+      card, in una sezione separata e richiudibile. Tutto resta sul telefono, nessun tracciamento.
+    </p>
+    <div class="documents-grid">
+      {features.map((f) => (
+        <div class="card documents-card">
+          <div class="documents-icon" aria-hidden="true">{f.icon}</div>
+          <h3>{f.title}</h3>
+          <p>{f.body}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .documents-title {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    max-width: 22ch;
+  }
+
+  .documents-sub {
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+    max-width: 56ch;
+  }
+
+  .documents-grid {
+    margin-top: 2.5rem;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  .documents-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .documents-card h3 {
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .documents-card p {
+    color: var(--text-muted);
+  }
+
+  @media (min-width: 768px) {
+    .documents-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
