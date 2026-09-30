@@ -23,6 +23,15 @@ const error = ref(null)
 // o dal record in modifica; l'utente lo può cambiare quando vuole.
 const category = ref(route.query.category === DOCUMENT ? DOCUMENT : 'card')
 const isDoc = computed(() => category.value === DOCUMENT)
+
+// Il FAB centrale naviga a /cards/new senza smontare il componente: senza
+// questo watch resterebbe in modalità Documento anche arrivando da una card.
+watch(
+  () => route.query.category,
+  (value) => {
+    if (!isEdit.value) category.value = value === DOCUMENT ? DOCUMENT : 'card'
+  }
+)
 // Un documento parte solo testo: il barcode si accende a mano o con la scansione.
 const showBarcode = ref(false)
 
@@ -204,7 +213,13 @@ const title = computed(() => {
     </v-window>
 
     <v-form @submit.prevent="save">
-      <v-text-field v-model="form.name" label="Nome card *" :counter="80" maxlength="80" required />
+      <v-text-field
+        v-model="form.name"
+        :label="isDoc ? 'Nome *' : 'Nome card *'"
+        :counter="80"
+        maxlength="80"
+        required
+      />
       <BrandPicker v-if="!isDoc" v-model="form.brandId" />
       <v-text-field v-model="form.barcode" label="Codice *" maxlength="256" required />
 
@@ -242,7 +257,7 @@ const title = computed(() => {
           @update:model-value="autoFormat = false"
         />
       </div>
-      <IconPickerField v-model="form.icona" :brand-id="form.brandId" />
+      <IconPickerField v-model="form.icona" :brand-id="isDoc ? null : form.brandId" />
       <v-textarea
         v-model="form.note"
         label="Note"
