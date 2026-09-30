@@ -1,7 +1,7 @@
 import { isDocument } from '@/utils/category.js'
 import { buildRanking, sinceFor } from '@/stats/ranking.js'
 
-// Stesso criterio di src/stores/cards.js:36-41: alfabetico locale-aware,
+// Stesso criterio di `sortCards` in src/stores/cards.js: alfabetico locale-aware,
 // italiano, case-insensitive. listCards() (Dexie toArray) non garantisce un
 // ordine significativo, quindi non ci si può affidare all'ordine di arrivo.
 function firstPinned(cards) {

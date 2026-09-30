@@ -13,6 +13,7 @@ import {
 } from '@/db/cards.js'
 import { getBrand } from '@/brands/brands.js'
 import { matchesBalanceFilter } from '@/utils/balance.js'
+import { splitByCategory } from '@/utils/category.js'
 
 export const useCardsStore = defineStore('cards', () => {
   const items = ref([])
@@ -20,26 +21,37 @@ export const useCardsStore = defineStore('cards', () => {
   const search = ref('')
   const filter = ref('all')
 
-  const filtered = computed(() => {
-    // search può diventare null col clear (X) di Vuetify: coalescing a '' per non rompere il filtro.
-    const q = (search.value ?? '').trim().toLowerCase()
+  // search può diventare null col clear (X) di Vuetify: coalescing a '' per non rompere il filtro.
+  const query = computed(() => (search.value ?? '').trim().toLowerCase())
 
-    const matched = items.value.filter((c) => {
-      if (!matchesBalanceFilter(c, filter.value)) return false
-      if (!q) return true
-      const cardName = c.name.toLowerCase()
-      const brandName = getBrand(c.brandId)?.name?.toLowerCase() ?? ''
-      return cardName.includes(q) || brandName.includes(q)
-    })
+  function matchesSearch(c) {
+    const q = query.value
+    if (!q) return true
+    const cardName = c.name.toLowerCase()
+    const brandName = getBrand(c.brandId)?.name?.toLowerCase() ?? ''
+    return cardName.includes(q) || brandName.includes(q)
+  }
 
-    // Sort: pinned first, then alphabetical locale-aware (italian, case-insensitive).
-    return matched.slice().sort((a, b) => {
+  // Sort: pinned first, then alphabetical locale-aware (italian, case-insensitive).
+  function sortCards(list) {
+    return list.slice().sort((a, b) => {
       const ap = a.pinned ? 1 : 0
       const bp = b.pinned ? 1 : 0
       if (ap !== bp) return bp - ap
       return a.name.localeCompare(b.name, 'it', { sensitivity: 'base' })
     })
-  })
+  }
+
+  const split = computed(() => splitByCategory(items.value))
+
+  const filtered = computed(() =>
+    sortCards(
+      split.value.cards.filter((c) => matchesBalanceFilter(c, filter.value) && matchesSearch(c))
+    )
+  )
+
+  // I chip riguardano il saldo, che i documenti non hanno: qui vale solo la ricerca.
+  const filteredDocuments = computed(() => sortCards(split.value.documents.filter(matchesSearch)))
 
   async function refresh() {
     loading.value = true
@@ -100,6 +112,7 @@ export const useCardsStore = defineStore('cards', () => {
   return {
     items,
     filtered,
+    filteredDocuments,
     loading,
     search,
     filter,
