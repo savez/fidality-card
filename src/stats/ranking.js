@@ -1,3 +1,5 @@
+import { isDocument } from '@/utils/category.js'
+
 const DAY_MS = 86_400_000
 const WINDOWS = { week: 7, month: 30, year: 365 }
 
@@ -8,7 +10,9 @@ export function sinceFor(range, nowMs) {
 }
 
 export function buildRanking(logs, cards, sinceMs) {
-  const byId = new Map(cards.map((c) => [c.id, c]))
+  // I documenti non entrano in classifica: si aprono di rado e in posti a caso,
+  // falserebbero "le più usate" (e quindi la scorciatoia most-used).
+  const byId = new Map(cards.filter((c) => !isDocument(c)).map((c) => [c.id, c]))
   const counts = new Map()
   for (const log of logs) {
     if (log.openedAt < sinceMs) continue

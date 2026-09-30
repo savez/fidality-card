@@ -1,10 +1,13 @@
+import { isDocument } from '@/utils/category.js'
 import { buildRanking, sinceFor } from '@/stats/ranking.js'
 
 // Stesso criterio di src/stores/cards.js:36-41: alfabetico locale-aware,
 // italiano, case-insensitive. listCards() (Dexie toArray) non garantisce un
 // ordine significativo, quindi non ci si può affidare all'ordine di arrivo.
 function firstPinned(cards) {
-  const pinned = cards.filter((c) => c.pinned)
+  // La scorciatoia "In primo piano" è pensata per la cassa: i documenti pinnati
+  // (es. il codice fiscale) non devono rubarle il posto.
+  const pinned = cards.filter((c) => c.pinned && !isDocument(c))
   if (!pinned.length) return null
   pinned.sort((a, b) => a.name.localeCompare(b.name, 'it', { sensitivity: 'base' }))
   return pinned[0].id
