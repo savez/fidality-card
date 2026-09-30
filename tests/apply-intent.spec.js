@@ -26,6 +26,31 @@ describe('applyIntent — contratto ?fs=1 con CardDetailView', () => {
     expect(replace).toHaveBeenCalledWith(`/cards/${card.id}?fs=1`)
   })
 
+  it('documento senza barcode → apre il dettaglio senza fullscreen', async () => {
+    const doc = await createCard({
+      name: 'Codice fiscale',
+      barcode: 'RSSMRA80A01H501U',
+      barcodeFormat: 'CODE_128',
+      category: 'document',
+      showBarcode: false,
+    })
+    const replace = vi.fn()
+    await applyIntent({ replace }, { search: `?open=${doc.id}` })
+    expect(replace).toHaveBeenCalledWith(`/cards/${doc.id}`)
+  })
+
+  it('documento con barcode → fullscreen come una fidelity', async () => {
+    const doc = await createCard({
+      name: 'Tessera sanitaria',
+      barcode: 'RSSMRA80A01H501U',
+      barcodeFormat: 'CODE_39',
+      category: 'document',
+    })
+    const replace = vi.fn()
+    await applyIntent({ replace }, { search: `?open=${doc.id}` })
+    expect(replace).toHaveBeenCalledWith(`/cards/${doc.id}?fs=1`)
+  })
+
   it('intento non risolvibile (pinned senza card pinnate, nessun log) → router.replace non chiamato', async () => {
     await createCard({
       name: 'Non pinnata',
