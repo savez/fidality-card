@@ -150,6 +150,16 @@ describe('initNearbyOpen — esiti', () => {
     expect(loadPois).toHaveBeenCalledWith(['esselunga'])
   })
 
+  it('documento con un posto salvato → non si apre', async () => {
+    listCards.mockResolvedValue([{ id: 'd1', name: 'CF', brandId: null, category: 'document' }])
+    listPlaces.mockResolvedValue([{ id: 'p1', cardId: 'd1', ...AT_40M }])
+    const r = router()
+    await initNearbyOpen(r)
+    await settle()
+    expect(r.replace).not.toHaveBeenCalled()
+    expect(suggestion.value).toBeNull()
+  })
+
   it('nessuna evidenza → silenzio totale', async () => {
     const r = router()
     await initNearbyOpen(r)
