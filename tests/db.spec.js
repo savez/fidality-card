@@ -151,3 +151,44 @@ describe('cards db — saldo (balanceCents)', () => {
     expect(read.balanceCents).toBe(0)
   })
 })
+
+describe('cards db — categoria documento', () => {
+  it('createCard senza categoria non scrive chiavi di default', async () => {
+    const c = await createCard(baseInput)
+    const read = await getCard(c.id)
+    expect('category' in read).toBe(false)
+    expect('showBarcode' in read).toBe(false)
+  })
+
+  it('createCard salva category e showBarcode=false', async () => {
+    const c = await createCard({
+      ...baseInput,
+      brandId: null,
+      category: 'document',
+      showBarcode: false,
+    })
+    const read = await getCard(c.id)
+    expect(read.category).toBe('document')
+    expect(read.showBarcode).toBe(false) // false non deve sparire
+  })
+
+  it('carta con saldo → documento → carta torna a un record pulito', async () => {
+    const c = await createCard({ ...baseInput, balanceCents: 500, initialBalanceCents: 1000 })
+    await updateCard(c.id, {
+      brandId: null,
+      balanceCents: null,
+      initialBalanceCents: null,
+      category: 'document',
+      showBarcode: false,
+    })
+    const asDoc = await getCard(c.id)
+    expect(asDoc.category).toBe('document')
+    expect('balanceCents' in asDoc).toBe(false)
+
+    await updateCard(c.id, { category: null, showBarcode: null })
+    const back = await getCard(c.id)
+    expect('category' in back).toBe(false)
+    expect('showBarcode' in back).toBe(false)
+    expect('balanceCents' in back).toBe(false)
+  })
+})
