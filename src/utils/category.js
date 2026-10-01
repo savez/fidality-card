@@ -1,3 +1,5 @@
+import { balanceGroup } from '@/utils/balance.js'
+
 // Categoria di una card. Assente = fidelity (tutte le card nate prima dei
 // documenti): si scrive solo il valore non di default, come per il saldo.
 export const DOCUMENT = 'document'
@@ -20,9 +22,11 @@ export function showsBarcode(card) {
   return !isDocument(card) || card?.showBarcode !== false
 }
 
-export function splitByCategory(list) {
-  const cards = []
-  const documents = []
-  for (const c of list) (isDocument(c) ? documents : cards).push(c)
-  return { cards, documents }
+// Chip della home: "Tutte" mostra carte e documenti insieme, "Documenti" solo i
+// documenti; i chip del saldo riguardano solo le carte. Senza il controllo su
+// isDocument un documento (che non ha saldo) finirebbe fra le "Fedeltà".
+export function matchesCategoryFilter(card, filter) {
+  if (filter === 'all') return true
+  if (filter === 'documents') return isDocument(card)
+  return !isDocument(card) && balanceGroup(card) === filter
 }

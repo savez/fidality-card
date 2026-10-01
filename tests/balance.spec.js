@@ -5,7 +5,6 @@ import {
   formatCents,
   hasBalance,
   balanceGroup,
-  matchesBalanceFilter,
   subtractCents,
   consumedRatio,
 } from '@/utils/balance.js'
@@ -40,19 +39,6 @@ describe('hasBalance / balanceGroup', () => {
     expect(balanceGroup(loyalty)).toBe('loyalty')
     expect(balanceGroup(active)).toBe('active')
     expect(balanceGroup(empty)).toBe('empty')
-  })
-})
-
-describe('matchesBalanceFilter', () => {
-  it('partiziona i gruppi e "all" prende tutto', () => {
-    for (const c of [loyalty, active, empty]) {
-      expect(matchesBalanceFilter(c, 'all')).toBe(true)
-    }
-    expect(matchesBalanceFilter(loyalty, 'loyalty')).toBe(true)
-    expect(matchesBalanceFilter(active, 'active')).toBe(true)
-    expect(matchesBalanceFilter(empty, 'empty')).toBe(true)
-    expect(matchesBalanceFilter(active, 'loyalty')).toBe(false)
-    expect(matchesBalanceFilter(empty, 'active')).toBe(false)
   })
 })
 

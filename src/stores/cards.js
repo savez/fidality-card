@@ -12,8 +12,7 @@ import {
   buildDump as dbBuildDump,
 } from '@/db/cards.js'
 import { getBrand } from '@/brands/brands.js'
-import { matchesBalanceFilter } from '@/utils/balance.js'
-import { splitByCategory } from '@/utils/category.js'
+import { matchesCategoryFilter } from '@/utils/category.js'
 
 export const useCardsStore = defineStore('cards', () => {
   const items = ref([])
@@ -42,16 +41,10 @@ export const useCardsStore = defineStore('cards', () => {
     })
   }
 
-  const split = computed(() => splitByCategory(items.value))
-
+  // Una lista sola: carte e documenti insieme, i preferiti in cima per tutti.
   const filtered = computed(() =>
-    sortCards(
-      split.value.cards.filter((c) => matchesBalanceFilter(c, filter.value) && matchesSearch(c))
-    )
+    sortCards(items.value.filter((c) => matchesCategoryFilter(c, filter.value) && matchesSearch(c)))
   )
-
-  // I chip riguardano il saldo, che i documenti non hanno: qui vale solo la ricerca.
-  const filteredDocuments = computed(() => sortCards(split.value.documents.filter(matchesSearch)))
 
   async function refresh() {
     loading.value = true
@@ -112,7 +105,6 @@ export const useCardsStore = defineStore('cards', () => {
   return {
     items,
     filtered,
-    filteredDocuments,
     loading,
     search,
     filter,

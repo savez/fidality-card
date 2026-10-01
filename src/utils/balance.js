@@ -20,11 +20,6 @@ export function balanceGroup(card) {
   return card.balanceCents === 0 ? 'empty' : 'active'
 }
 
-export function matchesBalanceFilter(card, filter) {
-  if (filter === 'all') return true
-  return balanceGroup(card) === filter
-}
-
 export function subtractCents(currentCents, spentCents) {
   return Math.max(0, currentCents - spentCents)
 }
