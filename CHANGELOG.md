@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.1](https://github.com/savez/fidality-card/compare/v2.11.0...v2.11.1) (2026-10-01)
+
+
+### 🐛 Bug Fixes
+
+* documenti e carte in una lista sola, con il filtro Documenti ([#70](https://github.com/savez/fidality-card/issues/70)) ([a71e695](https://github.com/savez/fidality-card/commit/a71e6952a7deec824614ace8f2fbb3b226f7e487))
+
 ## [2.11.0](https://github.com/savez/fidality-card/compare/v2.10.1...v2.11.0) (2026-09-30)
 
 
