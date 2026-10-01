@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { isDocument, showsBarcode, splitByCategory, DOCUMENT } from '@/utils/category.js'
+import { isDocument, showsBarcode, matchesCategoryFilter, DOCUMENT } from '@/utils/category.js'
 
 describe('isDocument', () => {
   it('assente → fidelity', () => expect(isDocument({ id: 'a' })).toBe(false))
@@ -21,17 +21,33 @@ describe('showsBarcode', () => {
     expect(showsBarcode({ showBarcode: false })).toBe(true))
 })
 
-describe('splitByCategory', () => {
-  it("separa conservando l'ordine d'ingresso", () => {
-    const list = [
-      { id: '1' },
-      { id: '2', category: DOCUMENT },
-      { id: '3' },
-      { id: '4', category: DOCUMENT },
-    ]
-    const { cards, documents } = splitByCategory(list)
-    expect(cards.map((c) => c.id)).toEqual(['1', '3'])
-    expect(documents.map((c) => c.id)).toEqual(['2', '4'])
+describe('matchesCategoryFilter', () => {
+  const fidelity = { id: 'f' }
+  const prepaid = { id: 'p', balanceCents: 500 }
+  const empty = { id: 'e', balanceCents: 0 }
+  const doc = { id: 'd', category: DOCUMENT }
+
+  it('all → carte e documenti', () => {
+    for (const c of [fidelity, prepaid, empty, doc])
+      expect(matchesCategoryFilter(c, 'all')).toBe(true)
   })
-  it('lista vuota', () => expect(splitByCategory([])).toEqual({ cards: [], documents: [] }))
+
+  it('documents → solo documenti', () => {
+    expect(matchesCategoryFilter(doc, 'documents')).toBe(true)
+    expect(matchesCategoryFilter(fidelity, 'documents')).toBe(false)
+    expect(matchesCategoryFilter(prepaid, 'documents')).toBe(false)
+  })
+
+  it('i chip saldo escludono i documenti (niente saldo ≠ fedeltà)', () => {
+    expect(matchesCategoryFilter(doc, 'loyalty')).toBe(false)
+    expect(matchesCategoryFilter(doc, 'active')).toBe(false)
+    expect(matchesCategoryFilter(doc, 'empty')).toBe(false)
+  })
+
+  it('i chip saldo sulle carte funzionano come prima', () => {
+    expect(matchesCategoryFilter(fidelity, 'loyalty')).toBe(true)
+    expect(matchesCategoryFilter(prepaid, 'active')).toBe(true)
+    expect(matchesCategoryFilter(empty, 'empty')).toBe(true)
+    expect(matchesCategoryFilter(fidelity, 'active')).toBe(false)
+  })
 })

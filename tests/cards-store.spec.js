@@ -110,32 +110,45 @@ describe('cards store — exportBackupSync', () => {
 describe('cards store — documenti', () => {
   const doc = (id, name, pinned = false) => ({ ...card(id, name, pinned), category: 'document' })
 
-  it('filtered contiene solo fidelity, filteredDocuments solo documenti', () => {
+  it('Tutte mostra carte e documenti in una lista sola', () => {
     const cards = useCardsStore()
     cards.items = [card('1', 'Coop'), doc('2', 'Codice fiscale')]
-    expect(cards.filtered.map((c) => c.id)).toEqual(['1'])
-    expect(cards.filteredDocuments.map((c) => c.id)).toEqual(['2'])
+    expect(cards.filtered.map((c) => c.id)).toEqual(['2', '1'])
   })
 
-  it('la ricerca vale per entrambe le sezioni', () => {
+  it('il chip Documenti mostra solo i documenti', () => {
+    const cards = useCardsStore()
+    cards.items = [
+      card('1', 'Coop'),
+      doc('2', 'Codice fiscale'),
+      { ...card('3', 'Gift'), balanceCents: 0 },
+    ]
+    cards.filter = 'documents'
+    expect(cards.filtered.map((c) => c.id)).toEqual(['2'])
+  })
+
+  it('i chip saldo non mostrano i documenti tra le fedeltà', () => {
+    const cards = useCardsStore()
+    cards.items = [card('1', 'Coop'), doc('2', 'Codice fiscale')]
+    cards.filter = 'loyalty'
+    expect(cards.filtered.map((c) => c.id)).toEqual(['1'])
+  })
+
+  it('la ricerca vale su tutto', () => {
     const cards = useCardsStore()
     cards.items = [card('1', 'Coop'), doc('2', 'Codice fiscale'), doc('3', 'Patente')]
     cards.search = 'co'
-    expect(cards.filtered.map((c) => c.id)).toEqual(['1'])
-    expect(cards.filteredDocuments.map((c) => c.id)).toEqual(['2'])
+    expect(cards.filtered.map((c) => c.name)).toEqual(['Codice fiscale', 'Coop'])
   })
 
-  it('i chip saldo non toccano i documenti e non li mostrano tra le fedeltà', () => {
+  it('i preferiti vanno in cima, carte o documenti che siano', () => {
     const cards = useCardsStore()
-    cards.items = [doc('2', 'Codice fiscale')]
-    cards.filter = 'loyalty'
-    expect(cards.filtered).toEqual([])
-    expect(cards.filteredDocuments.map((c) => c.id)).toEqual(['2'])
-  })
-
-  it('documenti ordinati pin → alfabetico', () => {
-    const cards = useCardsStore()
-    cards.items = [doc('1', 'Patente'), doc('2', 'IBAN'), doc('3', 'Tessera', true)]
-    expect(cards.filteredDocuments.map((c) => c.name)).toEqual(['Tessera', 'IBAN', 'Patente'])
+    cards.items = [
+      card('1', 'Aaa coop'),
+      doc('2', 'Tessera', true),
+      card('3', 'Zeta', true),
+      doc('4', 'IBAN'),
+    ]
+    expect(cards.filtered.map((c) => c.name)).toEqual(['Tessera', 'Zeta', 'Aaa coop', 'IBAN'])
   })
 })

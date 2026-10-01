@@ -14,11 +14,25 @@
 
 export const releaseNotes = [
   {
+    version: '2.11.1',
+    title: 'Documenti e carte in una lista sola',
+    highlights: [
+      {
+        text: 'I documenti stanno nella lista insieme alle tue carte: tocca il filtro "Documenti" per vederli da soli.',
+        icon: 'mdi-filter-variant',
+      },
+      {
+        text: 'La ricerca trova tutto, carte e documenti, e i preferiti salgono in cima, qualunque cosa siano.',
+        icon: 'mdi-star',
+      },
+    ],
+  },
+  {
     version: '2.11.0',
     title: 'Non solo fidelity: i tuoi documenti',
     highlights: [
       {
-        text: 'Codice fiscale, tessera sanitaria, IBAN: quando aggiungi una carta scegli "Documento" e la ritrovi in una sezione tutta sua, sotto le fidelity.',
+        text: 'Codice fiscale, tessera sanitaria, IBAN: quando aggiungi una carta scegli "Documento" e la ritrovi insieme alle tue carte, con il filtro "Documenti" per vederli da soli.',
         icon: 'mdi-card-account-details-outline',
       },
       {
