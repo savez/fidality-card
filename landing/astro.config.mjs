@@ -56,8 +56,10 @@ function resolveAppVersion() {
 const appVersion = resolveAppVersion()
 
 export default defineConfig({
-  site: 'https://savez.github.io',
-  base: '/fidality-card',
+  // Dominio custom: il sito è servito dalla radice. Con il vecchio base
+  // '/fidality-card' gli asset puntavano a /fidality-card/_astro/… → 404.
+  site: 'https://fidality-card.smzstudio.it',
+  base: '/',
   output: 'static',
   trailingSlash: 'always',
   vite: {
