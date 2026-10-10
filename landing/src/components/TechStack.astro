@@ -1,4 +1,6 @@
 ---
+import { meta } from '../data/meta.js'
+
 const badges = [
   {
     alt: 'Vue 3',
@@ -23,12 +25,21 @@ const badges = [
 ]
 ---
 
-<section class="tech section">
+<section class="tech section" id="open-source">
   <div class="container">
     <h2 class="tech-title">Sotto il cofano.</h2>
     <p class="tech-sub">
       Vue 3, IndexedDB via Dexie, zero framework esotici. Apri il codice sorgente
-      e lo capisci in un pomeriggio — parola di chi l'ha scritto.
+      e lo capisci in un pomeriggio.
+    </p>
+    <p class="tech-author">
+      <img src={`${import.meta.env.BASE_URL}progetti/savez.jpg`} alt="" width="40" height="40" loading="lazy" />
+      <span>
+        Scritto e mantenuto da
+        <a href={meta.authorUrl} rel="noopener noreferrer" target="_blank">{meta.authorHandle}</a>,
+        autore e contributor principale. Licenza MIT: le PR sono benvenute,
+        <a href={meta.contributingUrl} rel="noopener noreferrer" target="_blank">ecco come contribuire</a>.
+      </span>
     </p>
     <div class="tech-badges">
       {badges.map((b) => (
@@ -47,6 +58,23 @@ const badges = [
     color: var(--text-muted);
     margin-top: 0.75rem;
     max-width: 56ch;
+  }
+
+  .tech-author {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-top: 1.5rem;
+    max-width: 60ch;
+    color: var(--text-muted);
+  }
+
+  .tech-author img {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--accent);
   }
 
   .tech-badges {

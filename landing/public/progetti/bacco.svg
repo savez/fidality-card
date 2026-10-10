@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Icona di Bacco: "cin cin" tra un calice di vino rosso e un boccale di birra,
+       su fondo legno di botte. Solo forme (nessun font), entro la safe zone delle
+       icone maskable (cerchio centrato, 80% del lato). -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="70%">
+      <stop offset="0" stop-color="#3A2C24" />
+      <stop offset="1" stop-color="#1C1613" />
+    </radialGradient>
+    <clipPath id="bowl">
+      <path d="M-62 -150 H62 C62 -60 36 -22 0 -22 C-36 -22 -62 -60 -62 -150 Z" />
+    </clipPath>
+  </defs>
+
+  <rect width="512" height="512" fill="url(#bg)" />
+
+  <!-- Calice di vino, inclinato verso il centro -->
+  <g transform="translate(212 340) rotate(-14)">
+    <g clip-path="url(#bowl)">
+      <rect x="-70" y="-108" width="140" height="90" fill="#A8324F" />
+      <rect x="-70" y="-112" width="140" height="6" fill="#C9607F" />
+    </g>
+    <path d="M-62 -150 H62 C62 -60 36 -22 0 -22 C-36 -22 -62 -60 -62 -150 Z"
+          fill="none" stroke="#EDE6D8" stroke-width="10" stroke-linejoin="round" />
+    <rect x="-5" y="-24" width="10" height="70" fill="#EDE6D8" />
+    <ellipse cx="0" cy="48" rx="44" ry="9" fill="#EDE6D8" />
+  </g>
+
+  <!-- Boccale di birra, inclinato verso il centro -->
+  <g transform="translate(306 340) rotate(12)">
+    <path d="M44 -112 H70 A26 26 0 0 1 96 -86 V-38 A26 26 0 0 1 70 -12 H44"
+          fill="none" stroke="#EDE6D8" stroke-width="12" />
+    <rect x="-52" y="-140" width="100" height="168" rx="12" fill="#E0AC4A" />
+    <rect x="-36" y="-110" width="8" height="118" rx="4" fill="#F2CD7E" />
+    <rect x="-8" y="-110" width="8" height="118" rx="4" fill="#F2CD7E" />
+    <rect x="20" y="-110" width="8" height="118" rx="4" fill="#F2CD7E" />
+    <circle cx="-38" cy="-142" r="20" fill="#F5EFE4" />
+    <circle cx="-8" cy="-152" r="24" fill="#F5EFE4" />
+    <circle cx="26" cy="-144" r="21" fill="#F5EFE4" />
+    <rect x="-56" y="-146" width="108" height="16" rx="8" fill="#F5EFE4" />
+    <rect x="-52" y="-140" width="100" height="168" rx="12" fill="none" stroke="#EDE6D8" stroke-width="10" />
+  </g>
+
+  <!-- Segni del brindisi -->
+  <g stroke="#C08050" stroke-width="10" stroke-linecap="round">
+    <line x1="256" y1="118" x2="256" y2="86" />
+    <line x1="222" y1="128" x2="204" y2="102" />
+    <line x1="290" y1="128" x2="308" y2="102" />
+  </g>
+</svg>

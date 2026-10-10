@@ -1,23 +1,71 @@
 ---
-import { meta } from '../data/meta.js'
+// Piede comune alle landing di @savez: stesse tre colonne, stessa firma
+// dell'autore e la stessa lista dei progetti, ognuna nel proprio stile.
+import { meta, projects } from '../data/meta.js'
+
+const base = import.meta.env.BASE_URL
+const self = 'fidelity-card'
+const others = projects.filter((p) => p.id !== self)
+const ext = { rel: 'noopener noreferrer', target: '_blank' }
 ---
 
 <footer class="footer">
-  <div class="container footer-inner">
-    <div class="footer-links">
-      <a href={meta.licenseUrl} rel="noopener noreferrer" target="_blank">MIT</a>
-      <span aria-hidden="true">·</span>
-      <a href={meta.contributingUrl} rel="noopener noreferrer" target="_blank">Contributing</a>
-      <span aria-hidden="true">·</span>
-      <a href={meta.securityUrl} rel="noopener noreferrer" target="_blank">Security</a>
-      <span aria-hidden="true">·</span>
-      <a href={meta.changelogUrl} rel="noopener noreferrer" target="_blank">Changelog</a>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <a href="#top" class="footer-brand">
+          <span class="footer-dot" aria-hidden="true"></span>
+          <span>{meta.appName}</span>
+        </a>
+        <p>Le tue card restano nel browser del telefono. Nessun account, nessun server, nessun tracciamento.</p>
+      </div>
+      <nav aria-labelledby="footer-progetto">
+        <h2 id="footer-progetto">Progetto</h2>
+        <ul>
+          <li><a href={meta.githubUrl} {...ext}>Codice sorgente</a></li>
+          <li><a href={meta.changelogUrl} {...ext}>Novità</a></li>
+          <li><a href={meta.contributingUrl} {...ext}>Contribuire</a></li>
+          <li><a href={meta.issuesUrl} {...ext}>Segnala un problema</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="footer-sostieni">
+        <h2 id="footer-sostieni">Sostieni</h2>
+        <ul>
+          <li><a href={meta.supportUrl} {...ext}>Offrimi una birra</a></li>
+          <li><a href={meta.starsUrl} {...ext}>Metti una stella</a></li>
+          <li><a href={meta.securityUrl} {...ext}>Segnala una vulnerabilità</a></li>
+          <li><a href={meta.licenseUrl} {...ext}>Licenza MIT</a></li>
+        </ul>
+      </nav>
     </div>
-    <div class="footer-meta">
-      <a href={meta.authorUrl} rel="noopener noreferrer" target="_blank">{meta.authorHandle}</a>
-      <span aria-hidden="true">·</span>
-      <span id="app-version">v{meta.version}</span>
+
+    <div class="footer-author">
+      <a class="author" href={meta.authorUrl} {...ext}>
+        <img src={`${base}progetti/savez.jpg`} alt="" width="48" height="48" loading="lazy" />
+        <span>
+          <strong>{meta.authorHandle}</strong>
+          <span>Autore e contributor principale</span>
+        </span>
+      </a>
+      <div class="others">
+        <p>Altri progetti di {meta.authorHandle}</p>
+        <ul>
+          {others.map((p) => (
+            <li>
+              <a href={p.url} {...ext}>
+                <img src={`${base}${p.icon}`} alt="" width="28" height="28" loading="lazy" />
+                <span><strong>{p.name}</strong><span>{p.what}</span></span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
+
+    <p class="footer-legal">
+      <span>{meta.appName} <span id="app-version">v{meta.version}</span></span>
+      <span>Fatto da <a href={meta.authorUrl} {...ext}>{meta.authorHandle}</a>, rilasciato con licenza MIT</span>
+    </p>
   </div>
 </footer>
 
@@ -65,38 +113,155 @@ import { meta } from '../data/meta.js'
 <style>
   .footer {
     border-top: 1px solid var(--border);
-    padding: 2.5rem 0;
+    padding: 3rem 0 2.5rem;
     color: var(--text-muted);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
   }
 
-  .footer-inner {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    align-items: center;
-    text-align: center;
+  .footer-grid {
+    display: grid;
+    gap: 2rem;
   }
 
-  .footer-links,
-  .footer-meta {
-    display: flex;
+  .footer-brand {
+    display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    flex-wrap: wrap;
-    justify-content: center;
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
   }
 
-  .footer-links a,
-  .footer-meta a {
+  .footer-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--accent);
+  }
+
+  .footer-about p {
+    max-width: 38ch;
+  }
+
+  .footer h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.6rem;
+  }
+
+  .footer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .footer-grid a:not(.footer-brand) {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    color: var(--text-muted);
+  }
+
+  .footer-grid a:not(.footer-brand):hover {
+    color: var(--accent);
+    opacity: 1;
+  }
+
+  .footer-author {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .author {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    color: var(--text);
+    align-self: start;
+  }
+
+  .author img {
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--accent);
+  }
+
+  .author > span,
+  .others a > span {
+    display: grid;
+    line-height: 1.35;
+  }
+
+  .author > span > span,
+  .others a > span > span {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+  }
+
+  .others > p {
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+  }
+
+  .others ul {
+    gap: 0.5rem;
+  }
+
+  .others a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-btn);
+    background: var(--bg-elevated);
+    color: var(--text);
+  }
+
+  .others a:hover {
+    border-color: var(--accent);
+    opacity: 1;
+  }
+
+  .others img {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+  }
+
+  .footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.4rem 1.5rem;
+    margin-top: 2rem;
+    font-size: 0.85rem;
+  }
+
+  .footer-legal a {
     color: var(--text);
   }
 
   @media (min-width: 768px) {
-    .footer-inner {
-      flex-direction: row;
-      justify-content: space-between;
-      text-align: left;
+    .footer-grid {
+      grid-template-columns: 1.4fr 1fr 1fr;
+    }
+
+    .footer-author {
+      grid-template-columns: 1fr 1.6fr;
+      align-items: start;
+    }
+
+    .others ul {
+      grid-template-columns: 1fr 1fr;
     }
   }
 </style>
