@@ -1,8 +1,8 @@
 ---
-name: Feature request
+name: Suggerisci una funzione
 about: Suggerisci una nuova funzionalità
 title: '[Feature] '
-labels: enhancement
+labels: feature
 ---
 
 ## Quale problema risolve
