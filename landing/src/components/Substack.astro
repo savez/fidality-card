@@ -1,0 +1,89 @@
+---
+// La newsletter dell'autore: stesso banner, prima del sostegno, in tutte e tre
+// le landing (nonAbbocco, bacco, fidality-card), ognuna nel suo stile.
+// Qui è una card affiancata al sostegno, con la stessa struttura ma accento
+// menta (--accent), per non farne il gemello: il sostegno è ambra.
+import { meta } from '../data/meta.js'
+---
+
+<div class="nl" id="substack">
+  <span class="nl-seal" aria-hidden="true">✉️</span>
+  <div class="nl-body">
+    <span class="nl-eyebrow">La newsletter di {meta.authorHandle} · su Substack</span>
+    <h2 class="nl-title">L'unica tessera che non devi salvare.</h2>
+    <p class="nl-sub">
+      Su SMZstudio racconto come nascono Fidelity Card e gli altri progetti: cloud, AI e
+      codice, senza fronzoli. È appena partita.
+    </p>
+  </div>
+  <a
+    class="btn btn-primary nl-cta"
+    href={`${meta.substackUrl}/subscribe`}
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    Iscriviti gratis ↗
+  </a>
+</div>
+
+<style>
+  .nl {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+    border-radius: var(--radius-card);
+    background:
+      radial-gradient(50% 120% at 100% 50%, var(--accent-soft), transparent 70%),
+      var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+  }
+
+  .nl-seal {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    font-size: 1.5rem;
+    border-radius: 999px;
+    background: radial-gradient(circle at 35% 30%, rgba(70, 227, 183, 0.35), rgba(70, 227, 183, 0.12));
+    box-shadow: inset 0 0 0 1px rgba(70, 227, 183, 0.4);
+  }
+
+  .nl-body {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .nl-eyebrow {
+    display: inline-block;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .nl-title {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    line-height: 1.25;
+  }
+
+  .nl-sub {
+    color: var(--text-muted);
+    margin-top: 0.6rem;
+    max-width: 52ch;
+  }
+
+  .nl-cta {
+    width: 100%;
+    border-radius: var(--radius-pill);
+  }
+
+  .nl-cta:hover {
+    opacity: 1;
+  }
+</style>

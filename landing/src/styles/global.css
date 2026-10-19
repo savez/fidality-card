@@ -144,6 +144,18 @@ svg {
   font-size: 0.85rem;
 }
 
+.invites {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 860px) {
+  .invites {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .card {
   background: var(--bg-elevated);
   border: 1px solid var(--border);
