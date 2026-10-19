@@ -16,6 +16,7 @@ export const meta = {
   authorHandle: '@savez',
   authorUrl: 'https://github.com/savez',
   supportUrl: 'https://buymeacoffee.com/goeokwihgz',
+  substackUrl: 'https://smzstudio.substack.com',
   version: import.meta.env.PUBLIC_APP_VERSION ?? 'dev',
 }
 

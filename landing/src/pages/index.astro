@@ -12,6 +12,7 @@ import Documents from '../components/Documents.astro'
 import News from '../components/News.astro'
 import Install from '../components/Install.astro'
 import TechStack from '../components/TechStack.astro'
+import Substack from '../components/Substack.astro'
 import Support from '../components/Support.astro'
 import Footer from '../components/Footer.astro'
 
@@ -53,7 +54,13 @@ import { meta } from '../data/meta.js'
       <News />
       <Install />
       <TechStack />
-      <Support />
+      <!-- Newsletter e sostegno affiancati: due inviti dell'autore, una sola sezione. -->
+      <section class="section" id="sostieni">
+        <div class="container invites">
+          <Substack />
+          <Support />
+        </div>
+      </section>
     </main>
     <Footer />
   </body>

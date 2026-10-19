@@ -6,40 +6,37 @@
 import { meta } from '../data/meta.js'
 ---
 
-<section class="support section" id="sostieni">
-  <div class="container">
-    <div class="support-card">
-      <div class="support-glow" aria-hidden="true"></div>
-      <span class="support-seal" aria-hidden="true">🍺</span>
-      <div class="support-body">
-        <span class="support-eyebrow">Un progetto indipendente di {meta.authorHandle}</span>
-        <h2 class="support-title">Offrimi una birra.</h2>
-        <p class="support-sub">
-          Fidelity Card è gratis, open-source e senza tracker — sviluppato nel
-          tempo libero. Se ti risparmia la fila alla cassa, offrimi una birra.
-        </p>
-      </div>
-      <a
-        class="support-cta"
-        href={meta.supportUrl}
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        Offrimi una birra ↗
-      </a>
-    </div>
+<div class="support-card">
+  <div class="support-glow" aria-hidden="true"></div>
+  <span class="support-seal" aria-hidden="true">🍺</span>
+  <div class="support-body">
+    <span class="support-eyebrow">Un progetto indipendente di {meta.authorHandle}</span>
+    <h2 class="support-title">Offrimi una birra.</h2>
+    <p class="support-sub">
+      Fidelity Card è gratis, open-source e senza tracker — sviluppato nel
+      tempo libero. Se ti risparmia la fila alla cassa, offrimi una birra.
+    </p>
   </div>
-</section>
+  <a
+    class="support-cta"
+    href={meta.supportUrl}
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    Offrimi una birra ↗
+  </a>
+</div>
 
 <style>
   .support-card {
     --beer: #ffb300;
     position: relative;
     overflow: hidden;
+    height: 100%;
     display: flex;
-    align-items: center;
-    gap: clamp(1rem, 3vw, 1.75rem);
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
     padding: clamp(1.5rem, 4vw, 2.25rem);
     border-radius: var(--radius-card);
     background: var(--bg-elevated);
@@ -75,7 +72,7 @@ import { meta } from '../data/meta.js'
   .support-body {
     position: relative;
     z-index: 1;
-    flex: 1 1 16rem;
+    flex: 1 1 auto;
     min-width: 0;
   }
 
@@ -108,6 +105,7 @@ import { meta } from '../data/meta.js'
     padding: 0.75rem 1.4rem;
     border-radius: var(--radius-pill);
     font-weight: 600;
+    width: 100%;
     color: #2b1d00;
     background: var(--beer);
     transition:
@@ -124,11 +122,5 @@ import { meta } from '../data/meta.js'
   .support-cta:focus-visible {
     outline: 2px solid var(--beer);
     outline-offset: 3px;
-  }
-
-  @media (max-width: 640px) {
-    .support-cta {
-      width: 100%;
-    }
   }
 </style>
