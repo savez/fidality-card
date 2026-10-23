@@ -39,7 +39,7 @@
     "qrcode": "^1.5.4",
     "vue": "^3.5.44",
     "vue-router": "^5.4.0",
-    "vuetify": "^3.12.8"
+    "vuetify": "^4.3.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",
