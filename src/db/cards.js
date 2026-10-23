@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid'
 import { db } from './index.js'
 import { deletePlacesByCard } from './places.js'
 
@@ -11,7 +10,7 @@ function nowMs() {
 export async function createCard(input) {
   const t = nowMs()
   const card = {
-    id: uuidv4(),
+    id: crypto.randomUUID(),
     name: input.name,
     brandId: input.brandId ?? null,
     barcode: input.barcode,

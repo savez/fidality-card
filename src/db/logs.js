@@ -1,11 +1,10 @@
-import { v4 as uuidv4 } from 'uuid'
 import { db } from './index.js'
 
 // Registra un'apertura card. Le coordinate partono null e vengono eventualmente
 // riempite in un secondo momento da attachCoords (vedi useUsageLogger).
 export async function addOpenLog({ cardId, openedAt }) {
   const log = {
-    id: uuidv4(),
+    id: crypto.randomUUID(),
     cardId,
     openedAt,
     lat: null,
