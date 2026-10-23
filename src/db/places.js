@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid'
 import { db } from './index.js'
 
 // Un "luogo" è un punto che l'utente ha confermato una volta: qui c'è il negozio
@@ -10,7 +9,7 @@ import { db } from './index.js'
 export async function addPlace({ cardId = null, lat, lng, accuracy = null, label = null }) {
   const t = Date.now()
   const place = {
-    id: uuidv4(),
+    id: crypto.randomUUID(),
     cardId,
     lat,
     lng,

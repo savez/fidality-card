@@ -26,7 +26,8 @@ beforeEach(async () => {
 describe('cards CRUD', () => {
   it('createCard salva con id e timestamp', async () => {
     const card = await createCard(baseInput)
-    expect(card.id).toMatch(/^[0-9a-f-]{36}$/i)
+    // v4 in minuscolo: la scorciatoia /?open=<id> (shortcuts/intent.js) accetta solo questo formato.
+    expect(card.id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/)
     expect(card.createdAt).toBeGreaterThan(0)
     expect(card.updatedAt).toBe(card.createdAt)
   })
