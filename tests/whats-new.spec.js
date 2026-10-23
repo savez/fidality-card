@@ -158,11 +158,15 @@ describe('initWhatsNew', () => {
     expect(useWhatsNew().pendingEntries.value).toEqual([])
   })
 
-  it('utente di vecchia data senza flag: prepara le novità della versione corrente senza segnarle', async () => {
+  it('utente di vecchia data senza flag: prepara le novità più recenti senza segnarle', async () => {
     localStorage.setItem('fidality-card:theme-mode', 'dark')
     await initWhatsNew()
     expect(localStorage.getItem(SEEN_KEY)).toBeNull()
-    expect(useWhatsNew().pendingEntries.value.map((e) => e.version)).toEqual([currentVersion()])
+    // Non [currentVersion()]: le patch senza impatto visibile non hanno una voce
+    // in releaseNotes, e allora tocca all'ultima voce non successiva alla versione.
+    const pending = useWhatsNew().pendingEntries.value
+    expect(pending).toHaveLength(1)
+    expect(pending).toEqual(notesUpTo(currentVersion()))
   })
 
   it('release senza novità da raccontare: nessun modale, ma il flag avanza', async () => {
