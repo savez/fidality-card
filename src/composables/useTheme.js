@@ -57,7 +57,9 @@ export function useTheme() {
   watch(
     effective,
     (next) => {
-      vuetifyTheme.global.name.value = next
+      // change() al posto di global.name.value = …: l'assegnazione diretta è
+      // deprecata da Vuetify 3.13 e scrive un warning a ogni cambio di tema.
+      vuetifyTheme.change(next)
     },
     { immediate: true }
   )
