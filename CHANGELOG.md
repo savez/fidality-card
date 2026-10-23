@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.2](https://github.com/savez/fidality-card/compare/v2.11.1...v2.11.2) (2026-10-23)
+
+
+### ♻️ Refactoring
+
+* **tema:** usa theme.change() al posto dell'assegnazione deprecata ([#95](https://github.com/savez/fidality-card/issues/95)) ([5921e8c](https://github.com/savez/fidality-card/commit/5921e8c67102ee96ddf81ce40803572ff2d0f618))
+
 ## [2.11.1](https://github.com/savez/fidality-card/compare/v2.11.0...v2.11.1) (2026-10-01)
 
 
